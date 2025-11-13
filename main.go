@@ -3,6 +3,8 @@ package main
 import (
 	"embed"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/liteldev/LeviLauncher/internal/extractor"
 	"github.com/liteldev/LeviLauncher/internal/launch"
@@ -69,6 +71,14 @@ func main() {
 	})
 	mc.startup()
 
+	initialURL := "/"
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "--self-update=") {
+			initialURL = "/#/updating"
+			break
+		}
+	}
+
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:     "LeviLauncher",
 		Width:     960,
@@ -86,7 +96,7 @@ func main() {
 		Windows: application.WindowsWindow{
 			BackdropType: application.Acrylic,
 		},
-		URL: "/",
+		URL: initialURL,
 	})
 
 	err := app.Run()

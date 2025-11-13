@@ -114,6 +114,11 @@
             "drag_import_unsupported": "拖拽导入暂不支持，请使用“导入 .zip/.dll”或文件管理器。"
         }
     },
+    "updating": {
+        "title": "正在更新 LeviLauncher",
+        "body": "正在请求管理员权限并执行更新。更新期间请勿关闭窗口。",
+        "failed_title": "更新失败"
+    },
     "moddedcard": {
         "title": "模组",
         "content": {

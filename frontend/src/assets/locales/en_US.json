@@ -121,6 +121,11 @@
     },
     "manage": "Manage Mods"
   },
+  "updating": {
+    "title": "Updating LeviLauncher",
+    "body": "Requesting administrator permission and performing update. Do not close this window during update.",
+    "failed_title": "Update Failed"
+  },
   "downloadpage": {
     "type": {
       "install": "Install",

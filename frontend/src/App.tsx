@@ -28,6 +28,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { VersionSelectPage } from "./pages/VersionSelectPage";
 import VersionSettingsPage from "./pages/VersionSettingsPage";
 import ModsPage from "./pages/ModsPage";
+import UpdatingPage from "./pages/UpdatingPage";
 import FileManagerPage from "./pages/FileManagerPage";
 import ContentPage from "./pages/ContentPage";
 import WorldsListPage from "./pages/WorldsListPage";
@@ -41,7 +42,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 function App() {
-  // Splash visibility + reveal orchestration for smoother transition
   const [splashVisible, setSplashVisible] = useState(true);
   const [revealStarted, setRevealStarted] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(false);
@@ -57,8 +57,6 @@ function App() {
   const [updateBody, setUpdateBody] = useState<string>("");
   const [updateLoading, setUpdateLoading] = useState<boolean>(false);
 
-  // language selection moved into Settings modal
-
   const refresh = () => {
     setCount((prevCount) => {
       return prevCount + 1;
@@ -71,11 +69,21 @@ function App() {
     });
   };
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isUpdatingMode = String(location?.pathname || "") === "/updating";
   useEffect(() => {
-    // Let splash show briefly, then fade overlay out.
-    // Only reveal header after overlay fade completes to avoid visual overlap.
+    if (isUpdatingMode) setNavLocked(true);
+  }, [isUpdatingMode]);
+
+  useEffect(() => {
+    if (isUpdatingMode) {
+      setSplashVisible(false);
+      setRevealStarted(true);
+      return;
+    }
     const splashDurationMs = 1400;
-    const overlayFadeMs = 600; // matches AnimatePresence exit duration
+    const overlayFadeMs = 600; 
 
     setIsFirstLoad(false);
 
@@ -88,50 +96,34 @@ function App() {
       clearTimeout(tHide);
       clearTimeout(tHeader);
     };
-  }, []);
+  }, [isUpdatingMode]);
 
-  // Listen for nav lock changes triggered by InstallPage
   useEffect(() => {
     try {
       setNavLocked(Boolean((window as any).llNavLock));
     } catch {}
     const handler = (e: any) => {
       try {
+        if (isUpdatingMode) return;
         setNavLocked(Boolean(e?.detail?.lock ?? (window as any).llNavLock));
       } catch {}
     };
     window.addEventListener("ll-nav-lock-changed", handler as any);
     return () =>
       window.removeEventListener("ll-nav-lock-changed", handler as any);
-  }, []);
+  }, [isUpdatingMode]);
 
-  // First-launch Terms modal gating (after splash & header reveal)
-  useEffect(() => {
-    try {
-      const accepted = localStorage.getItem("ll.termsAccepted");
-      if (!accepted && revealStarted) {
-        setTermsOpen(true);
-        setNavLocked(true);
-      }
-    } catch {}
-  }, [revealStarted]);
-
-  // Terms modal: start 10s countdown when opened to prevent instant accept
-  useEffect(() => {
-    if (!termsOpen) return;
-    setTermsCountdown(10);
-    const iv = setInterval(() => {
-      setTermsCountdown((v) => (v > 0 ? v - 1 : 0));
-    }, 1000);
-    return () => clearInterval(iv);
-  }, [termsOpen]);
-
-  // Startup update check (after splash & terms)
   useEffect(() => {
     if (!hasBackend) return;
     if (!revealStarted) return;
-    if (termsOpen) return;
+    if (isUpdatingMode) return;
     try {
+      const accepted = localStorage.getItem("ll.termsAccepted");
+      if (!accepted) {
+        setTermsOpen(true);
+        setNavLocked(true);
+        return;
+      }
       const ignored = localStorage.getItem("ll.ignoreVersion") || "";
       minecraft?.CheckUpdate?.()
         .then((res: any) => {
@@ -147,9 +139,19 @@ function App() {
         })
         .catch(() => {});
     } catch {}
-  }, [hasBackend, revealStarted, termsOpen]);
+  }, [hasBackend, revealStarted, isUpdatingMode]);
 
-  // Lock background scroll when update modal is open
+  useEffect(() => {
+    if (!termsOpen) return;
+    setTermsCountdown(10);
+    const iv = setInterval(() => {
+      setTermsCountdown((v) => (v > 0 ? v - 1 : 0));
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [termsOpen]);
+
+  
+
   useEffect(() => {
     try {
       if (updateOpen) {
@@ -192,10 +194,8 @@ function App() {
     } catch {}
   }, [hasBackend]);
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  
 
-  // 全局兜底：注册 msixvc 下载事件监听，防止后端提示“无监听器”
   useEffect(() => {
     if (!hasBackend) return;
 
@@ -219,7 +219,6 @@ function App() {
     };
   }, [hasBackend]);
 
-  // Global: prevent browser default on file drag/drop anywhere in the app
   useEffect(() => {
     const isFileDrag = (e: DragEvent) => {
       try {
@@ -253,7 +252,6 @@ function App() {
 
   return (
     <VersionStatusProvider>
-      {/* Splash overlay with animated exit */}
       <AnimatePresence>
         {splashVisible && (
           <motion.div
@@ -430,7 +428,6 @@ function App() {
           </div>
         </motion.div>
 
-        {/* spacer to offset fixed top bar height */}
         <div className="h-[68px]" />
 
         <motion.div
@@ -461,6 +458,7 @@ function App() {
                   element={<VersionSettingsPage />}
                 />
                 <Route path="/mods" element={<ModsPage />} />
+                <Route path="/updating" element={<UpdatingPage />} />
                 <Route path="/filemanager" element={<FileManagerPage />} />
                 <Route path="/content" element={<ContentPage />} />
                 <Route path="/content/worlds" element={<WorldsListPage />} />
@@ -476,7 +474,6 @@ function App() {
             ))}
         </motion.div>
 
-        {/* First-launch Terms Modal (priority over other modals) */}
         <Modal
           size="lg"
           isOpen={termsOpen}
@@ -523,7 +520,6 @@ function App() {
           </ModalContent>
         </Modal>
 
-        {/* Update Modal */}
         <Modal size="md" isOpen={updateOpen} hideCloseButton>
           <ModalContent>
             {(onClose) => (

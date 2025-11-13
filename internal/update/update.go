@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strings"
@@ -14,6 +15,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	buildcfg "github.com/liteldev/LeviLauncher/build"
 	"github.com/liteldev/LeviLauncher/internal/types"
+	"github.com/liteldev/LeviLauncher/internal/utils"
 	"github.com/mouuff/go-rocket-update/pkg/provider"
 	"github.com/mouuff/go-rocket-update/pkg/updater"
 )
@@ -123,6 +125,18 @@ func Update(version string) error {
 	execName := "LeviLauncher"
 	if runtime.GOOS == "windows" {
 		execName += ".exe"
+	}
+
+	exePath, _ := os.Executable()
+	instDir := filepath.Dir(exePath)
+	if runtime.GOOS == "windows" && !utils.CanWriteDir(instDir) {
+		pwsh := exec.Command("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
+			fmt.Sprintf("Start-Process -FilePath '%s' -ArgumentList '--self-update=%s' -Verb RunAs", exePath, strings.TrimPrefix(ver, "v")))
+		if err := pwsh.Start(); err != nil {
+			return fmt.Errorf("update requires administrator: %w", err)
+		}
+		os.Exit(0)
+		return nil
 	}
 	u := &updater.Updater{
 		Provider: &provider.Github{

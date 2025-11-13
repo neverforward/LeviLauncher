@@ -16,8 +16,8 @@ import (
 	"time"
 	"unsafe"
 
-    "github.com/wailsapp/wails/v3/pkg/application"
-    "github.com/liteldev/LeviLauncher/internal/config"
+	"github.com/liteldev/LeviLauncher/internal/config"
+	"github.com/wailsapp/wails/v3/pkg/application"
 
 	"github.com/liteldev/LeviLauncher/internal/explorer"
 	"github.com/liteldev/LeviLauncher/internal/extractor"
@@ -184,22 +184,12 @@ func (a *Minecraft) ListKnownFolders() []KnownFolder {
 	return out
 }
 
-// ContentCounts reports the number of items under common game content directories.
 type ContentCounts struct {
 	Worlds        int `json:"worlds"`
 	ResourcePacks int `json:"resourcePacks"`
 	BehaviorPacks int `json:"behaviorPacks"`
 }
 
-// GetContentRoots resolves base content directories for the given version name.
-// It returns paths following the structure:
-//
-//	Base\Users\<player>\games\com.mojang\minecraftWorlds
-//	Base\Users\Shared\games\com.mojang\resource_packs
-//	Base\Users\Shared\games\com.mojang\behavior_packs
-//
-// When isolation is enabled for the version, Base is inside versions/<name>/<Minecraft Bedrock|Minecraft Bedrock Preview>.
-// Otherwise, Base is the installed GDK Content directory resolved via gdkpaths/config.
 func (a *Minecraft) GetContentRoots(name string) types.ContentRoots {
 	roots := types.ContentRoots{Base: "", UsersRoot: "", ResourcePacks: "", BehaviorPacks: "", IsIsolation: false, IsPreview: false}
 	verName := strings.TrimSpace(name)
@@ -234,7 +224,6 @@ func (a *Minecraft) GetContentRoots(name string) types.ContentRoots {
 	if strings.TrimSpace(base) == "" {
 		return roots
 	}
-	// GDK 布局：<base>/Users/Shared/games/com.mojang/*
 	users := filepath.Join(base, "Users")
 	shared := filepath.Join(users, "Shared", "games", "com.mojang")
 	roots.UsersRoot = users
@@ -243,12 +232,8 @@ func (a *Minecraft) GetContentRoots(name string) types.ContentRoots {
 	return roots
 }
 
-// GetContentCounts 返回指定版本内容目录下的数量统计（世界/资源包/行为包）。
-// 世界数量策略与前端一致：选择 Users 目录下首个玩家（忽略 Shared），统计其
-// games\com.mojang\minecraftWorlds 下的世界文件夹数量；资源包与行为包统计 Shared 下。
 func (a *Minecraft) GetContentCounts(name string) ContentCounts {
 	roots := a.GetContentRoots(name)
-	// 统计资源包与行为包：Shared/games/com.mojang 下的目录数
 	countDirs := func(path string) int {
 		p := strings.TrimSpace(path)
 		if p == "" {
@@ -288,19 +273,14 @@ func (a *Minecraft) GetContentCounts(name string) ContentCounts {
 	return ContentCounts{Worlds: worlds, ResourcePacks: res, BehaviorPacks: bp}
 }
 
-// findWindowByTitle has been consolidated into internal/launch. Use launch.FindWindowByTitle instead.
 func (a *Minecraft) LaunchVersionByName(name string) string {
 	return a.launchVersionInternal(name, true)
 }
 
-// LaunchVersionByNameForce launches the specified version without checking for an existing
-// running process at the same executable path. Use with caution.
 func (a *Minecraft) LaunchVersionByNameForce(name string) string {
 	return a.launchVersionInternal(name, false)
 }
 
-// isProcessRunningAtPath checks if a process with the exact executable path is running.
-// It enumerates processes and queries full image paths to match against the provided path.
 func isProcessRunningAtPath(exePath string) bool {
 	p := strings.ToLower(filepath.Clean(strings.TrimSpace(exePath)))
 	if p == "" {
@@ -437,10 +417,6 @@ func (a *Minecraft) CopyGameToVersion(targetDir string, isPreview bool) string {
 	return ""
 }
 
-// CopyVersionDataFromVersion copies the game data folder from one isolated version to another.
-// It expects both source and target versions to exist under versions/<name>/ and have matching type
-// (release vs preview). The copied folder is "Minecraft Bedrock" or "Minecraft Bedrock Preview"
-// depending on the version type.
 func (a *Minecraft) CopyVersionDataFromVersion(sourceName string, targetName string) string {
 	s := strings.TrimSpace(sourceName)
 	t := strings.TrimSpace(targetName)
@@ -484,9 +460,6 @@ func (a *Minecraft) CopyVersionDataFromVersion(sourceName string, targetName str
 	return ""
 }
 
-// CopyVersionDataFromGDK copies the game data folder from the default GDK/AppData location
-// into the isolated target version directory. It respects the target meta's type (release/preview)
-// and ensures the source exists before copying.
 func (a *Minecraft) CopyVersionDataFromGDK(isPreview bool, targetName string) string {
 	t := strings.TrimSpace(targetName)
 	if t == "" {
@@ -501,7 +474,6 @@ func (a *Minecraft) CopyVersionDataFromGDK(isPreview bool, targetName string) st
 	if terr != nil {
 		return "ERR_INHERIT_TARGET_NOT_FOUND"
 	}
-	// Verify type alignment with requested preview flag
 	tt := strings.ToLower(strings.TrimSpace(tm.Type))
 	if (isPreview && tt != "preview") || (!isPreview && tt != "release") {
 		return "ERR_INHERIT_TYPE_MISMATCH"
@@ -524,8 +496,6 @@ func (a *Minecraft) CopyVersionDataFromGDK(isPreview bool, targetName string) st
 	return ""
 }
 
-// SaveVersionLogoDataUrl saves a square logo image for the version from a data URL (any image format),
-// re-encodes it as PNG and writes to versions/<name>/LeviLauncher/Logo.png
 func (a *Minecraft) SaveVersionLogoDataUrl(name string, dataUrl string) string {
 	vdir, err := utils.GetVersionsDir()
 	if err != nil || strings.TrimSpace(vdir) == "" {
@@ -549,7 +519,6 @@ func (a *Minecraft) SaveVersionLogoDataUrl(name string, dataUrl string) string {
 	if er != nil {
 		return "ERR_ICON_DECODE"
 	}
-	// validate square image
 	cfg, _, er := image.DecodeConfig(bytes.NewReader(raw))
 	if er != nil {
 		return "ERR_ICON_DECODE"
@@ -577,8 +546,6 @@ func (a *Minecraft) SaveVersionLogoDataUrl(name string, dataUrl string) string {
 	return ""
 }
 
-// SaveVersionLogoFromPath reads an image file from local path, validates square shape,
-// and saves it as versions/<name>/LeviLauncher/Logo.png re-encoded as PNG.
 func (a *Minecraft) SaveVersionLogoFromPath(name string, filePath string) string {
 	vdir, err := utils.GetVersionsDir()
 	if err != nil || strings.TrimSpace(vdir) == "" {
@@ -623,7 +590,6 @@ func (a *Minecraft) SaveVersionLogoFromPath(name string, filePath string) string
 	return ""
 }
 
-// GetVersionLogoDataUrl returns data URL of versions/<name>/LeviLauncher/Logo.png if exists, otherwise empty string
 func (a *Minecraft) GetVersionLogoDataUrl(name string) string {
 	vdir, err := utils.GetVersionsDir()
 	if err != nil || strings.TrimSpace(vdir) == "" {
@@ -641,7 +607,6 @@ func (a *Minecraft) GetVersionLogoDataUrl(name string) string {
 	return "data:image/png;base64," + enc
 }
 
-// RemoveVersionLogo deletes the saved logo file if present
 func (a *Minecraft) RemoveVersionLogo(name string) string {
 	vdir, err := utils.GetVersionsDir()
 	if err != nil || strings.TrimSpace(vdir) == "" {
@@ -689,7 +654,6 @@ func (a *Minecraft) ValidateVersionFolderName(name string) string {
 	return ""
 }
 
-// RenameVersionFolder renames versions/<oldName> to versions/<newName> and updates version.json Name field.
 func (a *Minecraft) RenameVersionFolder(oldName string, newName string) string {
 	on := strings.TrimSpace(oldName)
 	nn := strings.TrimSpace(newName)
@@ -705,7 +669,6 @@ func (a *Minecraft) RenameVersionFolder(oldName string, newName string) string {
 	if !utils.DirExists(oldPath) {
 		return "ERR_NOT_FOUND_OLD"
 	}
-	// If only case differs on Windows, treat as no-op rename and just update meta
 	if strings.EqualFold(on, nn) {
 		m, _ := versions.ReadMeta(oldPath)
 		m.Name = nn
@@ -728,8 +691,6 @@ func (a *Minecraft) RenameVersionFolder(oldName string, newName string) string {
 	return ""
 }
 
-// DeleteVersionFolder removes the entire versions/<name> directory.
-// It prevents deletion if the game's executable under that version is currently running.
 func (a *Minecraft) DeleteVersionFolder(name string) string {
 	n := strings.TrimSpace(name)
 	if n == "" {
@@ -743,7 +704,6 @@ func (a *Minecraft) DeleteVersionFolder(name string) string {
 	if !utils.DirExists(dir) {
 		return "ERR_NOT_FOUND_OLD"
 	}
-	// Block deletion if this version's executable is currently running
 	exe := filepath.Join(dir, "Minecraft.Windows.exe")
 	if utils.FileExists(exe) && isProcessRunningAtPath(exe) {
 		return "ERR_GAME_ALREADY_RUNNING"
@@ -777,7 +737,6 @@ func (a *Minecraft) IsFirstLaunch() bool {
 
 func (a *Minecraft) EnsureGameInputInteractive() { go ensureGameInputInteractive(a.ctx) }
 
-// IsGameInputInstalled checks if GameInput is installed by probing registry
 func (a *Minecraft) IsGameInputInstalled() bool {
 	if _, err := winreg.OpenKey(winreg.LOCAL_MACHINE, `SOFTWARE\Microsoft\GameInputRedist`, winreg.READ); err == nil {
 		return true
@@ -785,7 +744,6 @@ func (a *Minecraft) IsGameInputInstalled() bool {
 	return false
 }
 
-// giMu/giEnsuring declared above in var block; reuse them without redeclaration
 func ensureGameInputInteractive(ctx context.Context) {
 	giMu.Lock()
 	if giEnsuring {
@@ -800,7 +758,6 @@ func ensureGameInputInteractive(ctx context.Context) {
 		giMu.Unlock()
 	}()
 
-	// Check again under guard in case state changed
 	if _, err := winreg.OpenKey(winreg.LOCAL_MACHINE, `SOFTWARE\Microsoft\GameInputRedist`, winreg.READ); err == nil {
 		return
 	}
@@ -812,7 +769,6 @@ func ensureGameInputInteractive(ctx context.Context) {
 	type ghRelease struct {
 		Assets []ghAsset `json:"assets"`
 	}
-	// Query latest release
 	req, _ := http.NewRequest("GET", "https://api.github.com/repos/microsoftconnect/GameInput/releases/latest", nil)
 	req.Header.Set("User-Agent", "LeviLauncher")
 	resp, err := http.DefaultClient.Do(req)
@@ -837,7 +793,6 @@ func ensureGameInputInteractive(ctx context.Context) {
 		log.Println("gameinput asset not found in latest release")
 		return
 	}
-	// Download to installers dir
 	dir, _ := utils.GetInstallerDir()
 	if dir == "" {
 		dir = "."
@@ -906,15 +861,13 @@ func ensureGameInputInteractive(ctx context.Context) {
 		application.Get().Event.Emit(EventGameInputDownloadDone, struct{}{})
 		log.Println("GameInputRedist downloaded:", dlPath)
 	}
-	// Launch interactive installer (will show UI/UAC if needed) and wait for completion
 	cmd := exec.Command("msiexec", "/i", dlPath)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	if err := cmd.Run(); err != nil {
 		log.Println("failed to run GameInput installer:", err)
 	}
-	// After installer exits, poll registry for a short period to confirm installation
 	installed := false
-	for i := 0; i < 30; i++ { // ~30s
+	for i := 0; i < 30; i++ {
 		if _, err := winreg.OpenKey(winreg.LOCAL_MACHINE, `SOFTWARE\Microsoft\GameInput`, winreg.READ); err == nil {
 			installed = true
 			break
@@ -925,7 +878,6 @@ func ensureGameInputInteractive(ctx context.Context) {
 	application.Get().Event.Emit(EventGameInputEnsureDone, struct{}{})
 }
 
-// IsGamingServicesInstalled checks if Microsoft Gaming Services is installed
 func (a *Minecraft) IsGamingServicesInstalled() bool {
 	if _, err := registry.GetAppxInfo("Microsoft.GamingServices"); err == nil {
 		return true
@@ -941,9 +893,6 @@ func (a *Minecraft) ResumeMsixvcDownload() { msixvc.Resume() }
 
 func (a *Minecraft) CancelMsixvcDownload() { msixvc.Cancel() }
 
-// InstallMsixvc installs a previously downloaded .msixvc by filename.
-// The filename can be either an absolute path or a base name under installers dir.
-// isPreview controls which package to remove before install if present.
 func (a *Minecraft) InstallMsixvc(name string, isPreview bool) string {
 	n := strings.TrimSpace(name)
 	if n == "" {
@@ -952,14 +901,11 @@ func (a *Minecraft) InstallMsixvc(name string, isPreview bool) string {
 	return msixvc.Install(a.ctx, n, isPreview)
 }
 
-// InstallExtractMsixvc extracts the msixvc into versions/<folderName> using nh_extract from the C++ DLL.
-// name can be absolute path or a file under installers dir.
 func (a *Minecraft) InstallExtractMsixvc(name string, folderName string, isPreview bool) string {
 	n := strings.TrimSpace(name)
 	if n == "" {
 		return "ERR_MSIXVC_NOT_SPECIFIED"
 	}
-	// resolve input path
 	inPath := n
 	if !filepath.IsAbs(inPath) {
 		if dir, err := utils.GetInstallerDir(); err == nil && dir != "" {
@@ -970,7 +916,6 @@ func (a *Minecraft) InstallExtractMsixvc(name string, folderName string, isPrevi
 	if !utils.FileExists(inPath) {
 		return "ERR_MSIXVC_NOT_FOUND"
 	}
-	// resolve output dir under versions
 	vdir, err := utils.GetVersionsDir()
 	if err != nil || strings.TrimSpace(vdir) == "" {
 		return "ERR_ACCESS_VERSIONS_DIR"
@@ -979,7 +924,6 @@ func (a *Minecraft) InstallExtractMsixvc(name string, folderName string, isPrevi
 	if err := os.MkdirAll(outDir, 0755); err != nil {
 		return "ERR_CREATE_TARGET_DIR"
 	}
-	// Start approximate progress ticker scanning outDir
 	stopCh := make(chan struct{})
 	go func(dir string) {
 		ticker := time.NewTicker(300 * time.Millisecond)
@@ -1010,7 +954,6 @@ func (a *Minecraft) InstallExtractMsixvc(name string, folderName string, isPrevi
 		}
 	}(outDir)
 
-	// Call DLL extractor
 	rc, msg := extractor.MiHoYo(inPath, outDir)
 	close(stopCh)
 	if rc != 0 {
@@ -1020,7 +963,6 @@ func (a *Minecraft) InstallExtractMsixvc(name string, folderName string, isPrevi
 		}
 		return msg
 	}
-	// Ensure vcruntime present in version dir after extraction
 	_ = vcruntime.EnsureForVersion(a.ctx, outDir)
 	_ = preloader.EnsureForVersion(a.ctx, outDir)
 	_ = peeditor.EnsureForVersion(a.ctx, outDir)
@@ -1029,8 +971,6 @@ func (a *Minecraft) InstallExtractMsixvc(name string, folderName string, isPrevi
 	return ""
 }
 
-// directory that matches the provided version string (ignoring type prefixes like
-// "preview " or "release "). It returns the base filename if found, otherwise empty.
 func (a *Minecraft) ResolveDownloadedMsixvc(version string, versionType string) string {
 	dir, err := utils.GetInstallerDir()
 	if err != nil || strings.TrimSpace(dir) == "" {
@@ -1071,9 +1011,6 @@ func (a *Minecraft) ResolveDownloadedMsixvc(version string, versionType string) 
 	return ""
 }
 
-// DeleteDownloadedMsixvc removes the downloaded .msixvc for the given version (by base name).
-// version should be provided with type prefix (e.g., "Release 1.21.30").
-// Returns empty string on success, otherwise an ERR_* code.
 func (a *Minecraft) DeleteDownloadedMsixvc(version string, versionType string) string {
 	name := strings.TrimSpace(a.ResolveDownloadedMsixvc(version, versionType))
 	if name == "" {
@@ -1103,10 +1040,9 @@ type VersionStatus struct {
 	Version      string `json:"version"`
 	IsInstalled  bool   `json:"isInstalled"`
 	IsDownloaded bool   `json:"isDownloaded"`
-	Type         string `json:"type"` // "release" or "preview"
+	Type         string `json:"type"`
 }
 
-// GetInstallerDir returns the installers directory path.
 func (a *Minecraft) GetInstallerDir() string {
 	dir, err := utils.GetInstallerDir()
 	if err != nil {
@@ -1123,7 +1059,6 @@ func (a *Minecraft) GetVersionsDir() string {
 	return dir
 }
 
-// GetVersionStatus returns the status (installed/downloaded) for a specific version
 func (a *Minecraft) GetVersionStatus(version string, versionType string) VersionStatus {
 	status := VersionStatus{
 		Version:      version,
@@ -1132,7 +1067,6 @@ func (a *Minecraft) GetVersionStatus(version string, versionType string) Version
 		IsDownloaded: false,
 	}
 
-	// Check if downloaded (.msixvc present in installers directory)
 	if name := a.ResolveDownloadedMsixvc(version, versionType); strings.TrimSpace(name) != "" {
 		status.IsDownloaded = true
 	}
@@ -1188,18 +1122,15 @@ func (a *Minecraft) OpenWorldsExplorer(name string, isPreview bool) {
 				return
 			}
 		}
-		// fallback to users root if specific player path not found
 		if utils.DirExists(users) {
 			_ = explorer.OpenPath(users)
 			return
 		}
 	}
-	// legacy fallback: base/worlds
 	legacy := filepath.Join(utils.GetMinecraftGDKDataPath(isPreview), "worlds")
 	_ = explorer.OpenPath(legacy)
 }
 
-// OpenPathDir opens an arbitrary directory path in Explorer.
 func (a *Minecraft) OpenPathDir(dir string) {
 	d := strings.TrimSpace(dir)
 	if d == "" {
@@ -1208,9 +1139,6 @@ func (a *Minecraft) OpenPathDir(dir string) {
 	_ = explorer.OpenPath(d)
 }
 
-// OpenGameDataExplorer opens the AppData game data root:
-//
-//	%AppData%\Minecraft Bedrock or %AppData%\Minecraft Bedrock Preview
 func (a *Minecraft) OpenGameDataExplorer(isPreview bool) {
 	base := utils.GetMinecraftGDKDataPath(isPreview)
 	_ = explorer.OpenPath(base)
@@ -1255,7 +1183,6 @@ func (a *Minecraft) ListDrives() []string {
 	return drives
 }
 
-// ListDir lists files and directories in the given absolute path.
 func (a *Minecraft) ListDir(path string) []types.FileEntry {
 	list := []types.FileEntry{}
 	if path == "" {
@@ -1266,8 +1193,6 @@ func (a *Minecraft) ListDir(path string) []types.FileEntry {
 		return list
 	}
 	for _, e := range ents {
-		// Avoid per-entry os.FileInfo stat calls for better performance on large directories.
-		// Size is set to 0 by default; can be lazily populated by a dedicated API if needed.
 		list = append(list, types.FileEntry{
 			Name:  e.Name(),
 			Path:  filepath.Join(path, e.Name()),
@@ -1278,8 +1203,6 @@ func (a *Minecraft) ListDir(path string) []types.FileEntry {
 	return list
 }
 
-// GetWorldLevelName reads the levelname.txt under a world directory and returns the trimmed map name.
-// If the file is missing or unreadable, returns empty string.
 func (a *Minecraft) GetWorldLevelName(worldDir string) string {
 	if strings.TrimSpace(worldDir) == "" {
 		return ""
@@ -1292,7 +1215,6 @@ func (a *Minecraft) GetWorldLevelName(worldDir string) string {
 	if err != nil {
 		return ""
 	}
-	// take first line, trimmed
 	s := strings.TrimSpace(string(b))
 	if idx := strings.IndexByte(s, '\n'); idx >= 0 {
 		s = strings.TrimSpace(s[:idx])
@@ -1300,8 +1222,6 @@ func (a *Minecraft) GetWorldLevelName(worldDir string) string {
 	return s
 }
 
-// GetWorldIconDataUrl returns data URL of world_icon.jpeg under a world directory if exists.
-// If missing or unreadable, returns empty string.
 func (a *Minecraft) GetWorldIconDataUrl(worldDir string) string {
 	if strings.TrimSpace(worldDir) == "" {
 		return ""
@@ -1318,40 +1238,28 @@ func (a *Minecraft) GetWorldIconDataUrl(worldDir string) string {
 	return "data:image/jpeg;base64," + enc
 }
 
-// BackupWorld compresses the given world directory to a .mcworld file.
-// The backup file is named as "<地图名>_<日期>.mcworld" and saved under
-// launcher exe directory: backup/worlds/<地图名>/.
-// Returns the absolute path of the created backup file on success, empty on failure.
 func (a *Minecraft) BackupWorld(worldDir string) string {
 	if strings.TrimSpace(worldDir) == "" || !utils.DirExists(worldDir) {
 		return ""
 	}
-	// resolve level name; fallback to last directory name
 	level := a.GetWorldLevelName(worldDir)
 	if level == "" {
 		level = utils.GetLastDirName(worldDir)
 	}
 	safe := utils.SanitizeFilename(level)
-	// date time string
 	ts := time.Now().Format("20060102-150405")
-	// backup dir: <launcher>/backup/worlds/<safe>
-	base := utils.LauncherDir()
+	base := utils.BaseRoot()
 	backupDir := filepath.Join(base, "backup", "worlds", safe)
 	if err := utils.CreateDir(backupDir); err != nil {
 		return ""
 	}
 	dest := filepath.Join(backupDir, fmt.Sprintf("%s_%s.mcworld", safe, ts))
-	// zip directory contents
 	if err := utils.ZipDir(worldDir, dest); err != nil {
 		return ""
 	}
 	return dest
 }
 
-// BackupWorldWithVersion compresses the given world directory to a .mcworld file,
-// placing it under backup/worlds/<版本名>/<地图名>/ to avoid name collisions across versions.
-// If versionName is empty, it falls back to "default".
-// Returns the absolute path of the created backup file on success, empty on failure.
 func (a *Minecraft) BackupWorldWithVersion(worldDir string, versionName string) string {
 	if strings.TrimSpace(worldDir) == "" || !utils.DirExists(worldDir) {
 		return ""
@@ -1361,7 +1269,6 @@ func (a *Minecraft) BackupWorldWithVersion(worldDir string, versionName string) 
 		level = utils.GetLastDirName(worldDir)
 	}
 	safeWorld := utils.SanitizeFilename(level)
-	// world folder name
 	folderName := utils.GetLastDirName(worldDir)
 	safeFolder := utils.SanitizeFilename(folderName)
 	safeVersion := utils.SanitizeFilename(strings.TrimSpace(versionName))
@@ -1369,8 +1276,7 @@ func (a *Minecraft) BackupWorldWithVersion(worldDir string, versionName string) 
 		safeVersion = "default"
 	}
 	ts := time.Now().Format("20060102-150405")
-	base := utils.LauncherDir()
-	// backup/worlds/<版本名>/<世界文件夹名>_<地图名>/
+	base := utils.BaseRoot()
 	backupDir := filepath.Join(base, "backup", "worlds", safeVersion, safeFolder+"_"+safeWorld)
 	if err := utils.CreateDir(backupDir); err != nil {
 		return ""
@@ -1382,7 +1288,6 @@ func (a *Minecraft) BackupWorldWithVersion(worldDir string, versionName string) 
 	return dest
 }
 
-// ImportModZipPath reads a zip from a local path and imports it.
 func (a *Minecraft) ImportModZipPath(name string, path string, overwrite bool) string {
 	if strings.TrimSpace(path) == "" {
 		return "ERR_OPEN_ZIP"
@@ -1394,7 +1299,6 @@ func (a *Minecraft) ImportModZipPath(name string, path string, overwrite bool) s
 	return mods.ImportZipToMods(name, b, overwrite)
 }
 
-// ImportModDllPath reads a DLL from a local path and imports it.
 func (a *Minecraft) ImportModDllPath(name string, path string, modName string, modType string, version string, overwrite bool) string {
 	if strings.TrimSpace(path) == "" {
 		return "ERR_WRITE_FILE"
@@ -1506,22 +1410,22 @@ func (a *Minecraft) launchVersionInternal(name string, checkRunning bool) string
 }
 func (a *Minecraft) GetBaseRoot() string { return utils.BaseRoot() }
 func (a *Minecraft) SetBaseRoot(root string) string {
-    r := strings.TrimSpace(root)
-    if r == "" {
-        return "ERR_INVALID_PATH"
-    }
-    if err := os.MkdirAll(r, 0o755); err != nil {
-        return "ERR_CREATE_TARGET_DIR"
-    }
-    if err := config.Save(config.AppConfig{BaseRoot: r}); err != nil {
-        return "ERR_WRITE_FILE"
-    }
-    return ""
+	r := strings.TrimSpace(root)
+	if r == "" {
+		return "ERR_INVALID_PATH"
+	}
+	if err := os.MkdirAll(r, 0o755); err != nil {
+		return "ERR_CREATE_TARGET_DIR"
+	}
+	if err := config.Save(config.AppConfig{BaseRoot: r}); err != nil {
+		return "ERR_WRITE_FILE"
+	}
+	return ""
 }
 func (a *Minecraft) ResetBaseRoot() string {
-    if err := config.Save(config.AppConfig{BaseRoot: ""}); err != nil {
-        return "ERR_WRITE_FILE"
-    }
-    return ""
+	if err := config.Save(config.AppConfig{BaseRoot: ""}); err != nil {
+		return "ERR_WRITE_FILE"
+	}
+	return ""
 }
 func (a *Minecraft) CanWriteToDir(path string) bool { return utils.CanWriteDir(path) }
