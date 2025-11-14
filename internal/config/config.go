@@ -65,7 +65,9 @@ func Load() (AppConfig, error) {
 	if old := oldConfigPath(); old != "" {
 		if ob, err := os.ReadFile(old); err == nil {
 			_ = json.Unmarshal(ob, &c)
-			_ = os.WriteFile(p, ob, 0o644)
+			if err2 := os.WriteFile(p, ob, 0o644); err2 == nil {
+				_ = os.Remove(old)
+			}
 			return c, nil
 		}
 	}
