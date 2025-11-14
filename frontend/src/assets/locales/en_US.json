@@ -4,7 +4,7 @@
     "lang": "Language",
     "quit_launcher": "Quit Launcher"
   },
-  "nav": { "versions": "Versions", "more": "More" },
+  "nav": { "versions": "Versions", "more": "More", "about": "About" },
   "launcherpage": {
     "launch_button": "Launch",
     "content_manage": "Content Management",
@@ -330,6 +330,14 @@
       }
     }
   },
+  "settings": {
+    "unsaved": {
+      "title": "Unsaved Changes",
+      "body": "You changed the content path but haven't saved it. Save and leave?",
+      "cancel": "Cancel",
+      "save": "Save and Leave"
+    }
+  },
   
   "common": {
     "browse": "Browse..."
@@ -398,6 +406,28 @@
     "title": "About",
     "description": " 2024-2025 {{name}} All rights reserved",
     "font": "This software uses the {{name}} font"
+  },
+
+  "about": {
+    "authors": "Authors & Maintainers",
+    "author": "Author",
+    "ll_authors": "LeviLauncher Authors",
+    "source": "Source Code & Open Source",
+    "thanks": "Special Thanks",
+    "thanks.desc": "Special thanks to individuals and projects supporting LeviLauncher.",
+    "sponsors": "Supporters (Sponsors)",
+    "sponsors.desc": "Thanks to all sponsors and supporters for the project's development!",
+    "contribute": "Contribute",
+    "contribute.desc": "Contributions via Issues or Pull Requests are welcome to improve LeviLauncher.",
+    "afdian": "Afdian",
+    "patreon": "Patreon",
+    "github_repo": "GitHub · LeviLauncher",
+    "github_org": "LiteLDev Organization",
+    "license.tip": "See LICENSE in the repository for license details.",
+    "website": "Website",
+    "issue": "Issue",
+    "star_fork": "Star / Fork",
+    "rhymc_name": "RhyMC"
   },
   
   "common": {
@@ -632,5 +662,17 @@
     "body": "Welcome to LeviLauncher\n\nBy using this software, you agree that:\n• This is an unofficial Minecraft launcher\n• You must own a legally licensed copy of Minecraft, otherwise the trial mode will be used automatically\n• Any form of piracy or cheating is prohibited\n• Use of mods/resource packs is at your own risk\n• No affiliation with Mojang/Microsoft\n\nContinuing to use indicates acceptance of the terms",
     "agree": "Agree and Continue",
     "decline": "Decline and Exit"
+  },
+  "onboarding": {
+    "title": "First-Run Setup",
+    "subtitle": "Please set content paths and language",
+    "skip": "Skip",
+    "finish": "Finish",
+    "unsaved": {
+      "title": "Unsaved Changes",
+      "body": "You changed the content path but haven't saved it. Save and finish?",
+      "cancel": "Cancel",
+      "save": "Save and Finish"
+    }
   }
 }

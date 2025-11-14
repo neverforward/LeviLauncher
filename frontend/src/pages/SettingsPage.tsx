@@ -15,6 +15,12 @@ import {
   DropdownItem,
   Spinner,
   Progress,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@heroui/react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
@@ -59,6 +65,26 @@ export const SettingsPage: React.FC = () => {
   const [baseRootWritable, setBaseRootWritable] = useState<boolean>(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOpen: unsavedOpen, onOpen: unsavedOnOpen, onOpenChange: unsavedOnOpenChange } = useDisclosure();
+  const [pendingNavPath, setPendingNavPath] = useState<string>("");
+
+  useEffect(() => {
+    const handler = (ev: any) => {
+      try {
+        const targetPath = String(ev?.detail?.path || "");
+        const hasUnsaved = !!newBaseRoot && newBaseRoot !== baseRoot;
+        if (!targetPath || targetPath === location.pathname) return;
+        if (hasUnsaved) {
+          setPendingNavPath(targetPath);
+          unsavedOnOpen();
+          return;
+        }
+        navigate(targetPath);
+      } catch {}
+    };
+    window.addEventListener("ll-try-nav", handler as any);
+    return () => window.removeEventListener("ll-try-nav", handler as any);
+  }, [newBaseRoot, baseRoot, baseRootWritable, navigate, location.pathname, unsavedOnOpen]);
 
   useEffect(() => {
     GetAppVersion().then((version) => {
@@ -494,6 +520,57 @@ export const SettingsPage: React.FC = () => {
           </CardBody>
         </Card>
       </motion.div>
+      <Modal size="md" isOpen={unsavedOpen} onOpenChange={unsavedOnOpenChange} hideCloseButton>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-warning-600">{t("settings.unsaved.title", { defaultValue: "未保存修改" })}</ModalHeader>
+              <ModalBody>
+                <div className="text-default-700 text-sm">
+                  {t("settings.unsaved.body", { defaultValue: "您更改了内容路径但尚未保存。是否保存后离开？" })}
+                </div>
+                {!baseRootWritable && (
+                  <div className="text-tiny text-danger-500 mt-1">
+                    {t("settingscard.body.paths.not_writable", { defaultValue: "目录不可写入" })}
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>{t("settings.unsaved.cancel", { defaultValue: "取消" })}</Button>
+                <Button
+                  color="primary"
+                  isLoading={savingBaseRoot}
+                  isDisabled={!newBaseRoot || !baseRootWritable}
+                  onPress={async () => {
+                    setSavingBaseRoot(true);
+                    try {
+                      const ok = await CanWriteToDir(newBaseRoot);
+                      if (!ok) {
+                        setBaseRootWritable(false);
+                      } else {
+                        const err = await SetBaseRoot(newBaseRoot);
+                        if (!err) {
+                          const br = await GetBaseRoot();
+                          setBaseRoot(String(br || ""));
+                          const id = await GetInstallerDir();
+                          setInstallerDir(String(id || ""));
+                          const vd = await GetVersionsDir();
+                          setVersionsDir(String(vd || ""));
+                          onClose();
+                          if (pendingNavPath) navigate(pendingNavPath);
+                        }
+                      }
+                    } catch {}
+                    setSavingBaseRoot(false);
+                  }}
+                >
+                  {t("settings.unsaved.save", { defaultValue: "保存并离开" })}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

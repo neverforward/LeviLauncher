@@ -4,7 +4,7 @@
         "lang": "语言",
         "quit_launcher": "退出启动器"
     },
-    "nav": { "versions": "版本", "more": "更多" },
+    "nav": { "versions": "版本", "more": "更多", "about": "关于" },
     "launcherpage": {
         "launch_button": "启动",
         "content_manage": "内容管理",
@@ -331,6 +331,14 @@
             }
         }
     },
+    "settings": {
+        "unsaved": {
+            "title": "未保存修改",
+            "body": "您更改了内容路径但尚未保存。是否保存后离开？",
+            "cancel": "取消",
+            "save": "保存并离开"
+        }
+    },
     
     "downloadmodal": {
         "download_button": "下载",
@@ -396,6 +404,28 @@
         "title": "关于",
         "description": " 2024-2025 {{name}} 保留所有权利",
         "font": "本软件使用 {{name}} 字体"
+    },
+
+    "about": {
+        "authors": "作者与维护者",
+        "author": "作者",
+        "ll_authors": "LeviLauncher作者",
+        "source": "源代码与开源",
+        "thanks": "特别鸣谢",
+        "thanks.desc": "特别感谢为 LeviLauncher 提供帮助与支持的个人与项目。",
+        "sponsors": "支持者（赞助者）",
+        "sponsors.desc": "感谢所有为项目发展提供帮助的赞助者与支持者！",
+        "contribute": "参与贡献",
+        "contribute.desc": "欢迎通过提交 Issue 或 Pull Request 的方式参与贡献，共同完善 LeviLauncher。",
+        "afdian": "爱发电",
+        "patreon": "Patreon",
+        "github_repo": "GitHub · LeviLauncher",
+        "github_org": "LiteLDev 组织",
+        "license.tip": "许可证与详细信息请参见仓库中的 LICENSE 文件。",
+        "website": "官网",
+        "issue": "Issue",
+        "star_fork": "Star / Fork",
+        "rhymc_name": "旋律云"
     },
     
     "common": {
@@ -630,5 +660,17 @@
         "body": "欢迎使用 LeviLauncher\n\n使用本软件即表示您同意：\n• 此为非官方 Minecraft 启动器\n• 您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版\n• 禁止任何形式的盗版或作弊行为\n• 模组/资源包使用风险自负\n• 与 Mojang/Microsoft 无关联\n\n继续使用视为接受条款",
         "agree": "同意并继续",
         "decline": "不同意，退出"
+    },
+    "onboarding": {
+        "title": "首次启动引导",
+        "subtitle": "请先设置内容路径与语言",
+        "skip": "跳过",
+        "finish": "完成",
+        "unsaved": {
+            "title": "未保存修改",
+            "body": "您更改了内容路径但尚未保存。是否保存后完成引导？",
+            "cancel": "取消",
+            "save": "保存并完成"
+        }
     }
 }

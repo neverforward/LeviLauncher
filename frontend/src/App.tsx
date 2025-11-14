@@ -18,7 +18,7 @@ import { ThemeSwitcher } from "./components/ThemeSwitcher";
 import { IoCloseOutline } from "react-icons/io5";
 import { FiMinimize2 } from "react-icons/fi";
 import { LeviIcon } from "./icons/LeviIcon";
-import { FaDownload, FaRocket, FaCog, FaList, FaEllipsisH } from "react-icons/fa";
+import { FaDownload, FaRocket, FaCog, FaList, FaEllipsisH, FaInfoCircle } from "react-icons/fa";
 import { LauncherPage } from "./pages/LauncherPage";
 import { DownloadPage } from "./pages/DownloadPage";
 import { SplashScreen } from "./pages/SplashScreen";
@@ -40,6 +40,8 @@ import InstallPage from "./pages/InstallPage";
 import * as minecraft from "../bindings/github.com/liteldev/LeviLauncher/minecraft";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import AboutPage from "./pages/AboutPage";
+import OnboardingPage from "./pages/OnboardingPage";
 
 function App() {
   const [splashVisible, setSplashVisible] = useState(true);
@@ -72,9 +74,11 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const isUpdatingMode = String(location?.pathname || "") === "/updating";
+  const isOnboardingMode = String(location?.pathname || "") === "/onboarding";
   useEffect(() => {
-    if (isUpdatingMode) setNavLocked(true);
-  }, [isUpdatingMode]);
+    if (isUpdatingMode || isOnboardingMode) setNavLocked(true);
+    else setNavLocked(Boolean((window as any).llNavLock));
+  }, [isUpdatingMode, isOnboardingMode]);
 
   useEffect(() => {
     if (isUpdatingMode) {
@@ -97,6 +101,19 @@ function App() {
       clearTimeout(tHeader);
     };
   }, [isUpdatingMode]);
+
+  useEffect(() => {
+    if (!revealStarted) return;
+    if (isUpdatingMode) return;
+    try {
+      const onboarded = localStorage.getItem("ll.onboarded");
+      const allowDuringOnboarding = location.pathname.startsWith("/filemanager");
+      if (!onboarded && location.pathname !== "/onboarding" && !allowDuringOnboarding) {
+        setNavLocked(true);
+        navigate("/onboarding", { replace: true });
+      }
+    } catch {}
+  }, [revealStarted, isUpdatingMode, location?.pathname]);
 
   useEffect(() => {
     try {
@@ -195,6 +212,17 @@ function App() {
   }, [hasBackend]);
 
   
+
+  const tryNavigate = (path: string) => {
+    if (navLocked) return;
+    if (location.pathname === "/settings") {
+      try {
+        window.dispatchEvent(new CustomEvent("ll-try-nav", { detail: { path } }));
+        return;
+      } catch {}
+    }
+    navigate(path);
+  };
 
   useEffect(() => {
     if (!hasBackend) return;
@@ -310,8 +338,7 @@ function App() {
                   aria-label="Start"
                   isDisabled={navLocked}
                   onPress={() => {
-                    if (navLocked) return;
-                    navigate("/");
+                    tryNavigate("/");
                   }}
                   className={`px-3 rounded-2xl ${
                     location.pathname === "/" ? "bg-default-200" : ""
@@ -332,8 +359,7 @@ function App() {
                   aria-label="Download Page"
                   isDisabled={navLocked}
                   onPress={() => {
-                    if (navLocked) return;
-                    navigate("/download");
+                    tryNavigate("/download");
                   }}
                   className={`px-3 rounded-2xl ${
                     location.pathname === "/download" ? "bg-default-200" : ""
@@ -349,8 +375,7 @@ function App() {
                   aria-label="Settings Page"
                   isDisabled={navLocked}
                   onPress={() => {
-                    if (navLocked) return;
-                    navigate("/settings");
+                    tryNavigate("/settings");
                   }}
                   className={`px-3 rounded-2xl ${
                     location.pathname === "/settings" ? "bg-default-200" : ""
@@ -382,13 +407,16 @@ function App() {
                   <DropdownMenu
                     aria-label="more-menu"
                     onAction={(key) => {
-                      if (navLocked) return;
                       const k = String(key);
-                      if (k === "versions") navigate("/versions");
+                      if (k === "versions") tryNavigate("/versions");
+                      if (k === "about") tryNavigate("/about");
                     }}
                   >
                     <DropdownItem key="versions" startContent={<FaList size={14} />}>
                       {t("nav.versions", { defaultValue: "版本" })}
+                    </DropdownItem>
+                    <DropdownItem key="about" startContent={<FaInfoCircle size={14} />}>
+                      {t("nav.about", { defaultValue: "关于" })}
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
@@ -459,6 +487,7 @@ function App() {
                 />
                 <Route path="/mods" element={<ModsPage />} />
                 <Route path="/updating" element={<UpdatingPage />} />
+                <Route path="/onboarding" element={<OnboardingPage />} />
                 <Route path="/filemanager" element={<FileManagerPage />} />
                 <Route path="/content" element={<ContentPage />} />
                 <Route path="/content/worlds" element={<WorldsListPage />} />
@@ -470,6 +499,7 @@ function App() {
                   path="/content/behavior-packs"
                   element={<BehaviorPacksPage />}
                 />
+                <Route path="/about" element={<AboutPage />} />
               </Routes>
             ))}
         </motion.div>
