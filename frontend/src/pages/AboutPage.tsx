@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <div className="relative w-full h-full p-3 sm:p-4 lg:p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md shadow-sm p-4">
+          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-sm p-4">
           <div className="flex items-center gap-2 mb-2">
             <FaUsers className="text-default-600" />
             <h2 className="text-base font-semibold">
@@ -60,7 +60,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md shadow-sm p-4">
+          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-sm p-4">
             <div className="flex items-center gap-2 mb-2">
               <FaStar className="text-warning-500" />
               <h2 className="text-base font-semibold">
@@ -90,7 +90,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md shadow-sm p-4">
+          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-sm p-4">
             <div className="flex items-center gap-2 mb-2">
               <FaHeart className="text-danger-500" />
               <h2 className="text-base font-semibold">
@@ -104,7 +104,7 @@ export default function AboutPage() {
             </p>
           </section>
 
-          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md shadow-sm p-4 lg:col-span-2">
+          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-sm p-4 lg:col-span-2">
             <div className="flex items-center gap-2 mb-2">
               <FaCode className="text-default-600" />
               <h2 className="text-base font-semibold">
@@ -140,7 +140,7 @@ export default function AboutPage() {
             </p>
           </section>
 
-          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md shadow-sm p-4 lg:col-span-2">
+          <section className="rounded-2xl border border-default-200 bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-sm p-4 lg:col-span-2">
             <div className="flex items-center gap-2 mb-2">
               <FaGithub className="text-default-600" />
               <h2 className="text-base font-semibold">
