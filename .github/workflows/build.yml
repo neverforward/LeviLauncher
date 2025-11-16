@@ -132,18 +132,29 @@ jobs:
       - name: Find EXE file
         id: find_exe
         run: |
-          echo "Looking for EXE files..."
-          find ./downloaded-artifacts -name "*.exe" -type f | grep -v installer || true
+          set -euo pipefail
+          echo "Looking for LeviLauncher.exe in downloaded artifacts..."
 
-          EXE_FILE=$(find ./downloaded-artifacts -name "LeviLauncher.exe" -type f | head -1)
-          if [ -n "$EXE_FILE" ]; then
+          EXE_FILE=$(find ./downloaded-artifacts -name "LeviLauncher.exe" -type f | head -1 || true)
+          if [ -z "${EXE_FILE}" ]; then
+            echo "LeviLauncher.exe not found directly, trying to extract ZIP artifacts..."
+            while IFS= read -r zip_file; do
+              echo "Extracting: $zip_file"
+              dest_dir="$(dirname "$zip_file")/extracted"
+              mkdir -p "$dest_dir"
+              unzip -o "$zip_file" -d "$dest_dir"
+            done < <(find ./downloaded-artifacts -name "*.zip" -type f)
+
+            EXE_FILE=$(find ./downloaded-artifacts -name "LeviLauncher.exe" -type f | head -1 || true)
+          fi
+
+          if [ -n "${EXE_FILE}" ]; then
             echo "Found EXE file: $EXE_FILE"
             echo "exe_path=$EXE_FILE" >> $GITHUB_OUTPUT
           else
-            echo "LeviLauncher.exe not found in artifacts"
-
-            OTHER_EXE=$(find ./downloaded-artifacts -name "*.exe" -type f | grep -v installer | head -1)
-            if [ -n "$OTHER_EXE" ]; then
+            echo "LeviLauncher.exe still not found, searching for non-installer EXE..."
+            OTHER_EXE=$(find ./downloaded-artifacts -name "*.exe" -type f | grep -v installer | head -1 || true)
+            if [ -n "${OTHER_EXE}" ]; then
               echo "Found alternative EXE file: $OTHER_EXE"
               echo "exe_path=$OTHER_EXE" >> $GITHUB_OUTPUT
             else
