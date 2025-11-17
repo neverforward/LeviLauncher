@@ -49,6 +49,7 @@ export default function ContentPage() {
   const [worldsCount, setWorldsCount] = React.useState<number>(0);
   const [resCount, setResCount] = React.useState<number>(0);
   const [bpCount, setBpCount] = React.useState<number>(0);
+  const [skinCount, setSkinCount] = React.useState<number>(0);
   const [dragActive, setDragActive] = React.useState(false);
   const dragCounter = React.useRef(0);
   const [importing, setImporting] = React.useState(false);
@@ -102,13 +103,17 @@ export default function ContentPage() {
           if (nextPlayer) {
             const wp = `${safe.usersRoot}\\${nextPlayer}\\games\\com.mojang\\minecraftWorlds`;
             setWorldsCount(await countDirectories(wp));
+            const sp = `${safe.usersRoot}\\${nextPlayer}\\games\\com.mojang\\skin_packs`;
+            setSkinCount(await countDirectories(sp));
           } else {
             setWorldsCount(0);
+            setSkinCount(0);
           }
         } else {
           setPlayers([]);
           setSelectedPlayer("");
           setWorldsCount(0);
+          setSkinCount(0);
         }
         setResCount(await countDirectories(safe.resourcePacks));
         setBpCount(await countDirectories(safe.behaviorPacks));
@@ -132,10 +137,13 @@ export default function ContentPage() {
     setSelectedPlayer(player);
     if (!hasBackend || !roots.usersRoot || !player) {
       setWorldsCount(0);
+      setSkinCount(0);
       return;
     }
     const wp = `${roots.usersRoot}\\${player}\\games\\com.mojang\\minecraftWorlds`;
     setWorldsCount(await countDirectories(wp));
+    const sp = `${roots.usersRoot}\\${player}\\games\\com.mojang\\skin_packs`;
+    setSkinCount(await countDirectories(sp));
   };
   const [importServer, setImportServer] = React.useState<string>("");
   React.useEffect(() => {
@@ -154,6 +162,7 @@ export default function ContentPage() {
       const fd = new FormData();
       fd.append("name", name);
       fd.append("overwrite", overwrite ? "1" : "0");
+      if (selectedPlayer) fd.append("player", selectedPlayer);
       fd.append("file", file, file.name);
       const resp = await fetch(`${importServer || "http://127.0.0.1:32773"}/api/import/mcpack`, { method: "POST", body: fd });
       const j = (await resp.json().catch(() => ({}))) as any;
@@ -162,7 +171,12 @@ export default function ContentPage() {
       try {
         const buf = await file.arrayBuffer();
         const bytes = Array.from(new Uint8Array(buf));
-        const err = await (minecraft as any)?.ImportMcpack?.(name, bytes, overwrite);
+        let err = "";
+        if (selectedPlayer && typeof (minecraft as any)?.ImportMcpackWithPlayer === "function") {
+          err = await (minecraft as any)?.ImportMcpackWithPlayer?.(name, selectedPlayer, file.name, bytes, overwrite);
+        } else {
+          err = await (minecraft as any)?.ImportMcpack?.(name, bytes, overwrite);
+        }
         return String(err || "");
       } catch (e2: any) {
         return String(e2?.message || "IMPORT_ERROR");
@@ -174,6 +188,7 @@ export default function ContentPage() {
       const fd = new FormData();
       fd.append("name", name);
       fd.append("overwrite", overwrite ? "1" : "0");
+      if (selectedPlayer) fd.append("player", selectedPlayer);
       fd.append("file", file, file.name);
       const resp = await fetch(`${importServer || "http://127.0.0.1:32773"}/api/import/mcaddon`, { method: "POST", body: fd });
       const j = (await resp.json().catch(() => ({}))) as any;
@@ -182,7 +197,12 @@ export default function ContentPage() {
       try {
         const buf = await file.arrayBuffer();
         const bytes = Array.from(new Uint8Array(buf));
-        const err = await (minecraft as any)?.ImportMcaddon?.(name, bytes, overwrite);
+        let err = "";
+        if (selectedPlayer && typeof (minecraft as any)?.ImportMcaddonWithPlayer === "function") {
+          err = await (minecraft as any)?.ImportMcaddonWithPlayer?.(name, selectedPlayer, bytes, overwrite);
+        } else {
+          err = await (minecraft as any)?.ImportMcaddon?.(name, bytes, overwrite);
+        }
         return String(err || "");
       } catch (e2: any) {
         return String(e2?.message || "IMPORT_ERROR");
@@ -265,7 +285,12 @@ export default function ContentPage() {
           if (!started) { setImporting(true); started = true; }
           const base = p.replace(/\\/g, "/").split("/").pop() || p;
           setCurrentFile(base);
-          let err = await (minecraft as any)?.ImportMcpackPath?.(name, p, false);
+          let err = "";
+          if (selectedPlayer && typeof (minecraft as any)?.ImportMcpackPathWithPlayer === "function") {
+            err = await (minecraft as any)?.ImportMcpackPathWithPlayer?.(name, selectedPlayer, p, false);
+          } else {
+            err = await (minecraft as any)?.ImportMcpackPath?.(name, p, false);
+          }
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
               dupNameRef.current = base;
@@ -273,7 +298,11 @@ export default function ContentPage() {
               dupOnOpen();
               const ok = await new Promise<boolean>((resolve) => { dupResolveRef.current = resolve; });
               if (ok) {
-                err = await (minecraft as any)?.ImportMcpackPath?.(name, p, true);
+                if (selectedPlayer && typeof (minecraft as any)?.ImportMcpackPathWithPlayer === "function") {
+                  err = await (minecraft as any)?.ImportMcpackPathWithPlayer?.(name, selectedPlayer, p, true);
+                } else {
+                  err = await (minecraft as any)?.ImportMcpackPath?.(name, p, true);
+                }
                 if (!err) { succFiles.push(base); continue; }
               }
             }
@@ -285,7 +314,12 @@ export default function ContentPage() {
           if (!started) { setImporting(true); started = true; }
           const base = p.replace(/\\/g, "/").split("/").pop() || p;
           setCurrentFile(base);
-          let err = await (minecraft as any)?.ImportMcaddonPath?.(name, p, false);
+          let err = "";
+          if (selectedPlayer && typeof (minecraft as any)?.ImportMcaddonPathWithPlayer === "function") {
+            err = await (minecraft as any)?.ImportMcaddonPathWithPlayer?.(name, selectedPlayer, p, false);
+          } else {
+            err = await (minecraft as any)?.ImportMcaddonPath?.(name, p, false);
+          }
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
               dupNameRef.current = base;
@@ -293,7 +327,11 @@ export default function ContentPage() {
               dupOnOpen();
               const ok = await new Promise<boolean>((resolve) => { dupResolveRef.current = resolve; });
               if (ok) {
-                err = await (minecraft as any)?.ImportMcaddonPath?.(name, p, true);
+                if (selectedPlayer && typeof (minecraft as any)?.ImportMcaddonPathWithPlayer === "function") {
+                  err = await (minecraft as any)?.ImportMcaddonPathWithPlayer?.(name, selectedPlayer, p, true);
+                } else {
+                  err = await (minecraft as any)?.ImportMcaddonPath?.(name, p, true);
+                }
                 if (!err) { succFiles.push(base); continue; }
               }
             }
@@ -691,6 +729,33 @@ export default function ContentPage() {
               ) : (
                 <span className="text-base font-semibold text-default-800">
                   {worldsCount}
+                </span>
+              )}
+            </div>
+          </div>
+          <div
+            className="rounded-xl border border-default-200 bg-white/50 dark:bg-neutral-800/40 shadow-sm backdrop-blur-sm px-3 py-3 cursor-pointer transition hover:bg-white/70 dark:hover:bg-neutral-800/60"
+            onClick={() => navigate("/content/skin-packs")}
+            role="button"
+            aria-label="skin-packs"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FaImage className="text-default-500" />
+                <span className="text-small text-default-600 truncate">
+                  {t("contentpage.skin_packs", { defaultValue: "皮肤包" })}
+                </span>
+              </div>
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <Spinner size="sm" />{" "}
+                  <span className="text-default-500">
+                    {t("common.loading", { defaultValue: "加载中" })}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-base font-semibold text-default-800">
+                  {skinCount}
                 </span>
               )}
             </div>

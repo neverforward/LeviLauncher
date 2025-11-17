@@ -476,7 +476,8 @@
     "count": {
       "worlds": "Worlds",
       "resource_packs": "Resource Packs",
-      "behavior_packs": "Behavior Packs"
+      "behavior_packs": "Behavior Packs",
+      "skin_packs": "Skin Packs"
     }
   },
   "contentpage": {
@@ -503,6 +504,8 @@
     "behavior_packs": "Behavior Packs",
     "shared_desc_bp": "Shared by all players: Users/Shared/games/com.mojang/behavior_packs",
     "no_behavior_packs": "No behavior packs",
+    "skin_packs": "Skin Packs",
+    "no_skin_packs": "No skin packs",
     "count": "Count",
     "error_resolve_paths": "Failed to resolve content paths.",
     "players_aria": "Players"

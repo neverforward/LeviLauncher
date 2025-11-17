@@ -474,7 +474,8 @@
         "count": {
             "worlds": "世界",
             "resource_packs": "资源包",
-            "behavior_packs": "行为包"
+            "behavior_packs": "行为包",
+            "skin_packs": "皮肤包"
         }
     },
     "contentpage": {
@@ -501,6 +502,8 @@
         "behavior_packs": "行为包",
         "shared_desc_bp": "所有玩家共享：Users/Shared/games/com.mojang/behavior_packs",
         "no_behavior_packs": "暂无行为包",
+        "skin_packs": "皮肤包",
+        "no_skin_packs": "暂无皮肤包",
         "count": "数量",
         "error_resolve_paths": "无法解析内容路径。",
         "players_aria": "玩家列表"

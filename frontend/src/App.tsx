@@ -34,6 +34,7 @@ import ContentPage from "./pages/ContentPage";
 import WorldsListPage from "./pages/WorldsListPage";
 import ResourcePacksPage from "./pages/ResourcePacksPage";
 import BehaviorPacksPage from "./pages/BehaviorPacksPage";
+import SkinPacksPage from "./pages/SkinPacksPage";
 import { useTranslation } from "react-i18next";
 import { VersionStatusProvider } from "./utils/VersionStatusContext";
 import InstallPage from "./pages/InstallPage";
@@ -514,6 +515,7 @@ function App() {
                   path="/content/behavior-packs"
                   element={<BehaviorPacksPage />}
                 />
+                <Route path="/content/skin-packs" element={<SkinPacksPage />} />
                 <Route path="/about" element={<AboutPage />} />
               </Routes>
             ))}
