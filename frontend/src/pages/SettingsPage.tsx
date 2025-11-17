@@ -267,11 +267,9 @@ export const SettingsPage: React.FC = () => {
                       </Button>
                     }
                   />
-                  {newBaseRoot && newBaseRoot !== baseRoot ? (
-                    <div className={`text-tiny ${baseRootWritable ? "text-warning-500" : "text-danger-500"}`} title={newBaseRoot}>
-                      {baseRootWritable
-                        ? t("settingscard.body.paths.base_root", { defaultValue: "根目录" }) + ": " + newBaseRoot
-                        : t("settingscard.body.paths.not_writable", { defaultValue: "目录不可写入" })}
+                  {newBaseRoot && newBaseRoot !== baseRoot && baseRootWritable ? (
+                    <div className="text-tiny text-warning-500" title={newBaseRoot}>
+                      {t("settingscard.body.paths.base_root", { defaultValue: "根目录" }) + ": " + newBaseRoot}
                     </div>
                   ) : null}
                   {!baseRootWritable ? (
