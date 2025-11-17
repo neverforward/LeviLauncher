@@ -403,42 +403,39 @@ function App() {
                   {t("app.settings")}
                 </Button>
               </Tooltip>
-              <Tooltip
-                content={t("nav.more", { defaultValue: "更多" })}
-                delay={0}
-                closeDelay={0}
-              >
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button
-                      variant="light"
-                      aria-label="More Menu"
-                      isDisabled={navLocked}
-                      className={`px-3 rounded-2xl ${
-                        location.pathname === "/versions" ? "bg-default-200" : ""
-                      }`}
-                      startContent={<FaEllipsisH size={18} />}
-                    >
-                      {t("nav.more", { defaultValue: "更多" })}
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    aria-label="more-menu"
-                    onAction={(key) => {
-                      const k = String(key);
-                      if (k === "versions") tryNavigate("/versions");
-                      if (k === "about") tryNavigate("/about");
-                    }}
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="light"
+                    aria-label="More Menu"
+                    isDisabled={navLocked}
+                    className={`px-3 rounded-2xl ${
+                      location.pathname.startsWith("/versions") ||
+                      location.pathname.startsWith("/about")
+                        ? "bg-default-200"
+                        : ""
+                    }`}
+                    startContent={<FaEllipsisH size={18} />}
                   >
-                    <DropdownItem key="versions" startContent={<FaList size={14} />}>
-                      {t("nav.versions", { defaultValue: "版本" })}
-                    </DropdownItem>
-                    <DropdownItem key="about" startContent={<FaInfoCircle size={14} />}>
-                      {t("nav.about", { defaultValue: "关于" })}
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </Tooltip>
+                    {t("nav.more", { defaultValue: "更多" })}
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="more-menu"
+                  onAction={(key) => {
+                    const k = String(key);
+                    if (k === "versions") tryNavigate("/versions");
+                    if (k === "about") tryNavigate("/about");
+                  }}
+                >
+                  <DropdownItem key="versions" startContent={<FaList size={14} />}>
+                    {t("nav.versions", { defaultValue: "版本" })}
+                  </DropdownItem>
+                  <DropdownItem key="about" startContent={<FaInfoCircle size={14} />}>
+                    {t("nav.about", { defaultValue: "关于" })}
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
 
             <div className="flex items-center gap-2 shrink-0 ml-auto justify-end">
