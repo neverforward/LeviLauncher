@@ -219,6 +219,19 @@ export const ModsPage: React.FC = () => {
     }
   };
 
+  const refreshModsAndStates = async (name: string) => {
+    for (let i = 0; i < 4; i++) {
+      try {
+        const data = await GetMods(name);
+        setModsInfo(data || []);
+        await refreshEnabledStates(name);
+      } catch {
+        setModsInfo([]);
+      }
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  };
+
   useEffect(() => {
     const name = readCurrentVersionName();
     if (!name) {
@@ -420,11 +433,13 @@ export const ModsPage: React.FC = () => {
       }
       const data = await GetMods(name);
       setModsInfo(data || []);
+      void refreshEnabledStates(name);
       setResultSuccess(succFiles);
       setResultFailed(errPairs);
       if (succFiles.length > 0 || errPairs.length > 0) {
         errOnOpen();
       }
+      await refreshEnabledStates(currentVersionName);
     } catch (e: any) {
       setErrorMsg(String(e?.message || e || "IMPORT_ERROR"));
     } finally {
@@ -555,8 +570,7 @@ export const ModsPage: React.FC = () => {
           succFiles.push(f.name);
         }
       }
-      const data = await GetMods(currentVersionName);
-      setModsInfo(data || []);
+      await refreshModsAndStates(currentVersionName);
       setResultSuccess(succFiles);
       setResultFailed(errPairs);
       if (succFiles.length > 0 || errPairs.length > 0) {
@@ -619,6 +633,8 @@ export const ModsPage: React.FC = () => {
     }
     const data = await GetMods(name);
     setModsInfo(data || []);
+    await refreshEnabledStates(name);
+    void refreshEnabledStates(name);
     requestAnimationFrame(() => {
       try {
         if (scrollRef.current) scrollRef.current.scrollTop = pos;
@@ -767,8 +783,7 @@ export const ModsPage: React.FC = () => {
           succFiles.push(f.name);
         }
       }
-      const data = await GetMods(currentVersionName);
-      setModsInfo(data || []);
+      await refreshModsAndStates(currentVersionName);
       setResultSuccess(succFiles);
       setResultFailed(errPairs);
       if (succFiles.length > 0 || errPairs.length > 0) {

@@ -1,12 +1,10 @@
 package icons
 
 import (
-    "bytes"
-    "os"
-    "path/filepath"
+	"bytes"
+	"os"
+	"path/filepath"
 )
-
- 
 
 func writeICOFromPNG(pngData []byte, outPath string) error {
 	b := &bytes.Buffer{}
@@ -30,21 +28,21 @@ func writeICOFromPNG(pngData []byte, outPath string) error {
 }
 
 func EnsureVersionIcon(versionDir string, _ bool) string {
-    srcPng := filepath.Join(versionDir, "LargeLogo.png")
-    icoPath := filepath.Join(versionDir, "LargeLogo.ico")
-    if fi, err := os.Stat(srcPng); err == nil && !fi.IsDir() {
-        need := false
-        if si, e := os.Stat(icoPath); e != nil || si.Size() == 0 || fi.ModTime().After(si.ModTime()) {
-            need = true
-        }
-        if need {
-            if data, er := os.ReadFile(srcPng); er == nil {
-                _ = writeICOFromPNG(data, icoPath)
-            }
-        }
-        if _, e := os.Stat(icoPath); e == nil {
-            return icoPath
-        }
-    }
-    return ""
+	srcPng := filepath.Join(versionDir, "LargeLogo.png")
+	icoPath := filepath.Join(versionDir, "LargeLogo.ico")
+	if fi, err := os.Stat(srcPng); err == nil && !fi.IsDir() {
+		need := false
+		if si, e := os.Stat(icoPath); e != nil || si.Size() == 0 || fi.ModTime().After(si.ModTime()) {
+			need = true
+		}
+		if need {
+			if data, er := os.ReadFile(srcPng); er == nil {
+				_ = writeICOFromPNG(data, icoPath)
+			}
+		}
+		if _, e := os.Stat(icoPath); e == nil {
+			return icoPath
+		}
+	}
+	return ""
 }
