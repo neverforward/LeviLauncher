@@ -538,25 +538,7 @@ export default function ContentPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <AnimatePresence>
-        {dragActive ? (
-          <motion.div
-            className="absolute inset-0 z-40 flex items-center justify-center cursor-copy bg-black/10"
-            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); try { e.dataTransfer.dropEffect = "copy"; } catch {} }}
-            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); dragCounter.current++; }}
-            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); dragCounter.current = Math.max(0, dragCounter.current - 1); if (dragCounter.current === 0) setDragActive(false); }}
-            onDrop={(e) => e.preventDefault()}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="pointer-events-none text-primary-600 text-xl font-semibold drop-shadow-sm">
-              {t("contentpage.drop_hint", { defaultValue: "拖入 .mcworld/.mcpack/.mcaddon 以导入" })}
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      
       <Modal size="sm" isOpen={importing} hideCloseButton isDismissable={false}>
         <ModalContent>
           {() => (<>
@@ -620,8 +602,23 @@ export default function ContentPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md p-5"
+        className={`relative overflow-hidden rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md p-5 ${dragActive ? "border-2 border-dashed border-primary" : ""}`}
       >
+        <AnimatePresence>
+          {dragActive ? (
+            <motion.div
+              className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center bg-black/10 rounded-2xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="text-primary-600 text-xl font-semibold">
+                {t("contentpage.drop_hint", { defaultValue: "拖入 .mcworld/.mcpack/.mcaddon 以导入" })}
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">
             {t("launcherpage.content_manage", { defaultValue: "内容管理" })}
