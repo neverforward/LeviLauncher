@@ -340,14 +340,42 @@ func ImportDllToMods(mcname string, dllFileName string, data []byte, modName str
 	if err := os.MkdirAll(targetRoot, 0755); err != nil {
 		return "ERR_CREATE_TARGET_DIR"
 	}
-	manifest := types.ModManifestJson{Name: finalName, Entry: filepath.Base(dllFileName), Version: version, Type: modType}
-	mbytes, _ := json.MarshalIndent(manifest, "", "  ")
-	if err := os.WriteFile(filepath.Join(targetRoot, "manifest.json"), mbytes, 0644); err != nil {
-		return "ERR_WRITE_FILE"
-	}
-	dllTarget := filepath.Join(targetRoot, filepath.Base(dllFileName))
-	if err := os.WriteFile(dllTarget, data, 0644); err != nil {
-		return "ERR_WRITE_FILE"
-	}
-	return ""
+    dllTarget := filepath.Join(targetRoot, filepath.Base(dllFileName))
+    dllTmp := dllTarget + ".tmp"
+    f, er := os.OpenFile(dllTmp, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+    if er != nil {
+        return "ERR_WRITE_FILE"
+    }
+    if _, er = f.Write(data); er != nil {
+        _ = f.Close()
+        return "ERR_WRITE_FILE"
+    }
+    _ = f.Sync()
+    _ = f.Close()
+    _ = os.Remove(dllTarget)
+    if er = os.Rename(dllTmp, dllTarget); er != nil {
+        _ = os.Remove(dllTmp)
+        return "ERR_WRITE_FILE"
+    }
+
+    manifest := types.ModManifestJson{Name: finalName, Entry: filepath.Base(dllFileName), Version: version, Type: modType}
+    mbytes, _ := json.MarshalIndent(manifest, "", "  ")
+    mpath := filepath.Join(targetRoot, "manifest.json")
+    mtmp := mpath + ".tmp"
+    mf, me := os.OpenFile(mtmp, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+    if me != nil {
+        return "ERR_WRITE_FILE"
+    }
+    if _, me = mf.Write(mbytes); me != nil {
+        _ = mf.Close()
+        return "ERR_WRITE_FILE"
+    }
+    _ = mf.Sync()
+    _ = mf.Close()
+    _ = os.Remove(mpath)
+    if me = os.Rename(mtmp, mpath); me != nil {
+        _ = os.Remove(mtmp)
+        return "ERR_WRITE_FILE"
+    }
+    return ""
 }
