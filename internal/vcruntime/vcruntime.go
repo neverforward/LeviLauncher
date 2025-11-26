@@ -78,8 +78,6 @@ func EnsureForVersion(ctx context.Context, versionDir string) bool {
 		return true
 	}
 
-	EnsureLatest(ctx, versionDir)
-
 	if _, err := os.Stat(dest); err == nil {
 		return true
 	}

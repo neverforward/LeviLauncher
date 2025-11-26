@@ -580,6 +580,7 @@ func (a *Minecraft) launchVersionInternal(name string, checkRunning bool) string
 	if !utils.FileExists(exe) {
 		return "ERR_NOT_FOUND_EXE"
 	}
+	application.Get().Event.Emit(launch.EventMcLaunchStart, struct{}{})
 	_ = vcruntime.EnsureForVersion(a.ctx, dir)
 	_ = preloader.EnsureForVersion(a.ctx, dir)
 	_ = peeditor.EnsureForVersion(a.ctx, dir)
