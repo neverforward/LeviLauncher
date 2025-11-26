@@ -216,6 +216,73 @@ type bedrockManifest struct {
 	} `json:"modules"`
 }
 
+func readPackTexts(root string) map[string]string {
+	textsDir := filepath.Join(root, "texts")
+	if !utils.DirExists(textsDir) {
+		return nil
+	}
+	langFile := filepath.Join(textsDir, "en_US.lang")
+	if !utils.FileExists(langFile) {
+		lj := filepath.Join(textsDir, "languages.json")
+		if utils.FileExists(lj) {
+			if b, err := os.ReadFile(lj); err == nil {
+				var langs []string
+				_ = json.Unmarshal(utils.JsonCompatBytes(b), &langs)
+				if len(langs) > 0 {
+					cand := filepath.Join(textsDir, strings.TrimSpace(langs[0])+".lang")
+					if utils.FileExists(cand) {
+						langFile = cand
+					}
+				}
+			}
+		}
+	}
+	if !utils.FileExists(langFile) {
+		ents, err := os.ReadDir(textsDir)
+		if err == nil {
+			for _, e := range ents {
+				if e.IsDir() {
+					continue
+				}
+				name := strings.ToLower(strings.TrimSpace(e.Name()))
+				if strings.HasSuffix(name, ".lang") {
+					langFile = filepath.Join(textsDir, e.Name())
+					break
+				}
+			}
+		}
+	}
+	if !utils.FileExists(langFile) {
+		return nil
+	}
+	b, err := os.ReadFile(langFile)
+	if err != nil {
+		return nil
+	}
+	lines := strings.Split(string(b), "\n")
+	m := make(map[string]string, 16)
+	for _, ln := range lines {
+		l := strings.TrimSpace(strings.TrimRight(ln, "\r"))
+		if l == "" || strings.HasPrefix(l, "#") {
+			continue
+		}
+		if idx := strings.IndexRune(l, '#'); idx >= 0 {
+			l = strings.TrimSpace(l[:idx])
+		}
+		if l == "" {
+			continue
+		}
+		if eq := strings.IndexRune(l, '='); eq >= 0 {
+			k := strings.TrimSpace(l[:eq])
+			v := strings.TrimSpace(l[eq+1:])
+			if k != "" {
+				m[k] = v
+			}
+		}
+	}
+	return m
+}
+
 func findManifestDir(dir string) string {
 	d := strings.TrimSpace(dir)
 	if d == "" {
@@ -274,9 +341,9 @@ func ImportMcpackToDirs(data []byte, archiveName string, resDir string, bpDir st
 			dir := filepath.Dir(nameInZip)
 			rc, er := f.Open()
 			if er == nil {
-                b, _ := io.ReadAll(rc)
-                _ = rc.Close()
-                _ = json.Unmarshal(utils.JsonCompatBytes(b), &manifest)
+				b, _ := io.ReadAll(rc)
+				_ = rc.Close()
+				_ = json.Unmarshal(utils.JsonCompatBytes(b), &manifest)
 			}
 			if dir != "." && strings.TrimSpace(dir) != "" {
 				manifestDir = dir
@@ -393,9 +460,9 @@ func ImportMcpackToDirs2(data []byte, archiveName string, resDir string, bpDir s
 			dir := filepath.Dir(nameInZip)
 			rc, er := f.Open()
 			if er == nil {
-                b, _ := io.ReadAll(rc)
-                _ = rc.Close()
-                _ = json.Unmarshal(utils.JsonCompatBytes(b), &manifest)
+				b, _ := io.ReadAll(rc)
+				_ = rc.Close()
+				_ = json.Unmarshal(utils.JsonCompatBytes(b), &manifest)
 			}
 			if dir != "." && strings.TrimSpace(dir) != "" {
 				manifestDir = dir
@@ -542,10 +609,10 @@ func ImportMcaddonToDirs2(data []byte, resDir string, bpDir string, skinDir stri
 			if er != nil {
 				continue
 			}
-            b, _ := io.ReadAll(rc)
-            _ = rc.Close()
-            var mf bedrockManifest
-            _ = json.Unmarshal(utils.JsonCompatBytes(b), &mf)
+			b, _ := io.ReadAll(rc)
+			_ = rc.Close()
+			var mf bedrockManifest
+			_ = json.Unmarshal(utils.JsonCompatBytes(b), &mf)
 			packs = append(packs, packInfo{dir: dir, manifest: mf})
 		}
 	}
@@ -680,10 +747,10 @@ func ImportMcaddonToDirs(data []byte, resDir string, bpDir string, overwrite boo
 			if er != nil {
 				continue
 			}
-            b, _ := io.ReadAll(rc)
-            _ = rc.Close()
-            var mf bedrockManifest
-            _ = json.Unmarshal(utils.JsonCompatBytes(b), &mf)
+			b, _ := io.ReadAll(rc)
+			_ = rc.Close()
+			var mf bedrockManifest
+			_ = json.Unmarshal(utils.JsonCompatBytes(b), &mf)
 			packs = append(packs, packInfo{dir: dir, manifest: mf})
 		}
 	}
@@ -870,11 +937,26 @@ func ReadPackInfoFromDir(dir string) types.PackInfo {
 	}
 	manifestPath := filepath.Join(target, "manifest.json")
 	if utils.FileExists(manifestPath) {
-        if b, err := os.ReadFile(manifestPath); err == nil {
-            var mf bedrockManifest
-            _ = json.Unmarshal(utils.JsonCompatBytes(b), &mf)
+		if b, err := os.ReadFile(manifestPath); err == nil {
+			var mf bedrockManifest
+			_ = json.Unmarshal(utils.JsonCompatBytes(b), &mf)
 			info.Name = strings.TrimSpace(mf.Header.Name)
 			info.Description = strings.TrimSpace(mf.Header.Description)
+			if (info.Name == "pack.name" || info.Description == "pack.description") && utils.DirExists(filepath.Join(target, "texts")) {
+				texts := readPackTexts(target)
+				if texts != nil {
+					if info.Name == "pack.name" {
+						if v, ok := texts["pack.name"]; ok {
+							info.Name = strings.TrimSpace(v)
+						}
+					}
+					if info.Description == "pack.description" {
+						if v, ok := texts["pack.description"]; ok {
+							info.Description = strings.TrimSpace(v)
+						}
+					}
+				}
+			}
 			if len(mf.Header.Version) > 0 {
 				var vb strings.Builder
 				for i, n := range mf.Header.Version {
@@ -921,17 +1003,17 @@ func GetLevelDat(worldDir string) ([]byte, error) {
 }
 
 func PutLevelDat(worldDir string, levelDatData []byte) error {
-    if strings.TrimSpace(worldDir) == "" {
-        return os.ErrNotExist
-    }
-    p := filepath.Join(worldDir, "level.dat")
-    backup := filepath.Join(worldDir, "level.dat_leviold")
-    if !utils.FileExists(backup) {
-        if b, err := os.ReadFile(p); err == nil {
-            _ = os.WriteFile(backup, b, 0644)
-        }
-    }
-    return os.WriteFile(p, levelDatData, 0644)
+	if strings.TrimSpace(worldDir) == "" {
+		return os.ErrNotExist
+	}
+	p := filepath.Join(worldDir, "level.dat")
+	backup := filepath.Join(worldDir, "level.dat_leviold")
+	if !utils.FileExists(backup) {
+		if b, err := os.ReadFile(p); err == nil {
+			_ = os.WriteFile(backup, b, 0644)
+		}
+	}
+	return os.WriteFile(p, levelDatData, 0644)
 }
 
 func GetLevelDatNbtAndVersion(worldDir string) ([]byte, int32, error) {

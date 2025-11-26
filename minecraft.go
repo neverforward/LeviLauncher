@@ -567,7 +567,7 @@ func (a *Minecraft) Update() bool {
 }
 
 func (a *Minecraft) TestMirrorLatencies(urls []string, timeoutMs int) []map[string]interface{} {
-    return mcservice.TestMirrorLatencies(urls, timeoutMs)
+	return mcservice.TestMirrorLatencies(urls, timeoutMs)
 }
 
 func (a *Minecraft) launchVersionInternal(name string, checkRunning bool) string {

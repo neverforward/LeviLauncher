@@ -186,8 +186,10 @@ func Get(msixvcPath string, outDir string) (int, string) {
 	if rc == 0 {
 		return 0, ""
 	}
-
-	return rc, ""
+	if rc == 3 {
+		return 3, "ERR_MC_NOT_AUTHORIZED"
+	}
+	return 1, "ERR_APPX_INSTALL_FAILED"
 }
 
 func utf8ToACP(s string) ([]byte, error) {
