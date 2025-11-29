@@ -13,6 +13,27 @@
     "manage_versions": "Versions",
     "search_versions": "Search versions or names",
     "open_exe_dir": "Open Game Installation Directory",
+    "register_system_button": "Register to System",
+    "registered_tip": "Registered",
+    "register": {
+      "installing": {
+        "title": "Registering to System",
+        "body": "Registering to system. Please wait…"
+      },
+      "success": {
+        "title": "Registration Complete",
+        "body": "Version has been registered. You can launch from system apps list."
+      },
+      "failed": {
+        "title": "Registration Failed",
+        "body": "An error occurred during registration. Please retry or check environment."
+      }
+    },
+    "gdk_missing": {
+      "title": "Microsoft GDK Missing",
+      "body": "GDK toolkit not detected. Registration requires installation. Open Settings to install?",
+      "go_settings": "Open Settings"
+    },
     "delete": {
       "failed": {
         "title": "Delete Failed",
@@ -360,12 +381,27 @@
         "title": "Restore default path?",
         "body": "This will reset the content path to the default location. Are you sure?"
       }
+    },
+    "gdk": {
+      "title": "Microsoft Game Development Kit",
+      "installed": "Installed",
+      "install_button": "Download & Install",
+      "path_label": "Path: {{path}}",
+      "license": {
+        "title": "License Agreement",
+        "body": "You must accept the terms of the Microsoft Public Game Development Kit License Agreement to continue.",
+        "accept": "I accept the terms in the License Agreement."
+      },
+      "download": {
+        "title": "Downloading GDK"
+      },
+      "install": {
+        "title": "Installing GDK",
+        "body": "Please wait while the installer runs…"
+      }
     }
   },
   
-  "common": {
-    "browse": "Browse..."
-  },
   "downloadmodal": {
     "download_button": "Download",
     "information": {
@@ -571,7 +607,13 @@
       "enable_console": "Enable Console",
       "enable_editor_mode": "Enable Editor Mode",
       "danger_zone_title": "Danger Zone",
-      "delete_hint": "Click to open delete confirmation to avoid accidental deletion."
+      "delete_hint": "Click to open delete confirmation to avoid accidental deletion.",
+      "unregister_button": "Unregister",
+      "unregister_hint": "This version is registered to system. Only unregister is allowed; then you can rename or delete.",
+      "unregister_progress": {
+        "title": "Unregistering",
+        "body": "Performing system unregister. Please wait…"
+      }
     },
     "logo": {
       "title": "Custom Icon (square required)",
@@ -627,7 +669,9 @@
     "ERR_INHERIT_COPY_FAILED": "Failed to copy inherited data",
     "ERR_NO_GAME_DATA": "No game data found for the selected source",
     "ERR_VCRUNTIME_MISSING": "Runtime dependency missing. Please install Microsoft Visual C++ Runtime and retry",
-    "ERR_SHORTCUT_CREATE_FAILED": "Failed to create desktop shortcut"
+    "ERR_SHORTCUT_CREATE_FAILED": "Failed to create desktop shortcut",
+    "ERR_UNREGISTER_FAILED": "Unregister failed",
+    "ERR_NOT_REGISTERED_THIS_VERSION": "This version is not registered"
   },
   "filemanager": {
     "title": "File Manager",

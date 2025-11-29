@@ -16,6 +16,7 @@ import (
 
 	"github.com/liteldev/LeviLauncher/internal/content"
 	"github.com/liteldev/LeviLauncher/internal/gameinput"
+	"github.com/liteldev/LeviLauncher/internal/gdk"
 	"github.com/liteldev/LeviLauncher/internal/lang"
 	"github.com/liteldev/LeviLauncher/internal/launch"
 	"github.com/liteldev/LeviLauncher/internal/mcservice"
@@ -98,6 +99,36 @@ func (a *Minecraft) SaveVersionMeta(name string, gameVersion string, typeStr str
 }
 
 func (a *Minecraft) ListVersionMetas() []versions.VersionMeta { return mcservice.ListVersionMetas() }
+func (a *Minecraft) ListVersionMetasWithRegistered() []versions.VersionMeta {
+	metas := mcservice.ListVersionMetas()
+	vdir, err := utils.GetVersionsDir()
+	if err != nil || strings.TrimSpace(vdir) == "" {
+		return metas
+	}
+	var releaseLoc, previewLoc string
+	if info, e := registry.GetAppxInfo("MICROSOFT.MINECRAFTUWP"); e == nil && info != nil {
+		releaseLoc = strings.ToLower(filepath.Clean(strings.TrimSpace(info.InstallLocation)))
+	}
+	if info, e := registry.GetAppxInfo("Microsoft.MinecraftWindowsBeta"); e == nil && info != nil {
+		previewLoc = strings.ToLower(filepath.Clean(strings.TrimSpace(info.InstallLocation)))
+	}
+	for i := range metas {
+		m := &metas[i]
+		isPreview := strings.EqualFold(strings.TrimSpace(m.Type), "preview")
+		dir := filepath.Join(vdir, strings.TrimSpace(m.Name))
+		norm := strings.ToLower(filepath.Clean(strings.TrimSpace(dir)))
+		if isPreview {
+			m.Registered = previewLoc != "" && norm == strings.ToLower(filepath.Clean(previewLoc))
+		} else {
+			m.Registered = releaseLoc != "" && norm == strings.ToLower(filepath.Clean(releaseLoc))
+		}
+	}
+	return metas
+}
+
+func (a *Minecraft) GetVersionMeta(name string) versions.VersionMeta {
+	return mcservice.GetVersionMeta(name)
+}
 
 func (a *Minecraft) ListInheritableVersionNames(versionType string) []string {
 	return mcservice.ListInheritableVersionNames(versionType)
@@ -154,6 +185,7 @@ func (a *Minecraft) startup() {
 	exeDir := filepath.Dir(exePath)
 	os.Chdir(exeDir)
 	launch.EnsureGamingServicesInstalled(a.ctx)
+	mcservice.ReconcileRegisteredFlags()
 	srv, ln, addr := mcservice.StartImportServer()
 	if srv != nil && ln != nil {
 		a.importSrv = srv
@@ -161,8 +193,6 @@ func (a *Minecraft) startup() {
 		go func() { _ = srv.Serve(ln) }()
 	}
 }
-
-// IsFirstLaunch removed
 
 func (a *Minecraft) EnsureGameInputInteractive() { go gameinput.EnsureInteractive(a.ctx) }
 
@@ -191,6 +221,68 @@ func (a *Minecraft) ResolveDownloadedMsixvc(version string, versionType string) 
 
 func (a *Minecraft) DeleteDownloadedMsixvc(version string, versionType string) string {
 	return mcservice.DeleteDownloadedMsixvc(version, versionType)
+}
+
+// GDK helpers
+func (a *Minecraft) IsGDKInstalled() bool { return gdk.IsInstalled() }
+
+func (a *Minecraft) StartGDKDownload(url string) string { return gdk.StartDownload(a.ctx, url) }
+
+func (a *Minecraft) InstallGDKFromZip(zipPath string) string {
+	return gdk.InstallFromZip(a.ctx, zipPath)
+}
+
+func (a *Minecraft) RegisterVersionWithWdapp(name string, isPreview bool) string {
+	vdir, err := utils.GetVersionsDir()
+	if err != nil || strings.TrimSpace(vdir) == "" {
+		return "ERR_ACCESS_VERSIONS_DIR"
+	}
+	folder := filepath.Join(vdir, strings.TrimSpace(name))
+	if e := gdk.UnregisterIfExists(isPreview); e != "" {
+	}
+	msg := gdk.RegisterVersionFolder(folder)
+	if msg != "" {
+		return msg
+	}
+	pkg := "MICROSOFT.MINECRAFTUWP"
+	if isPreview {
+		pkg = "Microsoft.MinecraftWindowsBeta"
+	}
+	if info, e := registry.GetAppxInfo(pkg); e == nil && info != nil {
+		normalize := func(p string) string {
+			s := strings.ToLower(filepath.Clean(strings.TrimSpace(p)))
+			s = strings.TrimPrefix(s, `\\?\`)
+			s = strings.TrimPrefix(s, `\??\`)
+			return strings.TrimSuffix(s, string(os.PathSeparator))
+		}
+		expected := normalize(filepath.Join(vdir, strings.TrimSpace(name)))
+		loc := normalize(info.InstallLocation)
+		flag := loc != "" && loc == expected
+		if m, er := versions.ReadMeta(folder); er == nil {
+			m.Registered = flag
+			_ = versions.WriteMeta(folder, m)
+		}
+	}
+	mcservice.ReconcileRegisteredFlags()
+	return msg
+}
+
+func (a *Minecraft) UnregisterVersionByName(name string) string {
+	vdir, err := utils.GetVersionsDir()
+	if err != nil || strings.TrimSpace(vdir) == "" {
+		return "ERR_ACCESS_VERSIONS_DIR"
+	}
+	folder := filepath.Join(vdir, strings.TrimSpace(name))
+	msg := gdk.UnregisterVersionFolder(folder)
+	if msg != "" {
+		return msg
+	}
+	if m, er := versions.ReadMeta(folder); er == nil {
+		m.Registered = false
+		_ = versions.WriteMeta(folder, m)
+	}
+	mcservice.ReconcileRegisteredFlags()
+	return ""
 }
 
 type VersionStatus struct {
@@ -585,6 +677,7 @@ func (a *Minecraft) launchVersionInternal(name string, checkRunning bool) string
 	_ = preloader.EnsureForVersion(a.ctx, dir)
 	_ = peeditor.EnsureForVersion(a.ctx, dir)
 	_ = peeditor.RunForVersion(a.ctx, dir)
+
 	var args []string
 	toRun := exe
 	var gameVer string

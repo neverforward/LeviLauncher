@@ -44,9 +44,7 @@ func EnsureForVersion(ctx context.Context, versionDir string) bool {
 		application.Get().Event.Emit(EventEnsureDone, false)
 		return false
 	}
-	application.Get().Event.Emit(EventEnsureStart, struct{}{})
 	if len(embeddedPeEditor) == 0 {
-		application.Get().Event.Emit(EventEnsureDone, false)
 		return false
 	}
 	dest := filepath.Join(dir, "PeEditor.exe")
@@ -63,23 +61,19 @@ func EnsureForVersion(ctx context.Context, versionDir string) bool {
 		tmp := dest + ".tmp"
 		if err := os.WriteFile(tmp, embeddedPeEditor, 0755); err != nil {
 			_ = os.Remove(tmp)
-			application.Get().Event.Emit(EventEnsureDone, false)
 			return false
 		}
 		if err := os.Rename(tmp, dest); err != nil {
 			_ = os.Remove(tmp)
-			application.Get().Event.Emit(EventEnsureDone, false)
 			return false
 		}
 	}
-	application.Get().Event.Emit(EventEnsureDone, true)
 	return true
 }
 
 func RunForVersion(ctx context.Context, versionDir string) bool {
 	dir := strings.TrimSpace(versionDir)
 	if dir == "" {
-		application.Get().Event.Emit(EventEnsureDone, false)
 		return false
 	}
 	exe := filepath.Join(dir, "Minecraft.Windows.exe")
@@ -89,15 +83,12 @@ func RunForVersion(ctx context.Context, versionDir string) bool {
 		return true
 	}
 	if !fileExists(tool) || !fileExists(exe) {
-		application.Get().Event.Emit(EventEnsureDone, false)
 		return false
 	}
-	application.Get().Event.Emit(EventEnsureStart, struct{}{})
 	cmd := exec.Command(tool, "-m", "-b", "--inplace", "--exe", "./Minecraft.Windows.exe")
 	cmd.Dir = dir
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_ = cmd.Run()
-	application.Get().Event.Emit(EventEnsureDone, true)
 	return true
 }
 

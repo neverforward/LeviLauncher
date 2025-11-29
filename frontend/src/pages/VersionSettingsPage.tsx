@@ -34,6 +34,10 @@ export default function VersionSettingsPage() {
   const [enableConsole, setEnableConsole] = React.useState<boolean>(false);
   const [enableEditorMode, setEnableEditorMode] =
     React.useState<boolean>(false);
+  const [isRegistered, setIsRegistered] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [unregisterOpen, setUnregisterOpen] = React.useState<boolean>(false);
+  const [gdkMissingOpen, setGdkMissingOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
   const [logoDataUrl, setLogoDataUrl] = React.useState<string>("");
   const [errorOpen, setErrorOpen] = React.useState<boolean>(false);
@@ -48,13 +52,11 @@ export default function VersionSettingsPage() {
 
   React.useEffect(() => {
     if (!hasBackend || !targetName) return;
-    try {
-      const list = minecraft?.ListVersionMetas;
-      if (typeof list === "function") {
-        list().then((metas: any[]) => {
-          const meta = (metas || []).find(
-            (m: any) => String(m?.name || "") === targetName
-          );
+    (async () => {
+      try {
+        const getMeta = (minecraft as any)?.GetVersionMeta;
+        if (typeof getMeta === "function") {
+          const meta: any = await getMeta(targetName);
           if (meta) {
             setGameVersion(String(meta?.gameVersion || ""));
             const type = String(meta?.type || "release").toLowerCase();
@@ -62,18 +64,19 @@ export default function VersionSettingsPage() {
             setEnableIsolation(!!meta?.enableIsolation);
             setEnableConsole(!!meta?.enableConsole);
             setEnableEditorMode(!!meta?.enableEditorMode);
+            setIsRegistered(Boolean(meta?.registered));
           }
-        });
-      }
-    } catch {}
-    try {
-      const getter = minecraft?.GetVersionLogoDataUrl;
-      if (typeof getter === "function") {
-        getter(targetName).then((u: string) => setLogoDataUrl(String(u || "")));
-      }
-    } catch {
-      setLogoDataUrl("");
-    }
+        }
+      } catch {}
+      try {
+        const getter = minecraft?.GetVersionLogoDataUrl;
+        if (typeof getter === "function") {
+          const u = await getter(targetName);
+          setLogoDataUrl(String(u || ""));
+        }
+      } catch { setLogoDataUrl(""); }
+      setLoading(false);
+    })();
   }, [hasBackend, targetName]);
 
   React.useEffect(() => {
@@ -273,10 +276,14 @@ export default function VersionSettingsPage() {
                     })}
                     :{" "}
                     <span className="text-default-700 font-medium">
-                      {gameVersion ||
-                        t("launcherpage.version_select.unknown", {
+                      {loading ? (
+                        <span className="inline-block h-4 w-24 rounded bg-default-200 animate-pulse" />
+                      ) : (
+                        gameVersion ||
+                        (t("launcherpage.version_select.unknown", {
                           defaultValue: "Unknown",
-                        })}
+                        }) as unknown as string)
+                      )}
                     </span>
                     <span className="mx-2 text-default-400">·</span>
                     {t("versions.info.name", { defaultValue: "名称" })}:{" "}
@@ -289,9 +296,9 @@ export default function VersionSettingsPage() {
                         {t("common.preview", { defaultValue: "预览版" })}
                       </Chip>
                     ) : (
-                      <span className="text-default-600">
-                        {t("common.release", { defaultValue: "正式版" })}
-                      </span>
+                    <span className="text-default-700 dark:text-default-200">
+                      {t("common.release", { defaultValue: "正式版" })}
+                    </span>
                     )}
                   </div>
                 </div>
@@ -308,7 +315,7 @@ export default function VersionSettingsPage() {
             <Card className="rounded-2xl shadow-md h-full min-h-[160px] bg-white/70 dark:bg-black/30 backdrop-blur-md border border-white/30">
               <CardBody className="p-4 sm:p-6 flex flex-col gap-4">
                 <div>
-                  <label className="text-small text-default-600 mb-1 block">
+                  <label className="text-small text-default-700 dark:text-default-200 mb-1 block">
                     {t("versions.edit.new_name", { defaultValue: "新名称" })}
                   </label>
                   <Input
@@ -319,6 +326,7 @@ export default function VersionSettingsPage() {
                     }}
                     size="sm"
                     variant="bordered"
+                    isDisabled={isRegistered || loading}
                     placeholder={
                       t("versions.edit.placeholder", {
                         defaultValue: "输入新名称",
@@ -332,7 +340,7 @@ export default function VersionSettingsPage() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <div className="text-small text-default-600">
+                  <div className="text-small text-default-700 dark:text-default-200">
                     {t("versions.logo.title", {
                       defaultValue: "自定义图标（要求正方形）",
                     })}
@@ -481,20 +489,54 @@ export default function VersionSettingsPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="text-tiny text-default-400">
-                      {t("versions.edit.delete_hint", {
-                        defaultValue: "点击以打开删除确认，避免误触。",
-                      })}
+                      {isRegistered
+                        ? (t("versions.edit.unregister_hint", { defaultValue: "该版本已注册到系统，仅可取消注册；取消后可重命名或删除。" }) as unknown as string)
+                        : (t("versions.edit.delete_hint", { defaultValue: "点击以打开删除确认，避免误触。" }) as unknown as string)}
                     </div>
-                    <Button
-                      size="sm"
-                      variant="light"
-                      color="danger"
-                      onPress={() => setDeleteOpen(true)}
-                    >
-                      {t("launcherpage.delete.confirm.delete_button", {
-                        defaultValue: "删除",
-                      })}
-                    </Button>
+                    {isRegistered ? (
+                      <Button
+                        size="sm"
+                        variant="light"
+                        color="warning"
+                        isDisabled={loading}
+                        onPress={async () => {
+                          try {
+                            const has = await (minecraft as any)?.IsGDKInstalled?.();
+                            if (!has) {
+                              setUnregisterOpen(false);
+                              setGdkMissingOpen(true);
+                              return;
+                            }
+                            const fn = (minecraft as any)?.UnregisterVersionByName;
+                            if (typeof fn === "function") {
+                              setUnregisterOpen(true);
+                              const err: string = await fn(targetName);
+                              setUnregisterOpen(false);
+                              if (err) {
+                                setError(String(err));
+                              } else {
+                                setIsRegistered(false);
+                              }
+                            }
+                          } catch {
+                            setUnregisterOpen(false);
+                            setError("ERR_UNREGISTER_FAILED");
+                          }
+                        }}
+                      >
+                        {t("versions.edit.unregister_button", { defaultValue: "取消注册" }) as unknown as string}
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="light"
+                        color="danger"
+                        isDisabled={loading}
+                        onPress={() => setDeleteOpen(true)}
+                      >
+                        {t("launcherpage.delete.confirm.delete_button", { defaultValue: "删除" }) as unknown as string}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardBody>
@@ -516,6 +558,78 @@ export default function VersionSettingsPage() {
         </Button>
       </div>
 
+      <Modal
+        isOpen={unregisterOpen}
+        onOpenChange={(open) => {
+          if (!open) setUnregisterOpen(false);
+        }}
+        hideCloseButton
+        isDismissable={false}
+      >
+        <ModalContent>
+          {(/* onClose */) => (
+            <>
+              <ModalHeader className="text-warning-600">
+                {t("versions.edit.unregister_progress.title", { defaultValue: "正在取消注册" }) as unknown as string}
+              </ModalHeader>
+              <ModalBody>
+                <div className="text-small text-foreground mb-2">
+                  {t("versions.edit.unregister_progress.body", { defaultValue: "正在执行系统取消注册，请稍候…" }) as unknown as string}
+                </div>
+                <div className="w-full max-w-md">
+                  <div className="relative h-2 rounded-full bg-default-100/70 dark:bg-default-50/10 overflow-hidden border border-white/30">
+                    <div className="absolute top-0 bottom-0 rounded-full bg-default-400/60 indeterminate-bar1" />
+                    <div className="absolute top-0 bottom-0 rounded-full bg-default-400/40 indeterminate-bar2" />
+                  </div>
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={gdkMissingOpen}
+        onOpenChange={(open) => {
+          if (!open) setGdkMissingOpen(false);
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-warning-600">
+                {t("launcherpage.gdk_missing.title", { defaultValue: "缺少 Microsoft GDK" }) as unknown as string}
+              </ModalHeader>
+              <ModalBody>
+                <div className="text-small text-foreground">
+                  {t("launcherpage.gdk_missing.body", { defaultValue: "未检测到 GDK 工具包，注册功能需先安装。是否跳转到设置页进行安装？" }) as unknown as string}
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="light"
+                  onPress={() => {
+                    onClose?.();
+                    setGdkMissingOpen(false);
+                  }}
+                >
+                  {t("common.cancel", { defaultValue: "取消" }) as unknown as string}
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose?.();
+                    setGdkMissingOpen(false);
+                    navigate("/settings");
+                  }}
+                >
+                  {t("launcherpage.gdk_missing.go_settings", { defaultValue: "前往设置" }) as unknown as string}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <Modal
         isOpen={errorOpen}
         onOpenChange={(open) => {
@@ -566,7 +680,7 @@ export default function VersionSettingsPage() {
                 </h2>
               </ModalHeader>
               <ModalBody>
-                <div className="text-small text-default-600">
+                <div className="text-small text-foreground">
                   {t("launcherpage.shortcut.success.body", { defaultValue: "已在桌面创建该版本的快捷方式。" }) as unknown as string}
                 </div>
               </ModalBody>

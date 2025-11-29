@@ -13,6 +13,27 @@
         "manage_versions": "版本列表",
         "search_versions": "搜索版本或名称",
         "open_exe_dir": "打开游戏安装目录",
+        "register_system_button": "注册到系统",
+        "registered_tip": "已注册",
+        "register": {
+            "installing": {
+                "title": "正在注册到系统",
+                "body": "正在进行系统注册，请稍候…"
+            },
+            "success": {
+                "title": "注册完成",
+                "body": "已成功注册到系统，您可以通过系统应用列表启动。"
+            },
+            "failed": {
+                "title": "注册失败",
+                "body": "注册过程中发生错误，请重试或检查环境。"
+            }
+        },
+        "gdk_missing": {
+            "title": "缺少 Microsoft GDK",
+            "body": "未检测到 GDK 工具包，注册功能需先安装。是否跳转到设置页进行安装？",
+            "go_settings": "前往设置"
+        },
         "delete": {
             "failed": {
                 "title": "删除失败",
@@ -361,8 +382,27 @@
                 "title": "恢复默认路径？",
                 "body": "这将把内容路径重置为默认位置。确定要继续吗？"
             }
+        },
+        "gdk": {
+            "title": "Microsoft GDK 开发套件",
+            "installed": "已安装",
+            "install_button": "下载并安装",
+            "path_label": "路径：{{path}}",
+            "license": {
+                "title": "许可协议",
+                "body": "继续前必须接受 Microsoft GDK 公共开发套件许可协议。",
+                "accept": "我接受许可协议中的条款"
+            },
+            "download": {
+                "title": "下载 GDK"
+            },
+            "install": {
+                "title": "正在安装 GDK",
+                "body": "稍候，正在运行安装程序…"
+            }
         }
     },
+    
     
     "downloadmodal": {
         "download_button": "下载",
@@ -569,7 +609,13 @@
             "enable_console": "启用控制台",
             "enable_editor_mode": "启用编辑器模式",
             "danger_zone_title": "危险操作",
-            "delete_hint": "点击以打开删除确认，避免误触。"
+            "delete_hint": "点击以打开删除确认，避免误触。",
+            "unregister_button": "取消注册",
+            "unregister_hint": "该版本已注册到系统，仅可取消注册；取消后可重命名或删除。",
+            "unregister_progress": {
+                "title": "正在取消注册",
+                "body": "正在执行系统取消注册，请稍候…"
+            }
         },
         "logo": {
             "title": "自定义图标（要求正方形）",
@@ -586,7 +632,7 @@
             "success_body": "已删除版本："
         }
     },
-    "errors": {
+        "errors": {
         "ERR_GAME_ALREADY_RUNNING": "检测到当前版本 Minecraft 已在运行，请先关闭再启动或者切换其他版本",
         "ERR_TARGET_DIR_NOT_SPECIFIED": "未指定目标目录",
         "ERR_CREATE_TARGET_DIR": "无法创建目标目录",
@@ -625,8 +671,10 @@
         "ERR_NO_GAME_DATA": "当前来源没有任何游戏数据",
         "ERR_DELETE_FAILED": "删除失败，可能被占用或无权限",
         "ERR_VCRUNTIME_MISSING": "缺少运行库，安装失败。请确保已安装 Microsoft Visual C++ 运行库或重试",
-        "ERR_SHORTCUT_CREATE_FAILED": "创建桌面快捷方式失败"
-    },
+        "ERR_SHORTCUT_CREATE_FAILED": "创建桌面快捷方式失败",
+        "ERR_UNREGISTER_FAILED": "取消注册失败",
+        "ERR_NOT_REGISTERED_THIS_VERSION": "该版本未注册到系统"
+        },
     "filemanager": {
         "title": "文件管理器",
         "drives_title": "驱动器",

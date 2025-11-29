@@ -89,7 +89,6 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
         listFn().then((metas: any[]) => {
           const newLocalVersionMap = new Map();
           const newLocalVersionsMap = new Map();
-          const newLogoMap = new Map<string, string>();
           metas?.forEach((m: any) => {
             const name = String(m?.name || "");
             const gameVersion = String(m?.gameVersion || "");

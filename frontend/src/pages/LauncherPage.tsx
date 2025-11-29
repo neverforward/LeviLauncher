@@ -17,6 +17,7 @@ import {
   DropdownItem,
   Input,
   Tooltip,
+  Chip,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -35,6 +36,7 @@ import {
   FaList,
   FaWindows,
   FaFolderOpen,
+  FaCheckCircle,
 } from "react-icons/fa";
 import { ModCard } from "../components/ModdedCard";
 import {
@@ -134,6 +136,40 @@ export const LauncherPage = (args: any) => {
     if (len <= 10) return "text-small";
     return "text-xs";
   };
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ll.currentVersionName") || "";
+      if (!saved) return;
+      setCurrentVersion(saved);
+      setDisplayName(saved);
+      const fn = (minecraft as any)?.GetVersionMeta;
+      if (typeof fn === "function") {
+        fn(saved)
+          .then((m: any) => {
+            const ver = String(m?.gameVersion || "");
+            setDisplayVersion(ver || "");
+            setLocalVersionMap((prev) => {
+              const map = new Map(prev);
+              map.set(saved, {
+                name: saved,
+                version: ver,
+                isPreview: String(m?.type || "").toLowerCase() === "preview",
+                isRegistered: Boolean(m?.registered),
+                isLaunched: false,
+                isPreLoader: false,
+              });
+              return map;
+            });
+            const getter = (minecraft as any)?.GetVersionLogoDataUrl;
+            if (typeof getter === "function") {
+              getter(saved).then((u: string) => setLogoDataUrl(String(u || "")));
+            }
+          })
+          .catch(() => {});
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     try {
@@ -285,6 +321,7 @@ export const LauncherPage = (args: any) => {
     }
   }, [currentVersion]);
 
+
   useEffect(() => {
     if (!hasBackend) return;
     const timer = setTimeout(() => {
@@ -335,12 +372,12 @@ export const LauncherPage = (args: any) => {
       }
     };
 
-    const unlistenStart = Events.On("vcruntime.ensure.start", ensureStart);
-    const unlistenDone = Events.On("vcruntime.ensure.done", ensureDone);
-    const unlistenPreStart = Events.On("preloader.ensure.start", ensureStart);
-    const unlistenPreDone = Events.On("preloader.ensure.done", ensureDone);
-    const unlistenPeStart = Events.On("peeditor.ensure.start", ensureStart);
-    const unlistenPeDone = Events.On("peeditor.ensure.done", ensureDone);
+    const unlistenStart = () => {};
+    const unlistenDone = () => {};
+    const unlistenPreStart = () => {};
+    const unlistenPreDone = () => {};
+    const unlistenPeStart = () => {};
+    const unlistenPeDone = () => {};
 
     const unlistenGiStart = Events.On("gameinput.ensure.start", () => {
       if (pendingInstallCheck === "gi") return;
@@ -537,7 +574,7 @@ export const LauncherPage = (args: any) => {
 
   useEffect(() => {
     if (hasBackend) {
-      const listFn = minecraft?.ListVersionMetas;
+      const listFn = (minecraft as any)?.ListVersionMetasWithRegistered ?? (minecraft as any)?.ListVersionMetas;
       if (typeof listFn === "function") {
         listFn().then((metas: any[]) => {
           const newLocalVersionMap = new Map();
@@ -551,6 +588,7 @@ export const LauncherPage = (args: any) => {
               name,
               version: gameVersion,
               isPreview,
+              isRegistered: Boolean(m?.registered),
               isLaunched: false,
               isPreLoader: false,
             };
@@ -616,7 +654,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">
+          <p className="text-foreground">
             {(() => {
               const key = `errors.${launchErrorCode}`;
               const translated = t(key) as unknown as string;
@@ -669,7 +707,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">
+          <p className="text-foreground">
             {t("launcherpage.gameinput.installing.body", {
               defaultValue: "正在下载并启动安装程序，请根据系统提示完成安装。",
             })}
@@ -709,7 +747,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">
+          <p className="text-foreground">
             {t("launcherpage.gameinput.missing.body", {
               defaultValue:
                 "运行游戏需要 Microsoft GameInput 组件。是否现在下载安装？",
@@ -809,7 +847,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">
+          <p className="text-foreground">
             {t("launcherpage.install_confirm.body", {
               defaultValue:
                 "安装完成后请点击“已完成，重新检测”。如果尚未完成，请继续安装。",
@@ -882,7 +920,7 @@ export const LauncherPage = (args: any) => {
         </ModalHeader>
         <ModalBody className="text-center">
           <motion.p
-            className="text-gray-700"
+            className="text-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.25, delay: 0.1 }}
@@ -912,7 +950,7 @@ export const LauncherPage = (args: any) => {
               transition={{ duration: 1, ease: "linear", repeat: Infinity }}
             />
             <motion.p
-              className="text-gray-700"
+              className="text-foreground"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.25, delay: 0.1 }}
@@ -962,7 +1000,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">
+          <p className="text-foreground">
             {t("launcherpage.adminconfirm.content")}
           </p>
         </ModalBody>
@@ -989,7 +1027,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">{t("launcherpage.admindeny.content")}</p>
+          <p className="text-foreground">{t("launcherpage.admindeny.content")}</p>
         </ModalBody>
         <ModalFooter>
           <Button color="default" variant="light" onPress={onClose}>
@@ -1016,7 +1054,7 @@ export const LauncherPage = (args: any) => {
           </h2>
         </ModalHeader>
         <ModalBody className="text-center">
-          <p className="text-gray-700">
+          <p className="text-foreground">
             {t("launcherpage.shortcut.success.body", {
               defaultValue: "已在桌面创建该版本的快捷方式。",
             }) as unknown as string}
@@ -1032,6 +1070,120 @@ export const LauncherPage = (args: any) => {
             }}
           >
             {t("common.close", { defaultValue: "关闭" }) as unknown as string}
+          </Button>
+        </ModalFooter>
+      </>
+    ),
+    13: (onClose) => (
+      <>
+        <ModalHeader className="flex flex-col gap-1 text-primary-600">
+          <h2 className="text-xl font-bold">
+            {t("launcherpage.register.installing.title", { defaultValue: "正在注册到系统" })}
+          </h2>
+        </ModalHeader>
+        <ModalBody className="text-center">
+          <p className="text-foreground">
+            {t("launcherpage.register.installing.body", { defaultValue: "正在调用 wdapp.exe 执行注册，请稍候…" })}
+          </p>
+          <div className="w-full max-w-md mt-2">
+            <div className="relative h-2 rounded-full bg-default-100/70 dark:bg-default-50/10 overflow-hidden border border-white/30">
+              <div className="absolute top-0 bottom-0 rounded-full bg-default-400/60 indeterminate-bar1" />
+              <div className="absolute top-0 bottom-0 rounded-full bg-default-400/40 indeterminate-bar2" />
+            </div>
+          </div>
+        </ModalBody>
+      </>
+    ),
+    15: (onClose) => (
+      <>
+        <ModalHeader className="flex flex-col gap-1 text-success-600">
+          <h2 className="text-xl font-bold">
+            {t("launcherpage.register.success.title", { defaultValue: "注册完成" })}
+          </h2>
+        </ModalHeader>
+        <ModalBody className="text-center">
+          <p className="text-foreground">
+            {t("launcherpage.register.success.body", { defaultValue: "已成功注册到系统，您可以通过系统应用列表启动。" })}
+          </p>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            onPress={(e) => {
+              onClose?.(e);
+              setOverlayActive(false);
+              setModalState(0);
+            }}
+          >
+            {t("common.close", { defaultValue: "关闭" }) as unknown as string}
+          </Button>
+        </ModalFooter>
+      </>
+    ),
+    16: (onClose) => (
+      <>
+        <ModalHeader className="flex flex-col gap-1 text-danger-600">
+          <h2 className="text-xl font-bold">
+            {t("launcherpage.register.failed.title", { defaultValue: "注册失败" })}
+          </h2>
+        </ModalHeader>
+        <ModalBody className="text-center">
+          <p className="text-foreground">
+            {(() => {
+              const key = `errors.${launchErrorCode}`;
+              const translated = t(key) as unknown as string;
+              if (launchErrorCode && translated && translated !== key) return translated;
+              return t("launcherpage.register.failed.body", { defaultValue: "注册过程中发生错误，请重试或检查环境。" }) as unknown as string;
+            })()}
+          </p>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            onPress={(e) => {
+              onClose?.(e);
+              setOverlayActive(false);
+              setModalState(0);
+            }}
+          >
+            {t("common.close", { defaultValue: "关闭" }) as unknown as string}
+          </Button>
+        </ModalFooter>
+      </>
+    ),
+    17: (onClose) => (
+      <>
+        <ModalHeader className="flex flex-col gap-1 text-warning-600">
+          <h2 className="text-xl font-bold">
+            {t("launcherpage.gdk_missing.title", { defaultValue: "缺少 Microsoft GDK" })}
+          </h2>
+        </ModalHeader>
+        <ModalBody className="text-center">
+          <p className="text-foreground">
+            {t("launcherpage.gdk_missing.body", { defaultValue: "未检测到 GDK 工具包，注册功能需先安装。是否跳转到设置页进行安装？" })}
+          </p>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="light"
+            onPress={(e) => {
+              onClose?.(e);
+              setOverlayActive(false);
+              setModalState(0);
+            }}
+          >
+            {t("common.cancel", { defaultValue: "取消" }) as unknown as string}
+          </Button>
+          <Button
+            color="primary"
+            onPress={(e) => {
+              onClose?.(e);
+              setOverlayActive(false);
+              setModalState(0);
+              navigate("/settings");
+            }}
+          >
+            {t("launcherpage.gdk_missing.go_settings", { defaultValue: "前往设置" }) as unknown as string}
           </Button>
         </ModalFooter>
       </>
@@ -1085,6 +1237,17 @@ export const LauncherPage = (args: any) => {
                   ) : (
                     <ReleaseChip />
                   )}
+                  {Boolean(localVersionMap.get(currentVersion)?.isRegistered) ? (
+                    <Chip
+                      color="success"
+                      variant="flat"
+                      size="sm"
+                      startContent={<FaCheckCircle size={12} />}
+                      className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-700 border border-emerald-400/40 shadow-sm"
+                    >
+                      {t("launcherpage.registered_tip", { defaultValue: "已注册" }) as unknown as string}
+                    </Chip>
+                  ) : null}
                 </div>
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <span className="text-default-500 font-medium mt-[2px]">
@@ -1155,6 +1318,66 @@ export const LauncherPage = (args: any) => {
                           {t("launcherpage.open_exe_dir", {
                             defaultValue: "打开游戏安装目录",
                           }) as unknown as string}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          className="rounded-full justify-start shadow-none"
+                          startContent={<FaWindows />}
+                          onPress={async () => {
+                            try {
+                              if (!currentVersion) return;
+                              const isPrev = Boolean(localVersionMap.get(currentVersion)?.isPreview);
+                              try {
+                                const ok = await (minecraft as any)?.IsGDKInstalled?.();
+                                if (!ok) {
+                                  setModalState(17);
+                                  setOverlayActive(true);
+                                  onOpen();
+                                  return;
+                                }
+                              } catch {}
+                              setModalState(13);
+                              setOverlayActive(true);
+                              onOpen();
+                              const fn = (minecraft as any)?.RegisterVersionWithWdapp;
+                              if (typeof fn === "function") {
+                                const err = await fn(currentVersion, isPrev);
+                                if (err) {
+                                  setLaunchErrorCode(String(err));
+                                  setModalState(16);
+                                  setOverlayActive(true);
+                                  onOpen();
+                                } else {
+                                  try {
+                                    const listFn = (minecraft as any)?.ListVersionMetasWithRegistered ?? (minecraft as any)?.ListVersionMetas;
+                                    if (typeof listFn === "function") {
+                                      const metas = await listFn();
+                                      setLocalVersionMap((prev) => {
+                                        const map = new Map(prev);
+                                        (metas || []).forEach((m: any) => {
+                                          const name = String(m?.name || "");
+                                          const cur = map.get(name) || {};
+                                          map.set(name, {
+                                            ...cur,
+                                            isRegistered: Boolean(m?.registered),
+                                            isPreview: String(m?.type || (cur?.isPreview ? "preview" : "release")).toLowerCase() === "preview",
+                                            version: String(m?.gameVersion || cur?.version || ""),
+                                          });
+                                        });
+                                        return map;
+                                      });
+                                    }
+                                  } catch {}
+                                  setModalState(15);
+                                  setOverlayActive(true);
+                                  onOpen();
+                                }
+                              }
+                            } catch {}
+                          }}
+                        >
+                          {t("launcherpage.register_system_button", { defaultValue: "注册到系统" }) as unknown as string}
                         </Button>
                       </div>
                     }
@@ -1317,9 +1540,22 @@ export const LauncherPage = (args: any) => {
                               >
                                 {name}
                               </span>
-                              <span className="text-xs text-default-500 ml-2">
-                                {localVersionMap.get(name)?.version || ""}
-                              </span>
+                              <div className="flex items-center gap-2 ml-2">
+                                {Boolean(localVersionMap.get(name)?.isRegistered) ? (
+                                  <Chip
+                                    size="sm"
+                                    color="success"
+                                    variant="flat"
+                                    startContent={<FaCheckCircle size={12} />}
+                                    className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-700 border border-emerald-400/40 shadow-sm transition-transform duration-200 hover:scale-[1.03]"
+                                  >
+                                    {t("launcherpage.registered_tip", { defaultValue: "已注册" }) as unknown as string}
+                                  </Chip>
+                                ) : null}
+                                <span className="text-xs text-default-500">
+                                  {localVersionMap.get(name)?.version || ""}
+                                </span>
+                              </div>
                             </div>
                           </DropdownItem>
                         ))}
@@ -1462,7 +1698,7 @@ export const LauncherPage = (args: any) => {
                 </motion.div>
               </AnimatePresence>
             )}
-          </ModalContent>
+  </ModalContent>
         </Modal>
       </div>
     </>

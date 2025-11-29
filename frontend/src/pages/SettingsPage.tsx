@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardBody,
   Button,
+  Chip,
   Input,
   Divider,
   Dropdown,
@@ -40,8 +41,11 @@ import {
   GetVersionsDir,
   OpenPathDir,
   CanWriteToDir,
+  IsGDKInstalled,
+  StartGDKDownload,
+  InstallGDKFromZip,
 } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import { Browser } from "@wailsio/runtime";
+import { Browser, Events } from "@wailsio/runtime";
 import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
 import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
 
@@ -63,6 +67,15 @@ export const SettingsPage: React.FC = () => {
   const [newBaseRoot, setNewBaseRoot] = useState<string>("");
   const [savingBaseRoot, setSavingBaseRoot] = useState<boolean>(false);
   const [baseRootWritable, setBaseRootWritable] = useState<boolean>(true);
+  const [gdkInstalled, setGdkInstalled] = useState<boolean>(false);
+  const [gdkDlProgress, setGdkDlProgress] = useState<{ downloaded: number; total: number; dest?: string } | null>(null);
+  const [gdkDlSpeed, setGdkDlSpeed] = useState<number>(0);
+  const [gdkDlStatus, setGdkDlStatus] = useState<string>("");
+  const [gdkDlError, setGdkDlError] = useState<string>("");
+  const gdkProgressDisclosure = useDisclosure();
+  const gdkLicenseDisclosure = useDisclosure();
+  const gdkInstallDisclosure = useDisclosure();
+  const [gdkLicenseAccepted, setGdkLicenseAccepted] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { isOpen: unsavedOpen, onOpen: unsavedOnOpen, onOpenChange: unsavedOnOpenChange } = useDisclosure();
@@ -127,6 +140,10 @@ export const SettingsPage: React.FC = () => {
             setInstallerDir(String(id || ""));
             const vd = await GetVersionsDir();
             setVersionsDir(String(vd || ""));
+            try {
+              const ok = await IsGDKInstalled();
+              setGdkInstalled(Boolean(ok));
+            } catch {}
           }
         } catch {}
       })
@@ -182,6 +199,84 @@ export const SettingsPage: React.FC = () => {
       setUpdating(false);
     }
   };
+
+  useEffect(() => {
+    if (!hasBackend) return;
+    const offs: (() => void)[] = [];
+    const lastRef: { ts: number; bytes: number } | null = null as any;
+    try {
+      const speedRef: { ts: number; bytes: number; ema: number } = { ts: 0, bytes: 0, ema: 0 } as any;
+      offs.push(
+        Events.On("gdk_download_progress", (event) => {
+          const downloaded = Number(event?.data?.Downloaded || 0);
+          const total = Number(event?.data?.Total || 0);
+          const dest = String(event?.data?.Dest || "");
+          setGdkDlProgress({ downloaded, total, dest });
+          try {
+            const now = Date.now();
+            if (speedRef.ts > 0) {
+              const dt = (now - speedRef.ts) / 1000;
+              const db = downloaded - speedRef.bytes;
+              const inst = dt > 0 && db >= 0 ? db / dt : 0;
+              const alpha = 0.25;
+              speedRef.ema = alpha * inst + (1 - alpha) * (speedRef.ema || inst);
+              setGdkDlSpeed(speedRef.ema);
+            }
+            speedRef.ts = now;
+            speedRef.bytes = downloaded;
+          } catch {}
+        })
+      );
+      offs.push(
+        Events.On("gdk_download_status", (event) => {
+          const s = String(event?.data || "");
+          setGdkDlStatus(s);
+          if (s === "started" || s === "resumed" || s === "cancelled") {
+            setGdkDlError("");
+            try { (window as any).__gdkDlLast = null; } catch {}
+            setGdkDlSpeed(0);
+          }
+        })
+      );
+      offs.push(
+        Events.On("gdk_download_error", (event) => {
+          setGdkDlError(String(event?.data || ""));
+        })
+      );
+      offs.push(
+        Events.On("gdk_download_done", async (event) => {
+          const dest = String(event?.data || gdkDlProgress?.dest || "");
+          gdkProgressDisclosure.onClose();
+          try {
+            gdkInstallDisclosure.onOpen();
+            await InstallGDKFromZip(dest);
+          } catch {}
+        })
+      );
+      offs.push(
+        Events.On("gdk_install_done", (_event) => {
+          gdkInstallDisclosure.onClose();
+          setTimeout(async () => {
+            try {
+              const ok = await IsGDKInstalled();
+              setGdkInstalled(Boolean(ok));
+            } catch {}
+          }, 500);
+        })
+      );
+      offs.push(
+        Events.On("gdk_install_error", (event) => {
+          gdkInstallDisclosure.onClose();
+          setGdkDlError(String(event?.data || ""));
+        })
+      );
+    } catch {}
+    return () => {
+      for (const off of offs) {
+        try { off(); } catch {}
+      }
+    };
+  }, [hasBackend]);
 
   return (
     <div className="px-3 sm:px-5 lg:px-8 py-2 sm:py-4 lg:py-6 w-full max-w-none">
@@ -341,6 +436,32 @@ export const SettingsPage: React.FC = () => {
                 ) : null}
               </motion.div>
 
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.07 }} className="rounded-2xl p-4 bg-default-100/40 dark:bg-default-50/20 border border-default-200/50">
+                <div className="flex items-center justify-between">
+                  <p className="font-medium">{t("settings.gdk.title")}</p>
+                  <div className="flex items-center gap-2">
+                    {gdkInstalled ? (
+                      <Chip color="success" variant="flat">{t("settings.gdk.installed")}</Chip>
+                    ) : (
+                      <Button
+                        radius="full"
+                        variant="bordered"
+                        onPress={() => {
+                          setGdkLicenseAccepted(false);
+                          gdkLicenseDisclosure.onOpen();
+                        }}
+                      >
+                        {t("settings.gdk.install_button")}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <Divider className="my-3 bg-default-200/60 h-px" />
+                <div className="text-small text-default-500">
+                  {t("settings.gdk.path_label", { path: "C:\\Program Files (x86)\\Microsoft GDK" })}
+                </div>
+              </motion.div>
+
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.08 }} className="lg:col-span-2 rounded-2xl p-4 bg-default-100/40 dark:bg-default-50/20 border border-default-200/50">
                 <div className="flex items-center justify-between">
                   <p className="font-medium">{t("settingscard.body.version.name")}</p>
@@ -453,6 +574,101 @@ export const SettingsPage: React.FC = () => {
           </CardBody>
         </Card>
       </motion.div>
+      {/* GDK License */}
+      <Modal size="md" isOpen={gdkLicenseDisclosure.isOpen} onOpenChange={gdkLicenseDisclosure.onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>{t("settings.gdk.license.title")}</ModalHeader>
+              <ModalBody>
+                <div className="text-default-700 text-sm">
+                  {t("settings.gdk.license.body")} <a className="text-primary underline" href="https://aka.ms/GDK_EULA" target="_blank" rel="noreferrer">Microsoft Public Game Development Kit License Agreement</a>
+                </div>
+                <div className="flex items-center gap-2 mt-3">
+                  <input type="checkbox" id="gdk-license" checked={gdkLicenseAccepted} onChange={(e) => setGdkLicenseAccepted(Boolean(e.target.checked))} />
+                  <label htmlFor="gdk-license" className="text-small">{t("settings.gdk.license.accept")}</label>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>{t("common.cancel")}</Button>
+                <Button
+                  color="primary"
+                  isDisabled={!gdkLicenseAccepted}
+                  onPress={() => {
+                    onClose?.();
+                    try {
+                      setGdkDlError("");
+                      setGdkDlProgress(null);
+                      gdkProgressDisclosure.onOpen();
+                      StartGDKDownload("https://github.bibk.top/microsoft/GDK/releases/download/October-2025-v2510.0.6194/GDK_2510.0.6194.zip");
+                    } catch {}
+                  }}
+                >
+                  {t("downloadmodal.download_button")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* GDK Download Progress */}
+      <Modal size="md" isOpen={gdkProgressDisclosure.isOpen} onOpenChange={gdkProgressDisclosure.onOpenChange} hideCloseButton isDismissable={false}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-medium">{t("settings.gdk.download.title")}</ModalHeader>
+              <ModalBody>
+                {gdkDlError ? (
+                  <div className="text-danger">{gdkDlError}</div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <div className="h-2 w-full rounded bg-default-200 overflow-hidden">
+                      {(() => {
+                        const total = gdkDlProgress?.total || 0;
+                        const done = gdkDlProgress?.downloaded || 0;
+                        const pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0;
+                        return <div className="h-full bg-primary" style={{ width: `${pct}%` }} />;
+                      })()}
+                    </div>
+                    <div className="text-small text-default-500">
+                      {(() => {
+                        const total = gdkDlProgress?.total || 0;
+                        const done = gdkDlProgress?.downloaded || 0;
+                        const fmt = (n: number) => `${(n / (1024 * 1024)).toFixed(2)} MB`;
+                        const fmtSpd = (bps: number) => `${(bps / (1024 * 1024)).toFixed(2)} MB/s`;
+                        if (total > 0) {
+                          const pct = Math.min(100, Math.round((done / total) * 100));
+                          return `${fmt(done)} / ${fmt(total)} (${pct}%) · ${fmtSpd(gdkDlSpeed || 0)}`;
+                        }
+                        return `${fmt(done)} · ${fmtSpd(gdkDlSpeed || 0)}`;
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" isDisabled={gdkDlStatus === "done"} onPress={() => onClose?.()}>{t("common.cancel")}</Button>
+                <Button color="primary" isDisabled={gdkDlStatus !== "done"} onPress={() => onClose?.()}>{t("common.ok")}</Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* GDK Install */}
+      <Modal size="md" isOpen={gdkInstallDisclosure.isOpen} onOpenChange={gdkInstallDisclosure.onOpenChange} hideCloseButton isDismissable={false}>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader>{t("settings.gdk.install.title")}</ModalHeader>
+              <ModalBody>
+                <div className="text-small text-default-500">{t("settings.gdk.install.body")}</div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <Modal size="md" isOpen={unsavedOpen} onOpenChange={unsavedOnOpenChange} hideCloseButton>
         <ModalContent>
           {(onClose) => (

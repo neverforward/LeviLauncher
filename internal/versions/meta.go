@@ -17,13 +17,14 @@ var _ = reflect.TypeOf(VersionMeta{})
 var _ = reflect.TypeOf(metaFileName)
 
 type VersionMeta struct {
-	Name             string    `json:"name"`        
+	Name             string    `json:"name"        `
 	GameVersion      string    `json:"gameVersion"`
-	Type             string    `json:"type"`       
+	Type             string    `json:"type"       `
 	EnableIsolation  bool      `json:"enableIsolation"`
 	EnableConsole    bool      `json:"enableConsole"`
 	EnableEditorMode bool      `json:"enableEditorMode"`
 	CreatedAt        time.Time `json:"createdAt"`
+	Registered       bool      `json:"registered,omitempty"`
 }
 
 const metaFileName = "version.json"

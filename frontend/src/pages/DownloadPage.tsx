@@ -126,16 +126,13 @@ export const DownloadPage: React.FC = () => {
       const codeTrim = code.trim();
       const rest = restArr.join(":").trim();
       const key = `errors.${codeTrim}`;
-      const translated =
-        (codeTrim === "ERR_APPX_INSTALL_FAILED"
-          ? (t(key, {
-              typeLabel:
-                typeLabelOverride ||
-                ((String(mirrorType || "Release") === "Preview"
-                  ? t("common.preview")
-                  : t("common.release")) as unknown as string),
-            }) as unknown as string)
-          : (t(key) as unknown as string));
+      const translated = t(key, {
+        typeLabel:
+          typeLabelOverride ||
+          ((String(mirrorType || "Release") === "Preview"
+            ? t("common.preview")
+            : t("common.release")) as unknown as string),
+      }) as unknown as string;
       if (translated && translated !== key) {
         return rest ? `${translated} (${rest})` : translated;
       }
