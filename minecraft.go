@@ -688,8 +688,28 @@ func (a *Minecraft) launchVersionInternal(name string, checkRunning bool) string
 		if strings.TrimSpace(p) != "" {
 			toRun = p
 		}
+		if m.Registered {
+			isPreview := strings.EqualFold(strings.TrimSpace(m.Type), "preview")
+			protocol := "minecraft://"
+			if isPreview {
+				protocol = "minecraft-preview://"
+			}
+			url := protocol
+			if m.EnableEditorMode {
+				url = protocol + "creator/?Editor=true"
+			}
+
+			c := exec.Command("cmd", "/c", "start", "", url)
+			if err := c.Start(); err != nil {
+				return "ERR_LAUNCH_GAME"
+			}
+			gameVer = strings.TrimSpace(m.GameVersion)
+			discord.SetPlayingVersion(gameVer)
+			go launch.MonitorMinecraftWindow(a.ctx)
+			return ""
+		}
 		if m.EnableEditorMode {
-			args = []string{"minecraft://creator/?Editor=true"}
+			args = []string{"-Editor", "true"}
 		}
 		gameVer = strings.TrimSpace(m.GameVersion)
 	}

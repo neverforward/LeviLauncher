@@ -70,6 +70,11 @@ func downloadFile(ctx context.Context, src string, dest string) error {
 func CancelDownload() { gdkMgr.Cancel() }
 
 func InstallFromZip(ctx context.Context, zipPath string) string {
+	defer func() {
+		if strings.TrimSpace(zipPath) != "" {
+			_ = os.Remove(zipPath)
+		}
+	}()
 	if strings.TrimSpace(zipPath) == "" || !utils.FileExists(zipPath) {
 		return "ERR_ZIP_NOT_FOUND"
 	}
