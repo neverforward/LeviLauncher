@@ -4,7 +4,11 @@
     "lang": "Language",
     "quit_launcher": "Quit Launcher"
   },
-  "nav": { "versions": "Versions", "more": "More", "about": "About" },
+  "nav": {
+    "versions": "Versions",
+    "more": "More",
+    "about": "About"
+  },
   "launcherpage": {
     "launch_button": "Launch",
     "content_manage": "Content Management",
@@ -328,14 +332,6 @@
       "save_button": "Save"
     },
     "modal": {
-      "-2": {
-        "header": {
-          "title": "You are already on the latest version!"
-        },
-        "footer": {
-          "close_button": "Close"
-        }
-      },
       "1": {
         "header": {
           "title": "Checking for updates..."
@@ -362,6 +358,14 @@
       "3": {
         "header": {
           "title": "Updating..."
+        }
+      },
+      "-2": {
+        "header": {
+          "title": "You are already on the latest version!"
+        },
+        "footer": {
+          "close_button": "Close"
         }
       }
     }
@@ -405,7 +409,6 @@
       }
     }
   },
-
   "downloadmodal": {
     "download_button": "Download",
     "information": {
@@ -471,7 +474,6 @@
     "description": " 2024-2025 {{name}} All rights reserved",
     "font": "This software uses the {{name}} font"
   },
-
   "about": {
     "authors": "Authors & Maintainers",
     "author": "Author",
@@ -493,7 +495,6 @@
     "star_fork": "Star / Fork",
     "rhymc_name": "RhyMC"
   },
-
   "common": {
     "ok": "OK",
     "cancel": "Cancel",
@@ -589,7 +590,6 @@
     "new_child_item": "New Child Item",
     "field_type": "Type"
   },
-
   "versions": {
     "rename": {
       "title": "Rename Version",
