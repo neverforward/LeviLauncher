@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "next-themes";
 
 const colorMap: Record<string, string> = {
   "0": "#000000",
@@ -31,9 +32,20 @@ const colorMap: Record<string, string> = {
   v: "#EB7114",
 };
 
+const lightModeColorMap: Record<string, string> = {
+  ...colorMap,
+  e: "#D4A500",
+  g: "#B89F00",
+  h: "#8B7355",
+  i: "#666666",
+};
+
 type StyleState = { color?: string; bold?: boolean; italic?: boolean };
 
 export function renderMcText(text: string): React.ReactNode {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+  const activeColorMap = isLight ? lightModeColorMap : colorMap;
   const parts: React.ReactNode[] = [];
   let i = 0;
   let style: StyleState = {};
@@ -77,7 +89,7 @@ export function renderMcText(text: string): React.ReactNode {
         style = { ...style, italic: true };
         continue;
       }
-      const col = colorMap[code];
+      const col = activeColorMap[code];
       if (col) {
         style = { ...style, color: col };
         continue;
