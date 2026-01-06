@@ -37,6 +37,8 @@ export default function VersionSettingsPage() {
   const [isRegistered, setIsRegistered] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [unregisterOpen, setUnregisterOpen] = React.useState<boolean>(false);
+  const [unregisterSuccessOpen, setUnregisterSuccessOpen] =
+    React.useState<boolean>(false);
   const [gdkMissingOpen, setGdkMissingOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
   const [logoDataUrl, setLogoDataUrl] = React.useState<string>("");
@@ -511,52 +513,54 @@ export default function VersionSettingsPage() {
                             defaultValue: "点击以打开删除确认，避免误触。",
                           }) as unknown as string)}
                     </div>
-                    {isRegistered ? (
-                      <Button
-                        size="sm"
-                        variant="light"
-                        color="warning"
-                        isDisabled={loading}
-                        onPress={async () => {
-                          try {
-                            const has = await (
-                              minecraft as any
-                            )?.IsGDKInstalled?.();
-                            if (!has) {
-                              setUnregisterOpen(false);
-                              setGdkMissingOpen(true);
-                              return;
-                            }
-                            const fn = (minecraft as any)
-                              ?.UnregisterVersionByName;
-                            if (typeof fn === "function") {
-                              setUnregisterOpen(true);
-                              const err: string = await fn(targetName);
-                              setUnregisterOpen(false);
-                              if (err) {
-                                setError(String(err));
-                              } else {
-                                setIsRegistered(false);
+                    <div className="flex items-center gap-2">
+                      {isRegistered && (
+                        <Button
+                          size="sm"
+                          variant="light"
+                          color="warning"
+                          isDisabled={loading}
+                          onPress={async () => {
+                            try {
+                              const has = await (
+                                minecraft as any
+                              )?.IsGDKInstalled?.();
+                              if (!has) {
+                                setUnregisterOpen(false);
+                                setGdkMissingOpen(true);
+                                return;
                               }
+                              const fn = (minecraft as any)
+                                ?.UnregisterVersionByName;
+                              if (typeof fn === "function") {
+                                setUnregisterOpen(true);
+                                const err: string = await fn(targetName);
+                                setUnregisterOpen(false);
+                                if (err) {
+                                  setError(String(err));
+                                } else {
+                                  setIsRegistered(false);
+                                  setUnregisterSuccessOpen(true);
+                                }
+                              }
+                            } catch {
+                              setUnregisterOpen(false);
+                              setError("ERR_UNREGISTER_FAILED");
                             }
-                          } catch {
-                            setUnregisterOpen(false);
-                            setError("ERR_UNREGISTER_FAILED");
+                          }}
+                        >
+                          {
+                            t("versions.edit.unregister_button", {
+                              defaultValue: "取消注册",
+                            }) as unknown as string
                           }
-                        }}
-                      >
-                        {
-                          t("versions.edit.unregister_button", {
-                            defaultValue: "取消注册",
-                          }) as unknown as string
-                        }
-                      </Button>
-                    ) : (
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="light"
                         color="danger"
-                        isDisabled={loading}
+                        isDisabled={loading || isRegistered}
                         onPress={() => setDeleteOpen(true)}
                       >
                         {
@@ -565,7 +569,7 @@ export default function VersionSettingsPage() {
                           }) as unknown as string
                         }
                       </Button>
-                    )}
+                    </div>
                   </div>
                 </div>
               </CardBody>
@@ -614,7 +618,7 @@ export default function VersionSettingsPage() {
                       }) as unknown as string
                     }
                   </div>
-                  <div className="w-full max-w-md">
+                  <div className="w-full max-w-md mx-auto">
                     <div className="relative h-2 rounded-full bg-default-100/70 dark:bg-default-50/10 overflow-hidden border border-white/30">
                       <div className="absolute top-0 bottom-0 rounded-full bg-default-400/60 indeterminate-bar1" />
                       <div className="absolute top-0 bottom-0 rounded-full bg-default-400/40 indeterminate-bar2" />
@@ -624,6 +628,54 @@ export default function VersionSettingsPage() {
               </>
             )
           }
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={unregisterSuccessOpen}
+        onOpenChange={(open) => {
+          if (!open) setUnregisterSuccessOpen(false);
+        }}
+        size="md"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex items-center gap-2 text-success-600">
+                <h2 className="text-lg font-semibold">
+                  {
+                    t("versions.edit.unregister_success.title", {
+                      defaultValue: "取消注册成功",
+                    }) as unknown as string
+                  }
+                </h2>
+              </ModalHeader>
+              <ModalBody>
+                <div className="text-small text-foreground">
+                  {
+                    t("versions.edit.unregister_success.body", {
+                      defaultValue: "已成功取消注册，现在可以删除该版本了。",
+                    }) as unknown as string
+                  }
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose?.();
+                    setUnregisterSuccessOpen(false);
+                  }}
+                >
+                  {
+                    t("launcherpage.delete.complete.close_button", {
+                      defaultValue: "关闭",
+                    }) as unknown as string
+                  }
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
 

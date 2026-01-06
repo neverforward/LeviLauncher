@@ -1141,7 +1141,7 @@ export const LauncherPage = (args: any) => {
               defaultValue: "正在调用 wdapp.exe 执行注册，请稍候…",
             })}
           </p>
-          <div className="w-full max-w-md mt-2">
+          <div className="w-full max-w-md mt-2 mx-auto">
             <div className="relative h-2 rounded-full bg-default-100/70 dark:bg-default-50/10 overflow-hidden border border-white/30">
               <div className="absolute top-0 bottom-0 rounded-full bg-default-400/60 indeterminate-bar1" />
               <div className="absolute top-0 bottom-0 rounded-full bg-default-400/40 indeterminate-bar2" />

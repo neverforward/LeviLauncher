@@ -621,6 +621,10 @@
       "unregister_progress": {
         "title": "正在取消注册",
         "body": "正在执行系统取消注册，请稍候…"
+      },
+      "unregister_success": {
+        "title": "取消注册成功",
+        "body": "已成功取消注册，现在可以删除该版本了。"
       }
     },
     "logo": {

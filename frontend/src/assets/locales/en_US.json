@@ -621,6 +621,10 @@
       "unregister_progress": {
         "title": "Unregistering",
         "body": "Performing system unregister. Please wait…"
+      },
+      "unregister_success": {
+        "title": "Unregister Successful",
+        "body": "Successfully unregistered. You can now delete this version."
       }
     },
     "logo": {
