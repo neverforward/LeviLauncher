@@ -137,6 +137,10 @@ export const SettingsPage: React.FC = () => {
           language: "简体中文",
           code: "zh_CN",
         } as unknown as types.LanguageJson,
+        {
+          language: "繁体中文",
+          code: "zh_HK",
+        } as unknown as types.LanguageJson,
       ]);
     }
     const normalize = (lng: string) => {

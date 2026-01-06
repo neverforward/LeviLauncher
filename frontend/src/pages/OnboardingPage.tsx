@@ -59,6 +59,7 @@ export default function OnboardingPage() {
       setLangNames([
         { language: "English", code: "en_US" },
         { language: "简体中文", code: "zh_CN" },
+        { language: "繁体中文", code: "zh_HK" },
       ]);
     }
     const normalize = (lng: string) => {
