@@ -60,6 +60,7 @@ export default function OnboardingPage() {
         { language: "English", code: "en_US" },
         { language: "简体中文", code: "zh_CN" },
         { language: "繁体中文", code: "zh_HK" },
+        { language: "日本語", code: "ja_JP" },
       ]);
     }
     const normalize = (lng: string) => {
