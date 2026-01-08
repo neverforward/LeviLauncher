@@ -154,7 +154,7 @@ export const CurseForgePage: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      setScrollPosition(lastScrollTopRef.current);
+      setScrollPosition(getScrollTop());
     };
   }, []);
 
@@ -187,6 +187,38 @@ export const CurseForgePage: React.FC = () => {
     return targets;
   };
 
+  const getScrollTop = () => {
+    let best = 0;
+    for (const target of collectScrollTargets()) {
+      if (target === window) {
+        best = Math.max(best, window.scrollY || 0);
+        continue;
+      }
+      best = Math.max(best, target.scrollTop || 0);
+    }
+    return best;
+  };
+
+  const applyScrollTop = (y: number) => {
+    for (const target of collectScrollTargets()) {
+      if (target === window) {
+        window.scrollTo({ top: y, left: 0, behavior: "auto" });
+        continue;
+      }
+      target.scrollTop = y;
+    }
+  };
+
+  useEffect(() => {
+    const handler = () => {
+      lastScrollTopRef.current = getScrollTop();
+    };
+    document.addEventListener("scroll", handler, true);
+    return () => {
+      document.removeEventListener("scroll", handler, true);
+    };
+  }, []);
+
   const prevDepsRef = React.useRef<{
     selectedMinecraftVersion: string;
     selectedClass: number;
@@ -197,8 +229,7 @@ export const CurseForgePage: React.FC = () => {
   } | null>(null);
   const restoredRef = React.useRef(false);
   const saveScrollPosition = () => {
-    const target = scrollContainerRef.current;
-    const y = target ? target.scrollTop : lastScrollTopRef.current;
+    const y = getScrollTop();
     lastScrollTopRef.current = y;
     setScrollPosition(y);
   };
@@ -251,12 +282,17 @@ export const CurseForgePage: React.FC = () => {
 
     if (hasSearched && (!depsChanged || prevDeps === null)) {
       if (!restoredRef.current) {
-        const target = scrollContainerRef.current;
-        if (target) {
-          target.scrollTop = scrollPosition;
-          lastScrollTopRef.current = scrollPosition;
-          restoredRef.current = true;
-        }
+        applyScrollTop(scrollPosition);
+        const raf = requestAnimationFrame(() => applyScrollTop(scrollPosition));
+        const t0 = window.setTimeout(() => applyScrollTop(scrollPosition), 0);
+        const t1 = window.setTimeout(() => applyScrollTop(scrollPosition), 120);
+        lastScrollTopRef.current = scrollPosition;
+        restoredRef.current = true;
+        return () => {
+          cancelAnimationFrame(raf);
+          clearTimeout(t0);
+          clearTimeout(t1);
+        };
       }
       return;
     }
@@ -488,7 +524,7 @@ export const CurseForgePage: React.FC = () => {
       <div 
         ref={scrollContainerRef}
         onScroll={(e) => {
-          lastScrollTopRef.current = e.currentTarget.scrollTop;
+          lastScrollTopRef.current = getScrollTop();
         }}
         className="flex-1 min-h-0 overflow-y-auto rounded-xl p-2 relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >

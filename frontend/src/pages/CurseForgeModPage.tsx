@@ -142,6 +142,50 @@ const CurseForgeModPage: React.FC = () => {
   const [dupOpen, setDupOpen] = useState(false);
   const [dupName, setDupName] = useState<string>("");
   const dupResolveRef = useRef<((overwrite: boolean) => void) | null>(null);
+  const isCancelling = useRef(false);
+  const cleanupRef = useRef<() => void>(() => {});
+
+  React.useLayoutEffect(() => {
+    const reset = () => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      } catch {}
+      try {
+        const el = document.scrollingElement as HTMLElement | null;
+        if (el) el.scrollTop = 0;
+      } catch {}
+      try {
+        document.documentElement.scrollTop = 0;
+      } catch {}
+      try {
+        document.body.scrollTop = 0;
+      } catch {}
+      try {
+        const root = document.getElementById("root");
+        if (root) (root as HTMLElement).scrollTop = 0;
+      } catch {}
+    };
+    reset();
+    const raf = requestAnimationFrame(reset);
+    const t0 = window.setTimeout(reset, 0);
+    const t1 = window.setTimeout(reset, 120);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t0);
+      clearTimeout(t1);
+    };
+  }, [id]);
+
+  const handleCancelDownload = async () => {
+    isCancelling.current = true;
+    cleanupRef.current();
+    try {
+      await CancelFileDownload();
+    } catch (e) {
+      console.warn("Cancel failed", e);
+    }
+    setInstallModalOpen(false);
+  };
 
   const handleInstall = async (file: ModFile) => {
     if (!file.downloadUrl) {
@@ -154,6 +198,7 @@ const CurseForgeModPage: React.FC = () => {
     setInstallError("");
     setInstallFile(null);
     setDownloadProgress(null);
+    isCancelling.current = false;
 
     try {
       const dest = await StartFileDownload(file.downloadUrl, file.fileName);
@@ -163,9 +208,11 @@ const CurseForgeModPage: React.FC = () => {
         Events.Off("file_download_done");
         Events.Off("file_download_error");
       };
+      cleanupRef.current = cleanup;
 
-      Events.On("file_download_progress", (data: any) => {
-         setDownloadProgress({ downloaded: data.Downloaded, total: data.Total });
+      Events.On("file_download_progress", (event: any) => {
+         const data = event.data || {};
+         setDownloadProgress({ downloaded: Number(data.Downloaded || 0), total: Number(data.Total || 0) });
       });
 
       Events.On("file_download_done", async () => {
@@ -218,13 +265,16 @@ const CurseForgeModPage: React.FC = () => {
          }
       });
 
-      Events.On("file_download_error", (err: any) => {
+      Events.On("file_download_error", (event: any) => {
          cleanup();
+         if (isCancelling.current) return;
+         const err = event.data;
          setInstallError(err || "Download failed");
          setInstallStep('error');
       });
 
     } catch (e: any) {
+      if (isCancelling.current) return;
       setInstallError(e.message || "Download start failed");
       setInstallStep('error');
     }
@@ -722,14 +772,16 @@ const CurseForgeModPage: React.FC = () => {
       <Modal
         isOpen={installModalOpen} 
         onOpenChange={(open) => {
-            if (!open && (installStep === 'success' || installStep === 'error')) {
-                setInstallModalOpen(false);
-            } else if (!open && installStep !== 'importing' && installStep !== 'downloading') {
-                setInstallModalOpen(false);
+            if (!open) {
+                if (installStep === 'downloading') {
+                    handleCancelDownload();
+                } else if (installStep !== 'importing') {
+                    setInstallModalOpen(false);
+                }
             }
         }}
-        isDismissable={installStep !== 'importing' && installStep !== 'downloading'}
-        hideCloseButton={installStep === 'importing' || installStep === 'downloading'}
+        isDismissable={installStep !== 'importing'}
+        hideCloseButton={installStep === 'importing'}
       >
         <ModalContent>
           {(onClose) => (
@@ -751,6 +803,7 @@ const CurseForgeModPage: React.FC = () => {
                                 aria-label="Downloading..." 
                                 value={(downloadProgress.downloaded / downloadProgress.total) * 100} 
                                 className="max-w-md w-full"
+                                showValueLabel={true}
                              />
                         ) : (
                              <Spinner size="lg" />
@@ -845,10 +898,20 @@ const CurseForgeModPage: React.FC = () => {
                 )}
               </ModalBody>
               <ModalFooter>
+                {installStep === 'downloading' && (
+                  <Button color="danger" variant="flat" onPress={handleCancelDownload}>
+                    {t("common.cancel", { defaultValue: "Cancel" })}
+                  </Button>
+                )}
                 {(installStep === 'version_select' || installStep === 'player_select') && (
-                    <Button color="primary" onPress={handleVersionSelectNext}>
-                        {t("curseforge.install.next", { defaultValue: "Next" })}
-                    </Button>
+                    <>
+                        <Button variant="flat" onPress={() => setInstallModalOpen(false)}>
+                            {t("common.cancel", { defaultValue: "Cancel" })}
+                        </Button>
+                        <Button color="primary" onPress={handleVersionSelectNext}>
+                            {t("curseforge.install.next", { defaultValue: "Next" })}
+                        </Button>
+                    </>
                 )}
                 {(installStep === 'success' || installStep === 'error') && (
                     <Button color="primary" onPress={onClose}>
