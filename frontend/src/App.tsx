@@ -134,7 +134,7 @@ function App() {
     if (!revealStarted) return;
     if (isUpdatingMode) return;
     try {
-      const onboarded = localStorage.getItem("ll.onboarded1");
+      const onboarded = localStorage.getItem("ll.onboarded");
       const allowDuringOnboarding =
         location.pathname.startsWith("/filemanager");
       if (
