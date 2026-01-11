@@ -504,10 +504,15 @@
     "cancel_and_clean": "Cancel and Clean",
     "quit_launcher": "Quit Launcher",
     "confirm": "Confirm",
+    "success": "Success",
     "delete": "Delete",
+    "delete_selected": "Delete selected",
     "search": "Search",
+    "search_placeholder": "Search...",
     "open": "Open",
     "select": "Select",
+    "select_mode": "Select mode",
+    "select_all": "Select all",
     "preview": "Preview",
     "release": "Release",
     "back": "Back",
@@ -528,7 +533,10 @@
     "add": "Add",
     "save_failed": "Save failed",
     "load_failed": "Load failed",
-    "view_all": "View All"
+    "view_all": "View All",
+    "confirm_delete": "Confirm Delete",
+    "deleting": "Deleting...",
+    "no_results": "No results found"
   },
   "content": {
     "count": {
@@ -547,6 +555,7 @@
     "isolation_on": "Isolation: On",
     "isolation_off": "Isolation: Off",
     "worlds": "Worlds",
+    "worlds_list": "Worlds List",
     "worlds_desc": "Stored per-player under Users/<player>/games/com.mojang/minecraftWorlds",
     "select_player": "Select Player",
     "no_players": "No players",
@@ -571,6 +580,8 @@
     "players_aria": "Players",
     "sort_aria": "Sort",
     "sort_time": "Time",
+    "sort_az": "Name A-Z",
+    "sort_za": "Name Z-A",
     "sort_asc": "Ascending",
     "sort_desc": "Descending",
     "min_engine_version": "Min Engine Version",
@@ -592,7 +603,14 @@
     "new_child_item": "New Child Item",
     "field_type": "Type",
     "select_player_title": "Select Player",
-    "select_player_for_import": "Please select the player to import to"
+    "select_player_for_import": "Please select the player to import to",
+    "no_items": "No items found",
+    "delete_pack_confirm": "Are you sure you want to delete {{name}}?",
+    "delete_warning": "This action cannot be undone!",
+    "delete_selected_confirm": "Are you sure you want to delete the selected {{count}} items?",
+    "deleted_name": "Deleted {{name}}",
+    "deleted_count": "Deleted {{count}} items",
+    "delete_world_confirm": "Are you sure you want to delete world {{name}}?"
   },
   "versions": {
     "rename": {

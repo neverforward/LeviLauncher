@@ -320,6 +320,21 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const onDragStartCapture = (e: DragEvent) => {
+      try {
+        const target = e.target;
+        if (target instanceof HTMLImageElement) {
+          e.preventDefault();
+        }
+      } catch {}
+    };
+    document.addEventListener("dragstart", onDragStartCapture, true);
+    return () => {
+      document.removeEventListener("dragstart", onDragStartCapture, true);
+    };
+  }, []);
+
+  useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Tab") {
         e.preventDefault();

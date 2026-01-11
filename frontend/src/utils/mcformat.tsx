@@ -40,6 +40,19 @@ const lightModeColorMap: Record<string, string> = {
   i: "#666666",
 };
 
+const darkModeColorMap: Record<string, string> = {
+  ...colorMap,
+  "0": "#F4F4F5", // Black -> zinc-100
+  "1": "#60A5FA", // Dark Blue -> blue-400
+  "2": "#4ADE80", // Dark Green -> green-400
+  "3": "#2DD4BF", // Dark Aqua -> teal-400
+  "4": "#F87171", // Dark Red -> red-400
+  "5": "#C084FC", // Dark Purple -> purple-400
+  "6": "#FBBF24", // Gold -> amber-400
+  "7": "#D4D4D8", // Gray -> zinc-300
+  "8": "#A1A1AA", // Dark Gray -> zinc-400
+};
+
 type StyleState = { color?: string; bold?: boolean; italic?: boolean };
 
 type McTextProps = {
@@ -49,7 +62,7 @@ type McTextProps = {
 export function McText({ text }: McTextProps): React.ReactElement {
   const { theme } = useTheme();
   const isLight = theme === "light";
-  const activeColorMap = isLight ? lightModeColorMap : colorMap;
+  const activeColorMap = isLight ? lightModeColorMap : darkModeColorMap;
   const parts: React.ReactNode[] = [];
   let i = 0;
   let style: StyleState = {};

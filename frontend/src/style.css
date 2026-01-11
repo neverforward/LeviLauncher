@@ -16,6 +16,11 @@ html {
   /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
 /* Make root fill viewport and disable window-level scroll; internal panes should manage their own scrolling */
 html,
 body,

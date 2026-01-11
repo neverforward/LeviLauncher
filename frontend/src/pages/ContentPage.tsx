@@ -2,6 +2,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
+  Card,
+  CardBody,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -17,7 +19,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GetContentRoots } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
 import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
-import { FaGlobe, FaImage, FaCogs, FaFolderOpen } from "react-icons/fa";
+import { FaGlobe, FaImage, FaCogs, FaFolderOpen, FaUserTag } from "react-icons/fa";
 import { readCurrentVersionName } from "../utils/currentVersion";
 import { countDirectories } from "../utils/fs";
 import { listPlayers } from "../utils/content";
@@ -807,7 +809,7 @@ export default function ContentPage() {
 
   return (
     <motion.div
-      className={`relative w-full h-full p-3 sm:p-4 lg:p-6 ${
+      className={`relative w-full h-full flex flex-col overflow-hidden ${
         dragActive ? "cursor-copy" : ""
       }`}
       onDragOver={(e) => {
@@ -1058,6 +1060,290 @@ export default function ContentPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
+      <AnimatePresence>
+        {dragActive ? (
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="rounded-2xl bg-white/90 dark:bg-zinc-900/90 p-6 shadow-2xl border border-primary/50">
+              <div className="text-primary-600 text-xl font-semibold flex items-center gap-3">
+                <FiUploadCloud className="w-8 h-8" />
+                {t("contentpage.drop_hint", {
+                  defaultValue: "拖入 .mcworld/.mcpack/.mcaddon 以导入",
+                })}
+              </div>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      <div className="flex-1 overflow-auto">
+        <div className="px-3 sm:px-5 lg:px-8 pt-3 sm:pt-4 lg:pt-6 pb-12 sm:pb-16 lg:pb-20 max-w-7xl mx-auto">
+          {/* Header Card */}
+          <Card className="rounded-[2rem] shadow-lg mb-6 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
+            <CardBody className="px-6 sm:px-8 py-5">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                      {t("launcherpage.content_manage", { defaultValue: "内容管理" })}
+                    </h1>
+                    <div className="mt-2 text-default-500 text-sm flex flex-wrap items-center gap-2">
+                      <span>{t("contentpage.current_version", { defaultValue: "当前版本" })}:</span>
+                      <span className="font-medium text-default-700 bg-default-100 px-2 py-0.5 rounded-md">
+                        {currentVersionName || t("contentpage.none", { defaultValue: "无" })}
+                      </span>
+                      <span className="text-default-300">|</span>
+                      <span>{t("contentpage.isolation", { defaultValue: "版本隔离" })}:</span>
+                      <span
+                        className={`font-medium px-2 py-0.5 rounded-md ${
+                          roots.isIsolation
+                            ? "bg-success-50 text-success-600"
+                            : "bg-default-100 text-default-700"
+                        }`}
+                      >
+                        {roots.isIsolation
+                          ? t("common.yes", { defaultValue: "是" })
+                          : t("common.no", { defaultValue: "否" })}
+                      </span>
+                      <span className="text-default-300">|</span>
+                      <span>{t("contentpage.select_player", { defaultValue: "玩家" })}:</span>
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button size="sm" variant="light" className="h-6 min-w-0 px-2 text-small font-medium text-default-700 bg-default-100 rounded-md">
+                            {selectedPlayer || t("contentpage.no_players", { defaultValue: "暂无" })}
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Players"
+                          selectionMode="single"
+                          selectedKeys={new Set([selectedPlayer])}
+                          onSelectionChange={(keys) => {
+                            const arr = Array.from(keys as unknown as Set<string>);
+                            const next = arr[0] || "";
+                            if (typeof next === "string") onChangePlayer(next);
+                          }}
+                        >
+                          {players.length ? (
+                            players.map((p) => (
+                              <DropdownItem key={p} textValue={p}>
+                                {p}
+                              </DropdownItem>
+                            ))
+                          ) : (
+                            <DropdownItem key="none" isDisabled>
+                              {t("contentpage.no_players", { defaultValue: "暂无玩家" })}
+                            </DropdownItem>
+                          )}
+                        </DropdownMenu>
+                      </Dropdown>
+                      {!selectedPlayer && (
+                        <span className="text-danger-500 text-xs">
+                          ({t("contentpage.require_player_for_world_import", { defaultValue: "需选择玩家" })})
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="bordered"
+                      onPress={() => navigate("/")}
+                      className="rounded-full"
+                    >
+                      {t("common.back", { defaultValue: "返回" })}
+                    </Button>
+                    <Tooltip
+                      content={
+                        t("contentpage.open_users_dir", {
+                          defaultValue: "打开存储目录",
+                        }) as unknown as string
+                      }
+                    >
+                      <Button
+                        size="sm"
+                        variant="bordered"
+                        isIconOnly
+                        isDisabled={!hasBackend || !roots.usersRoot}
+                        onPress={() => {
+                          if (roots.usersRoot) {
+                            (minecraft as any)?.OpenPathDir(roots.usersRoot);
+                          }
+                        }}
+                        className="rounded-full"
+                      >
+                        <FaFolderOpen />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      content={
+                        t("common.refresh", {
+                          defaultValue: "刷新",
+                        }) as unknown as string
+                      }
+                    >
+                      <Button
+                        size="sm"
+                        variant="bordered"
+                        onPress={() => refreshAll()}
+                        isDisabled={loading}
+                        className="rounded-full px-4"
+                      >
+                        {t("common.refresh", { defaultValue: "刷新" })}
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </div>
+                {!!error && <div className="text-danger-500 text-sm">{error}</div>}
+              </div>
+            </CardBody>
+          </Card>
+
+
+
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card
+              isPressable
+              onPress={() => navigate("/content/worlds", { state: { player: selectedPlayer } })}
+              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+            >
+              <CardBody className="p-6">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500">
+                       <FaGlobe className="w-6 h-6" />
+                    </div>
+                    <span className="text-lg font-medium text-default-700">
+                      {t("contentpage.worlds", { defaultValue: "世界" })}
+                    </span>
+                  </div>
+                  {loading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <span className="text-2xl font-bold text-default-900">
+                      {worldsCount}
+                    </span>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+
+            <Card
+              isPressable
+              onPress={() => navigate("/content/resource-packs")}
+              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+            >
+              <CardBody className="p-6">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500">
+                       <FaImage className="w-6 h-6" />
+                    </div>
+                    <span className="text-lg font-medium text-default-700">
+                      {t("contentpage.resource_packs", { defaultValue: "资源包" })}
+                    </span>
+                  </div>
+                  {loading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <span className="text-2xl font-bold text-default-900">
+                      {resCount}
+                    </span>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+
+            <Card
+              isPressable
+              onPress={() => navigate("/content/behavior-packs")}
+              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+            >
+              <CardBody className="p-6">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-500">
+                       <FaCogs className="w-6 h-6" />
+                    </div>
+                    <span className="text-lg font-medium text-default-700">
+                      {t("contentpage.behavior_packs", { defaultValue: "行为包" })}
+                    </span>
+                  </div>
+                  {loading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <span className="text-2xl font-bold text-default-900">
+                      {bpCount}
+                    </span>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+
+            <Card
+              isPressable
+              onPress={() => navigate("/content/skin-packs", { state: { player: selectedPlayer } })}
+              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+            >
+              <CardBody className="p-6">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-pink-50 dark:bg-pink-900/20 text-pink-500">
+                       <FaUserTag className="w-6 h-6" />
+                    </div>
+                    <span className="text-lg font-medium text-default-700">
+                      {t("contentpage.skin_packs", { defaultValue: "皮肤包" })}
+                    </span>
+                  </div>
+                  {loading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <span className="text-2xl font-bold text-default-900">
+                      {skinCount}
+                    </span>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+
+          <div className="mt-8 flex justify-end gap-4">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".mcworld,.mcpack,.mcaddon"
+              multiple
+              className="hidden"
+              onChange={handleFilePick}
+            />
+            <Button
+              color="primary"
+              variant="shadow"
+              className="rounded-full px-8 font-medium shadow-lg shadow-primary/30"
+              onPress={() =>
+                navigate("/filemanager", {
+                  state: {
+                    allowedExt: [".mcworld", ".mcpack", ".mcaddon"],
+                    multi: true,
+                    returnTo: "/content",
+                  },
+                })
+              }
+              isDisabled={importing}
+            >
+              {t("contentpage.import_button", {
+                defaultValue: "导入 .mcworld/.mcpack/.mcaddon",
+              })}
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <BaseModal size="sm" isOpen={importing} hideCloseButton isDismissable={false}>
         <ModalContent>
           {() => (
@@ -1288,289 +1574,6 @@ export default function ContentPage() {
           )}
         </ModalContent>
       </BaseModal>
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-        className={`relative overflow-hidden rounded-2xl border border-default-200 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md p-5 ${
-          dragActive ? "border-2 border-dashed border-primary" : ""
-        }`}
-      >
-        <AnimatePresence>
-          {dragActive ? (
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center bg-black/10 rounded-2xl"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="text-primary-600 text-xl font-semibold">
-                {t("contentpage.drop_hint", {
-                  defaultValue: "拖入 .mcworld/.mcpack/.mcaddon 以导入",
-                })}
-              </div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">
-            {t("launcherpage.content_manage", { defaultValue: "内容管理" })}
-          </h1>
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="bordered"
-              onPress={() => navigate("/")}
-            >
-              {t("common.back", { defaultValue: "返回" })}
-            </Button>
-            <Tooltip
-              content={
-                t("contentpage.open_users_dir", {
-                  defaultValue: "打开存储目录",
-                }) as unknown as string
-              }
-            >
-              <Button
-                size="sm"
-                variant="bordered"
-                isIconOnly
-                isDisabled={!hasBackend || !roots.usersRoot}
-                onPress={() => {
-                  if (roots.usersRoot) {
-                    (minecraft as any)?.OpenPathDir(roots.usersRoot);
-                  }
-                }}
-                className="rounded-full"
-              >
-                <FaFolderOpen />
-              </Button>
-            </Tooltip>
-            <Tooltip
-              content={
-                t("common.refresh", {
-                  defaultValue: "刷新",
-                }) as unknown as string
-              }
-            >
-              <Button
-                size="sm"
-                variant="bordered"
-                onPress={refreshAll}
-                isDisabled={loading}
-                className="rounded-full px-4"
-              >
-                {t("common.refresh", { defaultValue: "刷新" })}
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
-
-        <div className="mt-2 text-default-500 text-sm">
-          {t("contentpage.current_version", { defaultValue: "当前版本" })}:{" "}
-          <span className="font-medium">
-            {currentVersionName ||
-              t("contentpage.none", { defaultValue: "无" })}
-          </span>
-          <span className="mx-2">·</span>
-          {t("contentpage.isolation", { defaultValue: "版本隔离" })}:{" "}
-          <span className="font-medium">
-            {roots.isIsolation
-              ? t("common.yes", { defaultValue: "是" })
-              : t("common.no", { defaultValue: "否" })}
-          </span>
-        </div>
-        {!!error && <div className="mt-2 text-danger-500 text-sm">{error}</div>}
-
-        <div className="mt-4 rounded-xl border border-default-200 bg-white/50 dark:bg-neutral-800/40 shadow-sm backdrop-blur-sm px-3 py-2 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-small text-default-600">
-              {t("contentpage.select_player", { defaultValue: "选择玩家" })}
-            </span>
-            <span className="text-small text-default-700 font-medium">
-              {selectedPlayer ||
-                t("contentpage.no_players", { defaultValue: "暂无玩家" })}
-            </span>
-            {!selectedPlayer ? (
-              <span className="ml-2 text-small text-danger-500">
-                {t("contentpage.require_player_for_world_import", {
-                  defaultValue: "导入世界需选择玩家",
-                })}
-              </span>
-            ) : null}
-          </div>
-          <Dropdown>
-            <DropdownTrigger>
-              <Button size="sm" variant="light" className="rounded-full">
-                {selectedPlayer ||
-                  t("contentpage.select_player", { defaultValue: "选择玩家" })}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Players"
-              selectionMode="single"
-              selectedKeys={new Set([selectedPlayer])}
-              onSelectionChange={(keys) => {
-                const arr = Array.from(keys as unknown as Set<string>);
-                const next = arr[0] || "";
-                if (typeof next === "string") onChangePlayer(next);
-              }}
-            >
-              {players.length ? (
-                players.map((p) => (
-                  <DropdownItem key={p} textValue={p}>
-                    {p}
-                  </DropdownItem>
-                ))
-              ) : (
-                <DropdownItem key="none" isDisabled>
-                  {t("contentpage.no_players", { defaultValue: "暂无玩家" })}
-                </DropdownItem>
-              )}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-          <div
-            className="rounded-xl border border-default-200 bg-white/50 dark:bg-neutral-800/40 shadow-sm backdrop-blur-sm px-3 py-3 cursor-pointer transition hover:bg-white/70 dark:hover:bg-neutral-800/60"
-            onClick={() => navigate("/content/worlds", { state: { player: selectedPlayer } })}
-            role="button"
-            aria-label="worlds"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FaGlobe className="text-default-500" />
-                <span className="text-small text-default-600 truncate">
-                  {t("contentpage.worlds", { defaultValue: "世界" })}
-                </span>
-              </div>
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />{" "}
-                  <span className="text-default-500">
-                    {t("common.loading", { defaultValue: "加载中" })}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-base font-semibold text-default-800">
-                  {worldsCount}
-                </span>
-              )}
-            </div>
-          </div>
-          <div
-            className="rounded-xl border border-default-200 bg-white/50 dark:bg-neutral-800/40 shadow-sm backdrop-blur-sm px-3 py-3 cursor-pointer transition hover:bg-white/70 dark:hover:bg-neutral-800/60"
-            onClick={() => navigate("/content/resource-packs")}
-            role="button"
-            aria-label="resource-packs"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FaImage className="text-default-500" />
-                <span className="text-small text-default-600 truncate">
-                  {t("contentpage.resource_packs", { defaultValue: "资源包" })}
-                </span>
-              </div>
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />{" "}
-                  <span className="text-default-500">
-                    {t("common.loading", { defaultValue: "加载中" })}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-base font-semibold text-default-800">
-                  {resCount}
-                </span>
-              )}
-            </div>
-          </div>
-          <div
-            className="rounded-xl border border-default-200 bg-white/50 dark:bg-neutral-800/40 shadow-sm backdrop-blur-sm px-3 py-3 cursor-pointer transition hover:bg-white/70 dark:hover:bg-neutral-800/60"
-            onClick={() => navigate("/content/behavior-packs")}
-            role="button"
-            aria-label="behavior-packs"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FaCogs className="text-default-500" />
-                <span className="text-small text-default-600 truncate">
-                  {t("contentpage.behavior_packs", { defaultValue: "行为包" })}
-                </span>
-              </div>
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />{" "}
-                  <span className="text-default-500">
-                    {t("common.loading", { defaultValue: "加载中" })}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-base font-semibold text-default-800">
-                  {bpCount}
-                </span>
-              )}
-            </div>
-          </div>
-          <div
-            className="rounded-xl border border-default-200 bg-white/50 dark:bg-neutral-800/40 shadow-sm backdrop-blur-sm px-3 py-3 cursor-pointer transition hover:bg-white/70 dark:hover:bg-neutral-800/60"
-            onClick={() => navigate("/content/skin-packs", { state: { player: selectedPlayer } })}
-            role="button"
-            aria-label="skin-packs"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FaImage className="text-default-500" />
-                <span className="text-small text-default-600 truncate">
-                  {t("contentpage.skin_packs", { defaultValue: "皮肤包" })}
-                </span>
-              </div>
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />{" "}
-                  <span className="text-default-500">
-                    {t("common.loading", { defaultValue: "加载中" })}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-base font-semibold text-default-800">
-                  {skinCount}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="sm:col-span-3 flex items-center justify-end gap-2">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".mcworld,.mcpack,.mcaddon"
-              multiple
-              className="hidden"
-              onChange={handleFilePick}
-            />
-            <Button
-              color="primary"
-              variant="flat"
-              onPress={() =>
-                navigate("/filemanager", {
-                  state: {
-                    allowedExt: [".mcworld", ".mcpack", ".mcaddon"],
-                    multi: true,
-                    returnTo: "/content",
-                  },
-                })
-              }
-              isDisabled={importing}
-            >
-              {t("contentpage.import_button", {
-                defaultValue: "导入 .mcworld/.mcpack/.mcaddon",
-              })}
-            </Button>
-          </div>
-        </div>
-      </motion.div>
     </motion.div>
   );
 }

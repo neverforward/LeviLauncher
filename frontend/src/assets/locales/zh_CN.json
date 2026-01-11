@@ -503,6 +503,8 @@
     "refresh": "刷新",
     "open": "打开",
     "select": "选择",
+    "select_mode": "选择模式",
+    "select_all": "全选",
     "preview": "预览版",
     "release": "正式版",
     "back": "返回",
@@ -514,8 +516,11 @@
     "cancel_and_clean": "取消并清理",
     "quit_launcher": "退出启动器",
     "confirm": "确定",
+    "success": "操作成功",
     "delete": "删除",
+    "delete_selected": "删除选中",
     "search": "搜索",
+    "search_placeholder": "搜索...",
     "empty": "暂无数据",
     "browse": "选择...",
     "processing": "正在处理...",
@@ -528,7 +533,10 @@
     "add": "添加",
     "save_failed": "保存失败",
     "load_failed": "加载失败",
-    "view_all": "查看全部"
+    "view_all": "查看全部",
+    "confirm_delete": "确认删除",
+    "deleting": "正在删除...",
+    "no_results": "无搜索结果"
   },
   "content": {
     "count": {
@@ -547,6 +555,7 @@
     "isolation_on": "版本隔离：已开启",
     "isolation_off": "版本隔离：未开启",
     "worlds": "世界",
+    "worlds_list": "存档列表",
     "worlds_desc": "每个玩家单独存储在 Users/<玩家>/games/com.mojang/minecraftWorlds",
     "select_player": "选择玩家",
     "no_players": "暂无玩家",
@@ -571,6 +580,8 @@
     "players_aria": "玩家列表",
     "sort_aria": "排序",
     "sort_time": "时间",
+    "sort_az": "名称 A-Z",
+    "sort_za": "名称 Z-A",
     "sort_asc": "从上到下",
     "sort_desc": "从下到上",
     "min_engine_version": "最小游戏版本",
@@ -592,7 +603,14 @@
     "new_child_item": "新建子项",
     "field_type": "类型",
     "select_player_title": "选择玩家",
-    "select_player_for_import": "请选择要导入到的玩家"
+    "select_player_for_import": "请选择要导入到的玩家",
+    "no_items": "没有找到项目",
+    "delete_pack_confirm": "确定要删除 {{name}} 吗？",
+    "delete_warning": "此操作无法撤销！",
+    "delete_selected_confirm": "确定要删除选中的 {{count}} 个项目吗？",
+    "deleted_name": "已删除 {{name}}",
+    "deleted_count": "已删除 {{count}} 个项目",
+    "delete_world_confirm": "确定要删除存档 {{name}} 吗？"
   },
   "versions": {
     "rename": {
