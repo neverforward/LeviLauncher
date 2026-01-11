@@ -401,7 +401,7 @@ export const CurseForgePage: React.FC = () => {
       className="w-full h-full min-h-0 flex flex-col p-4 sm:p-6 gap-4"
     >
       <div className="flex flex-col gap-4 shrink-0">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
           {t("curseforge.title", { defaultValue: "CurseForge" })}
         </h1>
 

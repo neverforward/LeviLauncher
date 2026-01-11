@@ -1106,7 +1106,7 @@ export default function ContentPage() {
                       >
                         <FaArrowLeft size={20} />
                       </Button>
-                      <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                      <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
                         {t("launcherpage.content_manage", { defaultValue: "内容管理" })}
                       </h1>
                     </div>

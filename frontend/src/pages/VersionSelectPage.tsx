@@ -337,7 +337,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
           <Card className="w-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
             <CardHeader className="flex flex-col gap-4 p-6">
               <div className="flex w-full items-center justify-between gap-4">
-                <div className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400">
+                <div className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-1">
                   {t("launcherpage.version_select.title", {
                     defaultValue: "选择版本",
                   })}

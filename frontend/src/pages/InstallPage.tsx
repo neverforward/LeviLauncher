@@ -425,9 +425,9 @@ export default function InstallPage() {
           <CardHeader className="p-4 sm:p-6 pb-2 flex flex-col sm:flex-row gap-4 justify-between items-center border-b border-default-200 dark:border-white/10">
             <div className="flex w-full items-center justify-between gap-2">
               <div className="flex items-center gap-3">
-                <div className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
                   {headerTitle}
-                </div>
+                </h1>
                 <div className="text-small text-default-500 flex items-center gap-2">
                   <Chip
                     size="sm"

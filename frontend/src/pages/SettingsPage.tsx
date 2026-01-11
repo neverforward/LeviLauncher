@@ -324,7 +324,7 @@ export const SettingsPage: React.FC = () => {
       >
         <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
           <CardBody className="p-8">
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
               {t("settingscard.header.title")}
             </h1>
             <p className="mt-2 text-lg font-medium text-default-500 dark:text-zinc-400">

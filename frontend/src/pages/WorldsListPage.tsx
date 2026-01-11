@@ -438,9 +438,9 @@ export default function WorldsListPage() {
                 >
                   <FaArrowLeft size={20} />
                 </Button>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                  {t("contentpage.worlds_list", { defaultValue: "存档列表" })}
-                </h1>
+                <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+            {t("contentpage.worlds_list", { defaultValue: "存档列表" })}
+          </h1>
               </div>
 
               <div className="flex items-center gap-3">

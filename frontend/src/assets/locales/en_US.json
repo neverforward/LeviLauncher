@@ -308,6 +308,7 @@
       },
       "paths": {
         "title": "Content Paths",
+        "subtitle": "Manage game data storage location",
         "base_root": "Base Root",
         "apply": "Apply",
         "reset": "Reset",
@@ -315,6 +316,7 @@
         "open_versions": "Open Versions",
         "installer": "Installers",
         "versions": "Versions",
+        "unsaved": "Changes not saved",
         "not_writable": "Directory not writable"
       },
       "browse": "Browse...",
@@ -813,15 +815,15 @@
     "decline": "Decline and Exit"
   },
   "onboarding": {
-    "title": "First-Run Setup",
-    "subtitle": "Please set content paths and language",
+    "title": "Welcome",
+    "subtitle": "Please configure content paths and language",
     "skip": "Skip",
     "finish": "Finish",
     "unsaved": {
       "title": "Unsaved Changes",
-      "body": "You changed the content path but haven't saved it. Save and finish?",
+      "body": "You have unsaved changes to the content path. Save before finishing?",
       "cancel": "Cancel",
-      "save": "Save and Finish"
+      "save": "Save & Finish"
     }
   },
   "curseforgecard": {

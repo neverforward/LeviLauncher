@@ -527,7 +527,7 @@ const CurseForgeModPage: React.FC = () => {
             </div>
 
             <div className="flex flex-col flex-grow gap-3">
-              <h1 className="text-4xl font-bold tracking-tight">{mod.name}</h1>
+              <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">{mod.name}</h1>
               
               <div className="flex items-center gap-3 text-default-500 text-sm flex-wrap">
                 <span className="flex items-center gap-1">

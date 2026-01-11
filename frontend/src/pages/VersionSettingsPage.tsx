@@ -314,7 +314,7 @@ export default function VersionSettingsPage() {
               <CardBody className="px-6 sm:px-8 py-5 w-full">
                 <div className="w-full">
                   <div className="flex items-center justify-between gap-4 w-full">
-                    <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent text-left !text-left">
+                    <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent text-left !text-left pb-1">
                       {t("versions.edit.title")}
                     </h1>
                     <div className="hidden sm:flex items-center gap-3">

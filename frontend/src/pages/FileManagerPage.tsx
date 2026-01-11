@@ -776,11 +776,11 @@ const FileManagerPage: React.FC = () => {
   );
 
   const Sidebar = () => (
-    <aside className="hidden sm:block w-60 shrink-0">
-      <Card className="h-full rounded-2xl shadow-md bg-white/70 dark:bg-black/30 backdrop-blur-md border border-white/30">
-        <CardBody className="p-4 flex h-full flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <div className="text-sm font-medium text-default-600">
+    <aside className="hidden sm:block w-60 shrink-0 h-full">
+      <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+        <CardBody className="p-4 flex h-full flex-col gap-4">
+          <div className="flex items-center gap-2 px-2">
+            <div className="text-sm font-bold text-default-500 uppercase tracking-wider">
               {t("filemanager.drives_title")}
             </div>
             <div className="ml-auto flex items-center gap-1.5">
@@ -791,34 +791,44 @@ const FileManagerPage: React.FC = () => {
                 onPress={refreshCurrent}
                 isDisabled={refreshing}
                 title={t("common.refresh")}
+                className="text-default-400 hover:text-default-600 min-w-8 w-8 h-8"
               >
-                {refreshing ? "…" : "⟳"}
+                {refreshing ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                  >
+                    ⟳
+                  </motion.div>
+                ) : (
+                  "⟳"
+                )}
               </Button>
             </div>
           </div>
-          <div className="-m-2 -mt-1 flex-1 overflow-y-auto p-2 pretty-scrollbar gutter-stable">
+          <div className="-mx-2 flex-1 overflow-y-auto px-2 pretty-scrollbar gutter-stable space-y-4">
             {/* Drives (Top) */}
-            <div className="flex flex-col gap-1.5">
-              {drives.map((d) => (
+            <div className="flex flex-col gap-1">
+              {drives.map((d) => {
+                 const isActive = path.toLowerCase().startsWith(d.toLowerCase());
+                 return (
                 <Button
                   key={d}
                   size="sm"
-                  className="w-full justify-between h-10"
-                  variant={
-                    path.toLowerCase().startsWith(d.toLowerCase())
-                      ? "flat"
-                      : "light"
-                  }
-                  color={
-                    path.toLowerCase().startsWith(d.toLowerCase())
-                      ? "primary"
-                      : "default"
-                  }
+                  className={`w-full justify-between h-10 font-medium ${
+                    isActive 
+                    ? "bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 dark:text-emerald-400" 
+                    : "text-default-600 hover:bg-default-100 dark:hover:bg-white/5"
+                  }`}
+                  variant="light"
                   onPress={() => loadDir(d)}
                   title={d}
                 >
-                  <span>💾 {d}</span>
-                  <span className="text-tiny text-default-500">
+                  <div className="flex items-center gap-2">
+                     <span className="text-lg">💾</span>
+                     <span>{d}</span>
+                  </div>
+                  <span className={`text-tiny ${isActive ? "text-emerald-500/70" : "text-default-400"}`}>
                     {(() => {
                       const st = driveStats[d];
                       if (!st || !st.total) return "";
@@ -828,21 +838,22 @@ const FileManagerPage: React.FC = () => {
                     })()}
                   </span>
                 </Button>
-              ))}
+              )})}
             </div>
             {/* Quick Access (Collapsible) */}
             {known.length > 0 && (
-              <div className="mt-3">
-                <div className="flex items-center justify-between text-tiny text-default-500 mb-1">
-                  <div>{t("filemanager.quick_access")}</div>
-                  <Button
-                    size="sm"
-                    variant="light"
-                    isIconOnly
+              <div>
+                <div 
+                    className="flex items-center justify-between text-xs font-bold text-default-400 uppercase tracking-wider mb-2 px-2 cursor-pointer hover:text-default-500 transition-colors"
                     onClick={() => setQaOpen((v) => !v)}
+                >
+                  <div>{t("filemanager.quick_access")}</div>
+                  <motion.div
+                    animate={{ rotate: qaOpen ? 0 : -90 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {qaOpen ? "▾" : "▸"}
-                  </Button>
+                    ▾
+                  </motion.div>
                 </div>
                 <motion.div
                   initial={false}
@@ -851,20 +862,18 @@ const FileManagerPage: React.FC = () => {
                     opacity: qaOpen ? 1 : 0,
                   }}
                   transition={{ duration: 0.2 }}
-                  className="flex flex-col gap-1.5 overflow-hidden"
-                  style={{ pointerEvents: qaOpen ? "auto" : "none" }}
-                  aria-hidden={!qaOpen}
+                  className="flex flex-col gap-1 overflow-hidden"
                 >
                   {known.map((k) => (
                     <Button
                       key={k.path}
                       size="sm"
-                      className="w-full justify-start h-9"
+                      className="w-full justify-start h-9 font-medium text-default-600 hover:bg-default-100 dark:hover:bg-white/5"
                       variant="light"
                       onPress={() => loadDir(k.path)}
                       title={k.path}
                     >
-                      📁 {k.name}
+                      <span className="mr-2 text-lg">📁</span> {k.name}
                     </Button>
                   ))}
                 </motion.div>
@@ -872,17 +881,18 @@ const FileManagerPage: React.FC = () => {
             )}
             {/* Pinned (Collapsible) */}
             {pins.length > 0 && (
-              <div className="mt-3">
-                <div className="flex items-center justify-between text-tiny text-default-500 mb-1">
-                  <div>{t("filemanager.pinned")}</div>
-                  <Button
-                    size="sm"
-                    variant="light"
-                    isIconOnly
+              <div>
+                <div 
+                    className="flex items-center justify-between text-xs font-bold text-default-400 uppercase tracking-wider mb-2 px-2 cursor-pointer hover:text-default-500 transition-colors"
                     onClick={() => setPinnedOpen((v) => !v)}
+                >
+                  <div>{t("filemanager.pinned")}</div>
+                   <motion.div
+                    animate={{ rotate: pinnedOpen ? 0 : -90 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {pinnedOpen ? "▾" : "▸"}
-                  </Button>
+                    ▾
+                  </motion.div>
                 </div>
                 <motion.div
                   initial={false}
@@ -891,20 +901,23 @@ const FileManagerPage: React.FC = () => {
                     opacity: pinnedOpen ? 1 : 0,
                   }}
                   transition={{ duration: 0.2 }}
-                  className="flex flex-col gap-1.5 overflow-hidden"
+                  className="flex flex-col gap-1 overflow-hidden"
                 >
                   {pins.map((p) => (
                     <Button
                       key={p}
                       size="sm"
-                      className="w-full justify-between h-9"
+                      className="w-full justify-between h-9 font-medium text-default-600 hover:bg-default-100 dark:hover:bg-white/5 group"
                       variant="light"
                       onPress={() => loadDir(p)}
                       title={p}
                     >
-                      <span className="truncate">📌 {p}</span>
+                      <div className="flex items-center gap-2 truncate">
+                        <span className="text-lg">📌</span>
+                        <span className="truncate">{p}</span>
+                      </div>
                       <span
-                        className="text-default-400"
+                        className="text-default-400 opacity-0 group-hover:opacity-100 hover:text-danger transition-opacity px-1"
                         onClick={(e) => {
                           e.stopPropagation();
                           togglePin(p);
@@ -918,7 +931,7 @@ const FileManagerPage: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="text-xs text-default-400 break-words min-h-[1.5rem] leading-tight">
+          <div className="text-xs text-default-400 break-words min-h-[1.5rem] leading-tight px-2 opacity-60">
             {path || t("filemanager.choose_drive")}
           </div>
         </CardBody>
@@ -927,492 +940,399 @@ const FileManagerPage: React.FC = () => {
   );
 
   return (
-    <motion.div
-      className="w-full h-full relative"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-    >
+    <div className="absolute inset-0 pt-20 pb-4 px-4 lg:px-8 flex flex-col gap-6">
       {/* Mobile Drawer */}
       {screenSize === "mobile" && <Drawer />}
+
+
+
+      {/* Main Content Area */}
       <motion.div
-        className="w-full h-[calc(94vh-1rem)] sm:h-[calc(94vh-2rem)] p-2 sm:p-4 flex items-stretch gap-3 sm:gap-4 overflow-hidden"
-        initial={{ opacity: 0, y: 8 }}
+        className="flex-1 min-h-0 flex gap-6"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay: 0.05 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
       >
+        {/* Sidebar (Desktop) */}
         {screenSize !== "mobile" && <Sidebar />}
-        {/* Tablet Compact Sidebar */}
-        {screenSize === "mobile" && <div className="hidden" />}
-        <section className="flex-1 min-w-0 min-h-0 flex flex-col">
-          {/* Header */}
-          <div className="flex items-center gap-2 mb-3">
-            {screenSize === "mobile" && (
-              <Button
-                size="sm"
-                variant="flat"
-                className="text-xs px-2 min-w-0 shrink-0"
-                onPress={() => setDrawerOpen(true)}
-              >
-                ☰
-              </Button>
-            )}
-            <div className="text-base sm:text-lg lg:text-xl font-semibold truncate">
-              {fmState.title || t("filemanager.title")}
-            </div>
-            <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-              {fmState?.directoryPickMode && path && !dirWritable ? (
-                <Chip size="sm" color="danger" variant="flat">
-                  {t("filemanager.dir_not_writable", {
-                    defaultValue: "不可写入",
-                  })}
-                </Chip>
-              ) : null}
-              <Button
-                size="sm"
-                variant={fmState?.directoryPickMode ? "flat" : "light"}
-                color={fmState?.directoryPickMode ? "primary" : undefined}
-                onPress={() =>
-                  navigate(fmState.returnTo || "/mods", {
-                    state: fmState.returnState,
-                  })
-                }
-                className={screenSize === "mobile" ? "min-w-0 px-2" : ""}
-                isIconOnly={screenSize === "mobile"}
-              >
-                {screenSize === "mobile" ? "✕" : t("common.cancel")}
-              </Button>
-              <Button
-                size="sm"
-                color="primary"
-                isDisabled={
-                  fmState?.directoryPickMode
-                    ? !path || !dirWritable
-                    : Object.values(selected).filter(Boolean).length === 0
-                }
-                onPress={confirm}
-                className={screenSize === "mobile" ? "min-w-0 px-2" : ""}
-              >
-                {screenSize === "mobile"
-                  ? "✓"
-                  : fmState?.directoryPickMode
-                  ? t("filemanager.choose_this_dir", {
-                      defaultValue: "选择此目录",
-                    })
-                  : t("common.ok")}
-              </Button>
-            </div>
-          </div>
 
-          {/* Search and Controls */}
-          <div
-            className={`flex items-center gap-2 ${
-              screenSize === "mobile" ? "flex-col" : "flex-wrap"
-            }`}
-          >
-            <Input
-              size="sm"
-              variant="bordered"
-              value={query}
-              onValueChange={setQuery}
-              placeholder={t("filemanager.search_placeholder")}
-              className={
-                screenSize === "mobile" ? "w-full" : "flex-1 min-w-[180px]"
-              }
-              startContent={screenSize === "mobile" && "🔍"}
-              onPaste={(e) => {
-                const text = e.clipboardData.getData("text");
-                if (isWindowsPath(text)) {
-                  e.preventDefault();
-                  const p = normalizeWindowsPath(text);
-                  loadDir(p);
-                  setQuery("");
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  const q = query.trim();
-                  if (isWindowsPath(q)) {
-                    loadDir(normalizeWindowsPath(q));
-                    setQuery("");
-                  }
-                }
-              }}
-            />
-            <div
-              className={`flex items-center gap-2 ${
-                screenSize === "mobile" ? "w-full justify-between" : ""
-              }`}
-            >
-              <Select
-                size="sm"
-                selectedKeys={new Set([sortKey])}
-                onSelectionChange={(keys) =>
-                  setSortKey(Array.from(keys as Set<string>)[0] as SortKey)
-                }
-                className={screenSize === "mobile" ? "w-24" : "w-28 sm:w-36"}
-                aria-label="Sort by"
-              >
-                <SelectItem key="name">{t("filemanager.sort.name")}</SelectItem>
-                <SelectItem key="kind">{t("filemanager.sort.kind")}</SelectItem>
-              </Select>
-              <Button
-                size="sm"
-                variant="flat"
-                onPress={() => setSortAsc((v) => !v)}
-                className="min-w-0 px-2 sm:px-3"
-              >
-                {sortAsc ? "↑" : "↓"}
-              </Button>
-              <Button
-                size="sm"
-                color="primary"
-                variant="flat"
-                onPress={() => {
-                  if (!path) return;
-                  setMkdirName("");
-                  setMkdirOpen(true);
-                }}
-                isDisabled={!path || !canCreateHere}
-              >
-                {t("filemanager.new_folder", { defaultValue: "新建文件夹" })}
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-2 flex items-center gap-1 py-1 flex-wrap overflow-x-auto">
-            <Button
-              size="sm"
-              variant="light"
-              className="text-xs px-2 min-w-0 shrink-0"
-              onPress={() => {
-                setEditingPath((v) => {
-                  const next = !v;
-                  if (!v) {
-                    setPathEditText(path || "");
-                  }
-                  return next;
-                });
-              }}
-              title={t("filemanager.edit_path") || "Edit path"}
-            >
-              ✎
-            </Button>
-            {editingPath ? (
-              <>
+        {/* File Browser Card */}
+        <Card className="flex-1 min-w-0 border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+          <CardBody className="p-0 flex flex-col h-full">
+            {/* Toolbar Area */}
+            <div className="p-4 border-b border-default-100 dark:border-white/5 flex flex-col gap-4">
+              {/* Top Controls: Search & Sort */}
+              <div className="flex items-center gap-3 flex-wrap">
+                {screenSize === "mobile" && (
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    onPress={() => setDrawerOpen(true)}
+                  >
+                    ☰
+                  </Button>
+                )}
                 <Input
                   size="sm"
                   variant="bordered"
-                  value={pathEditText}
-                  onValueChange={setPathEditText}
-                  className="flex-1 min-w-[200px] max-w-full"
-                  autoFocus
+                  value={query}
+                  onValueChange={setQuery}
+                  placeholder={t("filemanager.search_placeholder")}
+                  className="flex-1 min-w-[200px]"
+                  startContent={<span className="text-default-400">🔍</span>}
+                  classNames={{
+                    inputWrapper:
+                      "bg-default-50/50 dark:bg-black/20 border-default-200 dark:border-white/10",
+                  }}
+                  onPaste={(e) => {
+                    const text = e.clipboardData.getData("text");
+                    if (isWindowsPath(text)) {
+                      e.preventDefault();
+                      const p = normalizeWindowsPath(text);
+                      loadDir(p);
+                      setQuery("");
+                    }
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      const v = pathEditText.trim();
-                      if (!v) {
-                        setNavDir(-1);
-                        setPath("");
-                        setSelected({});
-                        setEditingPath(false);
-                        return;
+                      const q = query.trim();
+                      if (isWindowsPath(q)) {
+                        loadDir(normalizeWindowsPath(q));
+                        setQuery("");
                       }
-                      if (isWindowsPath(v)) {
-                        loadDir(normalizeWindowsPath(v));
-                        setEditingPath(false);
-                      }
-                    } else if (e.key === "Escape") {
-                      setEditingPath(false);
                     }
                   }}
                 />
-                <Button
-                  size="sm"
-                  color="primary"
-                  variant="flat"
-                  className="min-w-0 px-2"
-                  onPress={() => {
-                    const v = pathEditText.trim();
-                    if (!v) {
-                      setNavDir(-1);
-                      setPath("");
-                      setSelected({});
-                      setEditingPath(false);
-                      return;
+
+                <div className="flex items-center gap-2">
+                  <Select
+                    size="sm"
+                    selectedKeys={new Set([sortKey])}
+                    onSelectionChange={(keys) =>
+                      setSortKey(Array.from(keys as Set<string>)[0] as SortKey)
                     }
-                    if (isWindowsPath(v)) {
-                      loadDir(normalizeWindowsPath(v));
-                      setEditingPath(false);
-                    }
-                  }}
-                >
-                  {t("common.ok")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="light"
-                  className="min-w-0 px-2"
-                  onPress={() => setEditingPath(false)}
-                >
-                  {t("common.cancel")}
-                </Button>
-              </>
-            ) : (
-              <>
-                {screenSize === "mobile" && (
+                    className="w-32"
+                    classNames={{
+                      trigger:
+                        "bg-default-50/50 dark:bg-black/20 border-default-200 dark:border-white/10",
+                    }}
+                    aria-label="Sort by"
+                  >
+                    <SelectItem key="name">
+                      {t("filemanager.sort.name")}
+                    </SelectItem>
+                    <SelectItem key="kind">
+                      {t("filemanager.sort.kind")}
+                    </SelectItem>
+                  </Select>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="flat"
+                    onPress={() => setSortAsc((v) => !v)}
+                    className="bg-default-100 dark:bg-white/10"
+                  >
+                    {sortAsc ? "↑" : "↓"}
+                  </Button>
                   <Button
                     size="sm"
-                    variant="light"
-                    className="text-xs px-2 min-w-0 shrink-0"
-                    onPress={goUp}
-                    isDisabled={
-                      !path ||
-                      path.replace(/\\+$/, "").split(/\\/).filter(Boolean)
-                        .length <= 1
-                    }
+                    color="primary"
+                    variant="flat"
+                    onPress={() => {
+                      if (!path) return;
+                      setMkdirName("");
+                      setMkdirOpen(true);
+                    }}
+                    isDisabled={!path || !canCreateHere}
+                    startContent={<span>+</span>}
                   >
-                    ⬆️
+                    {t("filemanager.new_folder", {
+                      defaultValue: "New Folder",
+                    })}
                   </Button>
-                )}
-                {breadcrumb.map((bc, idx) => (
-                  <div
-                    key={bc.full + idx}
-                    className="flex items-center shrink-0"
-                  >
-                    <Button
-                      size="sm"
-                      variant="light"
-                      className={`text-xs px-2 min-w-0 ${
-                        screenSize === "mobile" ? "max-w-20" : "max-w-32"
-                      }`}
-                      onPress={() => {
-                        if (bc.full === "") {
-                          setNavDir(-1);
-                          setPath("");
-                          setSelected({});
-                        } else {
-                          loadDir(bc.full);
-                        }
-                      }}
-                    >
-                      {bc.name}
-                    </Button>
-                    {idx < breadcrumb.length - 1 && (
-                      <div className="mx-0.5 text-default-400 select-none shrink-0">
-                        ›
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
+                </div>
+              </div>
 
-          <div
-            className="mt-3 flex-1 min-h-0 overflow-auto pr-1 pretty-scrollbar gutter-stable"
-            ref={contentRef}
-            onScroll={(e) =>
-              setScrollTop((e.currentTarget as HTMLDivElement).scrollTop)
-            }
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={
-                  (path || "root") +
-                  "::" +
-                  sortKey +
-                  String(sortAsc) +
-                  "::" +
-                  query
-                }
-                initial={{ x: navDir * 40, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -navDir * 40, opacity: 0 }}
-                transition={{ type: "tween", duration: 0.18 }}
-                className="flex flex-col divide-y divide-default-200 rounded-medium overflow-hidden border border-default-200/60"
-              >
-                {(() => {
-                  const drivesToShow = !path
-                    ? drives.filter(
-                        (d) =>
-                          !query ||
-                          d.toLowerCase().includes(query.toLowerCase())
-                      )
-                    : [];
-                  const shouldShowEmpty = path
-                    ? filtered.length === 0
-                    : drivesToShow.length === 0;
-                  return shouldShowEmpty ? (
-                    <div className="py-10 text-center text-default-400">
-                      {t("filemanager.empty")}
-                    </div>
-                  ) : null;
-                })()}
-                {(!path ? drives : [])
-                  .filter(
-                    (d) =>
-                      !query || d.toLowerCase().includes(query.toLowerCase())
-                  )
-                  .map((d) => {
-                    const active = path
-                      .toLowerCase()
-                      .startsWith(d.toLowerCase());
-                    const st = driveStats[d];
-                    const pct =
-                      st && st.total
-                        ? Math.round(((st.total - st.free) / st.total) * 100)
-                        : undefined;
-                    return (
-                      <div
-                        key={d}
-                        className={`flex items-center gap-3 px-3 ${
-                          screenSize === "mobile" ? "h-14" : "h-12"
-                        } hover:bg-default-100/40 transition-colors`}
-                        onClick={() => loadDir(d)}
+              {/* Breadcrumbs / Path Edit */}
+              <div className="flex items-center gap-2 bg-default-50/50 dark:bg-black/20 p-2 rounded-xl border border-default-100 dark:border-white/5 overflow-hidden">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  onPress={() => {
+                    setEditingPath((v) => {
+                      const next = !v;
+                      if (!v) setPathEditText(path || "");
+                      return next;
+                    });
+                  }}
+                  className="shrink-0 text-default-500"
+                >
+                  ✎
+                </Button>
+
+                <div className="flex-1 min-w-0 flex items-center overflow-hidden">
+                  {editingPath ? (
+                    <div className="flex items-center w-full gap-2">
+                      <Input
+                        size="sm"
+                        variant="flat"
+                        value={pathEditText}
+                        onValueChange={setPathEditText}
+                        className="flex-1"
+                        classNames={{
+                          inputWrapper: "bg-transparent shadow-none px-0",
+                        }}
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            const v = pathEditText.trim();
+                            if (!v) {
+                              setNavDir(-1);
+                              setPath("");
+                              setSelected({});
+                              setEditingPath(false);
+                              return;
+                            }
+                            if (isWindowsPath(v)) {
+                              loadDir(normalizeWindowsPath(v));
+                              setEditingPath(false);
+                            }
+                          } else if (e.key === "Escape") {
+                            setEditingPath(false);
+                          }
+                        }}
+                      />
+                      <Button
+                        size="sm"
+                        color="primary"
+                        variant="flat"
+                        onPress={() => {
+                          const v = pathEditText.trim();
+                          if (!v) {
+                            setNavDir(-1);
+                            setPath("");
+                            setSelected({});
+                            setEditingPath(false);
+                            return;
+                          }
+                          if (isWindowsPath(v)) {
+                            loadDir(normalizeWindowsPath(v));
+                            setEditingPath(false);
+                          }
+                        }}
                       >
+                        OK
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center overflow-x-auto pretty-scrollbar mask-linear-fade">
+                      {breadcrumb.length === 0 && (
+                        <span className="text-sm text-default-400 italic px-2">
+                          {t("filemanager.computer")}
+                        </span>
+                      )}
+                      {breadcrumb.map((bc, idx) => (
                         <div
-                          className={`rounded-lg flex items-center justify-center shrink-0 bg-default-200 ${
-                            screenSize === "mobile" ? "w-8 h-8" : "w-7 h-7"
-                          }`}
+                          key={bc.full + idx}
+                          className="flex items-center shrink-0"
                         >
-                          <div
-                            className={`rounded bg-default-500 ${
-                              screenSize === "mobile" ? "w-4 h-4" : "w-4 h-4"
-                            }`}
-                          ></div>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div
-                            className="font-medium leading-tight truncate text-sm"
-                            title={d}
+                          <Button
+                            size="sm"
+                            variant="light"
+                            className="text-sm px-2 min-w-0 font-medium text-default-600 dark:text-zinc-300"
+                            onPress={() => {
+                              if (bc.full === "") {
+                                setNavDir(-1);
+                                setPath("");
+                                setSelected({});
+                              } else {
+                                loadDir(bc.full);
+                              }
+                            }}
                           >
-                            {d}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Chip
-                              size="sm"
-                              className={`text-tiny bg-foreground/10 text-foreground`}
-                              variant="flat"
-                            >
-                              {t("filemanager.drive_label")}
-                            </Chip>
-                            {typeof pct === "number" && (
-                              <span className="text-tiny text-default-500 whitespace-nowrap">
-                                {pct}%
-                              </span>
-                            )}
-                          </div>
+                            {bc.name.replace(/\\$/, "")}
+                          </Button>
+                          {idx < breadcrumb.length - 1 && (
+                            <span className="text-default-400 mx-0.5">/</span>
+                          )}
                         </div>
-                        <div className="text-default-400 text-sm">→</div>
-                      </div>
-                    );
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* File List */}
+            <div
+              className="flex-1 min-h-0 overflow-y-auto relative pretty-scrollbar"
+              ref={contentRef}
+              onScroll={(e) =>
+                setScrollTop((e.currentTarget as HTMLDivElement).scrollTop)
+              }
+            >
+              {/* Warnings */}
+              {fmState?.directoryPickMode && path && !dirWritable && (
+                <div className="sticky top-0 z-20 bg-danger-50 dark:bg-danger-900/20 text-danger px-4 py-2 text-sm text-center border-b border-danger/10">
+                  {t("filemanager.dir_not_writable", {
+                    defaultValue: "This directory is not writable",
                   })}
-                {!!path &&
-                  (virt ? (
+                </div>
+              )}
+
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={path}
+                  initial={{ opacity: 0, x: navDir * 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: navDir * -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-0 w-full"
+                >
+                  {virt ? (
                     <div
                       style={{ height: virt.totalHeight, position: "relative" }}
                     >
                       <div
                         style={{
                           position: "absolute",
-                          top: virt.offsetY,
+                          top: 0,
                           left: 0,
-                          right: 0,
+                          width: "100%",
+                          transform: `translateY(${virt.offsetY}px)`,
                         }}
                       >
-                        {filtered.slice(virt.start, virt.end).map(renderRow)}
+                        {filtered
+                          .slice(virt.start, virt.end)
+                          .map((e) => renderRow(e))}
                       </div>
                     </div>
                   ) : (
-                    filtered.map(renderRow)
-                  ))}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </section>
+                    <div className="pb-2">
+                      {filtered.map((e) => renderRow(e))}
+                      {filtered.length === 0 && (
+                        <div className="flex flex-col items-center justify-center py-20 text-default-400">
+                          <div className="text-4xl mb-2">📂</div>
+                          <div>{t("common.empty", { defaultValue: "Empty" })}</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-4 border-t border-default-100 dark:border-white/5 flex items-center justify-between bg-default-50/30 dark:bg-zinc-900/30">
+              <div className="text-sm text-default-500">
+                {Object.keys(selected).filter((k) => selected[k]).length}{" "}
+                {t("common.selected", { defaultValue: "selected" })}
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="flat"
+                  color="danger"
+                  className="bg-danger/10 text-danger"
+                  onPress={() =>
+                    navigate(fmState.returnTo || "/mods", {
+                      state: fmState.returnState,
+                    })
+                  }
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button
+                  color="primary"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
+                  isDisabled={
+                    fmState?.directoryPickMode
+                      ? !path || !dirWritable
+                      : Object.values(selected).filter(Boolean).length === 0
+                  }
+                  onPress={confirm}
+                >
+                  {fmState?.directoryPickMode
+                    ? t("filemanager.choose_this_dir", {
+                        defaultValue: "Select Current Directory",
+                      })
+                    : t("common.ok")}
+                </Button>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
       </motion.div>
+
+      {/* Mkdir Modal */}
       <BaseModal
-        size="sm"
         isOpen={mkdirOpen}
-        onOpenChange={setMkdirOpen}
-        hideCloseButton
+        onOpenChange={(o) => {
+          setMkdirOpen(o);
+          if (!o) setMkdirName("");
+        }}
+        classNames={{
+          base: "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 shadow-2xl rounded-[2rem]",
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <BaseModalHeader className="text-primary-600">
-                {t("filemanager.new_folder", { defaultValue: "新建文件夹" })}
+              <BaseModalHeader>
+                {t("filemanager.new_folder", { defaultValue: "New Folder" })}
               </BaseModalHeader>
               <BaseModalBody>
                 <Input
-                  size="sm"
-                  variant="bordered"
+                  autoFocus
+                  label={t("common.name", { defaultValue: "Name" })}
                   value={mkdirName}
                   onValueChange={setMkdirName}
-                  placeholder={
-                    t("filemanager.new_folder_placeholder", {
-                      defaultValue: "输入文件夹名称",
-                    }) as string
-                  }
-                  autoFocus
-                  onKeyDown={async (e) => {
-                    if (e.key === "Enter") {
-                      if (!path) return;
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && mkdirName.trim()) {
+                      // Trigger create
+                      const name = mkdirName.trim();
                       setCreatingFolder(true);
-                      try {
-                        const err = await (minecraft as any)?.CreateFolder?.(
-                          path,
-                          mkdirName.trim()
-                        );
-                        if (!err) {
+                      minecraft
+                        ?.MakeDir(path + "\\" + name)
+                        .then(async () => {
                           await loadDir(path);
-                          onClose();
-                          setMkdirName("");
-                        }
-                      } finally {
-                        setCreatingFolder(false);
-                      }
+                          setMkdirOpen(false);
+                        })
+                        .catch(() => {})
+                        .finally(() => setCreatingFolder(false));
                     }
                   }}
                 />
               </BaseModalBody>
               <BaseModalFooter>
-                <Button
-                  variant="light"
-                  onPress={onClose}
-                  isDisabled={creatingFolder}
-                >
-                  {t("common.cancel", { defaultValue: "取消" })}
+                <Button variant="light" onPress={onClose}>
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   color="primary"
-                  isDisabled={!mkdirName.trim() || creatingFolder}
-                  onPress={async () => {
-                    if (!path) return;
+                  isLoading={creatingFolder}
+                  onPress={() => {
+                    const name = mkdirName.trim();
+                    if (!name) return;
                     setCreatingFolder(true);
-                    try {
-                      const err = await (minecraft as any)?.CreateFolder?.(
-                        path,
-                        mkdirName.trim()
-                      );
-                      if (!err) {
+                    minecraft
+                      ?.MakeDir(path + "\\" + name)
+                      .then(async () => {
                         await loadDir(path);
-                        onClose();
-                        setMkdirName("");
-                      }
-                    } finally {
-                      setCreatingFolder(false);
-                    }
+                        setMkdirOpen(false);
+                      })
+                      .catch(() => {})
+                      .finally(() => setCreatingFolder(false));
                   }}
                 >
-                  {t("common.confirm", { defaultValue: "确定" })}
+                  {t("common.create", { defaultValue: "Create" })}
                 </Button>
               </BaseModalFooter>
             </>
           )}
         </ModalContent>
       </BaseModal>
-    </motion.div>
+    </div>
   );
 };
 
