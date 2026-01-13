@@ -155,12 +155,12 @@
     }
   },
   "moddedcard": {
-    "title": "模组",
+    "title": "插件",
     "content": {
-      "none": "未找到模组",
-      "found": "找到 {{count}} 个模组"
+      "none": "未找到插件",
+      "found": "找到 {{count}} 个插件"
     },
-    "manage": "管理模组"
+    "manage": "管理插件"
   },
   "downloadpage": {
     "type": {
@@ -429,8 +429,8 @@
         "errormessage": "不符合命名规则或已存在！"
       },
       "switch": {
-        "label": "启用模组",
-        "description": "这将启用您进行模组化，并自动安装预加载器，以及修改原始文件（Minecraft.Windows.exe）。"
+        "label": "启用插件",
+        "description": "这将启用您进行插件化，并自动安装预加载器，以及修改原始文件（Minecraft.Windows.exe）。"
       },
       "close_button": "关闭",
       "download_button": "下载"
@@ -762,7 +762,7 @@
     "summary_title_partial": "导入完成（部分失败）",
     "summary_success": "成功",
     "summary_failed": "失败",
-    "details_title": "模组详情",
+    "details_title": "插件详情",
     "field_name": "名称",
     "field_version": "版本",
     "field_type": "类型",
@@ -791,14 +791,15 @@
     "overwrite_modal_body": "同名模块文件夹已存在，是否覆盖（更新）？",
     "drag_import_unsupported_title": "拖拽导入暂不支持",
     "drag_import_unsupported_body": "暂不支持，等待 Wails 支持。",
-    "toggle_label": "启用模组",
+    "toggle_label": "启用插件",
     "toggle_on": "已启用",
     "toggle_off": "已关闭",
-    "toggle_tip": "切换此模组的启用/关闭状态",
-    "toggle_desc_on": "模组已启用，启动游戏时会加载。",
-    "toggle_desc_off": "模组已关闭，启动游戏时不会加载。",
-    "only_enabled": "仅显示已启用的模组",
-    "type_mod": "模组"
+    "toggle_tip": "切换此插件的启用/关闭状态",
+    "toggle_desc_on": "插件已启用，启动游戏时会加载。",
+    "toggle_desc_off": "插件已关闭，启动游戏时不会加载。",
+    "only_enabled": "仅显示已启用的插件",
+    "drop_hint": "拖入 .zip 或 .dll 以导入插件",
+    "type_mod": "插件"
   },
   "versionselect": {
     "unsaved": {
@@ -828,7 +829,7 @@
   },
   "curseforgecard": {
     "title": "CurseForge",
-    "content": "浏览和下载模组",
+    "content": "浏览和下载游戏资源",
     "browse": "浏览CurseForge"
   },
   "contentdownload": {
@@ -836,7 +837,7 @@
   },
   "curseforge": {
     "title": "CurseForge",
-    "search_placeholder": "搜索模组...",
+    "search_placeholder": "搜索游戏资源...",
     "search": "搜索",
     "minecraft_version": "Minecraft版本",
     "select_version": "选择版本",
@@ -858,7 +859,7 @@
     "created": "创建时间",
     "size": "大小",
     "game_version": "游戏版本",
-    "mod_not_found": "未找到模组",
+    "mod_not_found": "未找到游戏资源",
     "go_back": "返回",
     "by": "作者",
     "updated_date": "更新于 {{date}}",

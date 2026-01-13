@@ -52,6 +52,7 @@ import AboutPage from "./pages/AboutPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import CurseForgePage from "./pages/CurseForgePage";
 import CurseForgeModPage from "./pages/CurseForgeModPage";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [splashVisible, setSplashVisible] = useState(true);
@@ -343,6 +344,7 @@ function App() {
   return (
     <VersionStatusProvider>
       <CurseForgeProvider>
+      <Toaster containerStyle={{ zIndex: 99999, top: 80 }} />
       <AnimatePresence>
         {splashVisible && (
           <motion.div

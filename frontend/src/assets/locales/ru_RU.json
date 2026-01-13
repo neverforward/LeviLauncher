@@ -788,6 +788,7 @@
     "toggle_desc_on": "Мод включён и будет загружаться при запуске игры.",
     "toggle_desc_off": "Мод выключен и не будет загружаться при запуске игры.",
     "only_enabled": "Показывать только включённые моды",
+    "drop_hint": "Перетащите .zip или .dll для импорта модов/плагинов",
     "type_mod": "Мод"
   },
   "versionselect": {
@@ -818,7 +819,7 @@
   },
   "curseforgecard": {
     "title": "CurseForge",
-    "content": "Просмотр и загрузка модов",
+    "content": "Просмотр и загрузка игровых ресурсов",
     "browse": "Просмотреть CurseForge"
   },
   "contentdownload": {
@@ -826,7 +827,7 @@
   },
   "curseforge": {
     "title": "CurseForge",
-    "search_placeholder": "Поиск модов...",
+    "search_placeholder": "Поиск игровых ресурсов...",
     "search": "Поиск",
     "minecraft_version": "Версия Minecraft",
     "select_version": "Выберите версию",
@@ -848,7 +849,7 @@
     "created": "Создано",
     "size": "Размер",
     "game_version": "Версия игры",
-    "mod_not_found": "Мод не найден",
+    "mod_not_found": "Игровой ресурс не найден",
     "go_back": "Назад",
     "by": "От",
     "updated_date": "Обновлено {{date}}",

@@ -54,6 +54,7 @@ import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "../c
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import DefaultWorldPreview from "../assets/images/world-preview-default.jpg";
 
 interface WorldInfo {
   Path: string;
@@ -359,9 +360,11 @@ export default function WorldsListPage() {
 
       if (dest) {
         toast.success(t("contentpage.backup_success", { defaultValue: "备份成功" }));
+      } else {
+        toast.error(t("contentpage.backup_failed", { defaultValue: "备份失败" }));
       }
     } catch (e) {
-      toast.error(String(e));
+      toast.error(t("contentpage.backup_failed", { defaultValue: "备份失败" }) + ": " + String(e));
     } finally {
       setBackingUp("");
     }
@@ -677,13 +680,16 @@ export default function WorldsListPage() {
                         }}
                       >
                         <div className="relative shrink-0">
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-default-100 flex items-center justify-center overflow-hidden shadow-inner">
+                          <div className="h-20 sm:h-24 aspect-video rounded-lg bg-default-100 flex items-center justify-center overflow-hidden shadow-inner">
                             <Image
-                              src={w.IconBase64}
+                              src={w.IconBase64 || DefaultWorldPreview}
                               alt={w.FolderName}
-                              className="w-full h-full object-cover"
+                              classNames={{
+                                wrapper: "w-full h-full",
+                                img: "w-full h-full object-cover object-center"
+                              }}
                               radius="none"
-                              fallbackSrc="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZGRkIi8+PC9zdmc+"
+                              fallbackSrc={DefaultWorldPreview}
                             />
                           </div>
                           {isSelectMode && (

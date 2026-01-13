@@ -798,6 +798,7 @@
     "toggle_desc_on": "Mod is enabled and will load when the game starts.",
     "toggle_desc_off": "Mod is disabled and will not load when the game starts.",
     "only_enabled": "Only show enabled mods",
+    "drop_hint": "Drop .zip or .dll to import mods/plugins",
     "type_mod": "Mod"
   },
   "versionselect": {
@@ -828,7 +829,7 @@
   },
   "curseforgecard": {
     "title": "CurseForge",
-    "content": "Browse and download mods",
+    "content": "Browse and download game resources",
     "browse": "Browse CurseForge"
   },
   "contentdownload": {
@@ -836,7 +837,7 @@
   },
   "curseforge": {
     "title": "CurseForge",
-    "search_placeholder": "Search mods...",
+    "search_placeholder": "Search game resources...",
     "search": "Search",
     "minecraft_version": "Minecraft Version",
     "select_version": "Select version",

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Card, CardBody, Button, ScrollShadow, Chip, CardHeader } from "@heroui/react";
-import { GetMods } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import { GetMods, IsModEnabled } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
 import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
 import { FaPuzzlePiece, FaArrowRight } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
@@ -18,9 +18,24 @@ export const ModCard = (args: {
   useEffect(() => {
     const name = String(args.currentVersion || "");
     if (name) {
-      GetMods(name)
-        .then((data) => setModsInfo(data || []))
-        .catch(() => setModsInfo([]));
+      (async () => {
+        try {
+          const data = (await GetMods(name)) || [];
+          const statusList = await Promise.all(
+            data.map(async (m) => {
+              try {
+                return await (IsModEnabled as any)?.(name, m.name);
+              } catch {
+                return false;
+              }
+            })
+          );
+          const filtered = data.filter((_, i) => statusList[i]);
+          setModsInfo(filtered);
+        } catch {
+          setModsInfo([]);
+        }
+      })();
     } else {
       setModsInfo([]);
     }

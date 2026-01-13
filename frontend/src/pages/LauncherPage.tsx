@@ -82,6 +82,7 @@ export const LauncherPage = (args: any) => {
   const [logoByName, setLogoByName] = React.useState<Map<string, string>>(
     new Map()
   );
+  const fetchingLogos = React.useRef<Set<string>>(new Set());
   const ensureOpsRef = React.useRef<number>(0);
   const launchTips = React.useMemo(
     () => [
@@ -249,25 +250,39 @@ export const LauncherPage = (args: any) => {
             version: String(localVersionMap.get(name)?.version || ""),
             isRegistered: Boolean(localVersionMap.get(name)?.isRegistered),
             isDisabled: false,
+            logo: logoByName.get(name),
           }))),
-    [filteredVersionNames, localVersionMap]
+    [filteredVersionNames, localVersionMap, logoByName]
   );
 
   const ensureLogo = React.useCallback(
     (name: string) => {
-      if (!name || logoByName.has(name)) return;
+      if (!name || logoByName.has(name) || fetchingLogos.current.has(name))
+        return;
+      fetchingLogos.current.add(name);
       try {
         const getter = minecraft?.GetVersionLogoDataUrl;
         if (typeof getter === "function") {
-          getter(name).then((u: string) => {
-            setLogoByName((prev) => {
-              const m = new Map(prev);
-              m.set(name, String(u || ""));
-              return m;
+          getter(name)
+            .then((u: string) => {
+              fetchingLogos.current.delete(name);
+              if (u) {
+                setLogoByName((prev) => {
+                  const m = new Map(prev);
+                  m.set(name, String(u));
+                  return m;
+                });
+              }
+            })
+            .catch(() => {
+              fetchingLogos.current.delete(name);
             });
-          });
+        } else {
+          fetchingLogos.current.delete(name);
         }
-      } catch {}
+      } catch {
+        fetchingLogos.current.delete(name);
+      }
     },
     [logoByName]
   );
@@ -1502,9 +1517,18 @@ export const LauncherPage = (args: any) => {
                             startContent={
                               <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-default-100 dark:bg-white/10 flex items-center justify-center overflow-hidden">
                                 {(() => {
-                                  const u = logoByName.get(item.name);
+                                  const u = item.logo || logoByName.get(item.name);
                                   if (!u) ensureLogo(item.name);
-                                  return u ? <img src={u} className="w-full h-full object-cover" /> : null;
+                                  return u ? (
+                                    <img
+                                      src={u}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <span className="text-sm font-bold text-default-500 dark:text-zinc-400">
+                                      M
+                                    </span>
+                                  );
                                 })()}
                               </div>
                             }

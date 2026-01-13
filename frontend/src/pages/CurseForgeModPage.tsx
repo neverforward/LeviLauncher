@@ -432,60 +432,60 @@ const CurseForgeModPage: React.FC = () => {
   if (loading) {
     return (
       <div className="w-full h-full flex flex-col overflow-hidden relative bg-background">
-        <div className="sticky top-0 z-40 w-full px-6 py-4 bg-background/80 backdrop-blur-md border-b border-default-100 flex items-center gap-4">
-           <Skeleton className="rounded-full w-10 h-10" />
-           <Skeleton className="h-8 w-48 rounded-lg" />
-        </div>
-
         <ScrollShadow className="w-full h-full">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="flex flex-col md:flex-row gap-8 mb-10">
-              <Skeleton className="w-32 h-32 rounded-2xl flex-shrink-0" />
-              
-              <div className="flex flex-col flex-grow gap-4">
-                <Skeleton className="h-10 w-3/4 rounded-lg" />
-                <div className="flex gap-3">
-                   <Skeleton className="h-5 w-24 rounded-md" />
-                   <Skeleton className="h-5 w-32 rounded-md" />
-                   <Skeleton className="h-5 w-20 rounded-md" />
-                </div>
-                <div className="flex gap-2">
-                   <Skeleton className="h-6 w-20 rounded-full" />
-                   <Skeleton className="h-6 w-20 rounded-full" />
-                   <Skeleton className="h-6 w-20 rounded-full" />
-                </div>
-                <div className="space-y-2 mt-2">
-                   <Skeleton className="h-4 w-full rounded-md" />
-                   <Skeleton className="h-4 w-full rounded-md" />
-                   <Skeleton className="h-4 w-2/3 rounded-md" />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 min-w-[240px] md:pl-8 justify-center">
-                 <Skeleton className="h-14 w-full rounded-xl" />
-                 <div className="flex gap-2">
-                    <Skeleton className="h-10 w-10 rounded-lg" />
-                    <Skeleton className="h-10 w-10 rounded-lg" />
-                    <Skeleton className="h-10 w-10 rounded-lg" />
-                    <Skeleton className="h-10 w-10 rounded-lg" />
+          <div className="w-full px-4 sm:px-6 py-8 flex flex-col gap-6">
+            <div className="flex items-center">
+               <Button 
+                  variant="light" 
+                  isDisabled
+                  className="gap-2 px-3 text-default-500"
+                  startContent={<LuArrowLeft size={20} />}
+                >
+                  {t("curseforge.go_back", { defaultValue: "Go Back" })}
+                </Button>
+            </div>
+            <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+              <CardBody className="p-6">
+                 <div className="flex flex-col md:flex-row gap-6">
+                   <div className="flex items-start gap-4 flex-1">
+                     <Skeleton className="w-24 h-24 rounded-2xl shrink-0" />
+                     <div className="flex flex-col gap-3 w-full max-w-lg">
+                        <Skeleton className="h-8 w-3/4 rounded-lg" />
+                        <div className="flex gap-2">
+                           <Skeleton className="h-4 w-20 rounded-md" />
+                           <Skeleton className="h-4 w-20 rounded-md" />
+                        </div>
+                        <div className="flex gap-2">
+                           <Skeleton className="h-6 w-16 rounded-full" />
+                           <Skeleton className="h-6 w-16 rounded-full" />
+                        </div>
+                     </div>
+                   </div>
+                   <div className="flex flex-col gap-3 min-w-[200px] justify-center">
+                      <Skeleton className="h-12 w-full rounded-xl" />
+                      <div className="flex gap-2 justify-center">
+                         <Skeleton className="h-10 w-10 rounded-lg" />
+                         <Skeleton className="h-10 w-10 rounded-lg" />
+                         <Skeleton className="h-10 w-10 rounded-lg" />
+                      </div>
+                   </div>
                  </div>
-              </div>
-            </div>
+              </CardBody>
+            </Card>
 
-            <div className="w-full">
-               <div className="flex gap-8 mb-6 border-b border-default-200 pb-2">
-                  <Skeleton className="h-8 w-24 rounded-lg" />
-                  <Skeleton className="h-8 w-24 rounded-lg" />
-                  <Skeleton className="h-8 w-24 rounded-lg" />
-               </div>
-               <div className="space-y-4">
-                  <Skeleton className="h-4 w-full rounded-md" />
-                  <Skeleton className="h-4 w-full rounded-md" />
-                  <Skeleton className="h-4 w-full rounded-md" />
-                  <Skeleton className="h-4 w-full rounded-md" />
-                  <Skeleton className="h-4 w-3/4 rounded-md" />
-               </div>
-            </div>
+            <Card className="min-h-[300px] bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+               <CardBody className="p-6">
+                  <div className="flex gap-6 mb-6">
+                     <Skeleton className="h-8 w-24 rounded-lg" />
+                     <Skeleton className="h-8 w-24 rounded-lg" />
+                  </div>
+                  <div className="space-y-4">
+                     <Skeleton className="h-4 w-full rounded-md" />
+                     <Skeleton className="h-4 w-full rounded-md" />
+                     <Skeleton className="h-4 w-3/4 rounded-md" />
+                  </div>
+               </CardBody>
+            </Card>
           </div>
         </ScrollShadow>
       </div>
@@ -494,9 +494,19 @@ const CurseForgeModPage: React.FC = () => {
 
   if (!mod) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-        <p className="text-xl">{t("curseforge.mod_not_found", { defaultValue: "Mod not found" })}</p>
-        <Button onPress={() => navigate(-1)}>{t("curseforge.go_back", { defaultValue: "Go Back" })}</Button>
+      <div className="w-full h-full min-h-0 flex flex-col p-4 sm:p-6 gap-4 items-center justify-center">
+        <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] p-8">
+           <CardBody className="flex flex-col items-center gap-4">
+              <p className="text-xl font-bold">{t("curseforge.mod_not_found", { defaultValue: "Mod not found" })}</p>
+              <Button 
+                onPress={() => navigate(-1)} 
+                color="primary" 
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+              >
+                {t("curseforge.go_back", { defaultValue: "Go Back" })}
+              </Button>
+           </CardBody>
+        </Card>
       </div>
     );
   }
@@ -504,237 +514,239 @@ const CurseForgeModPage: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col overflow-hidden relative bg-background">
       <ScrollShadow className="w-full h-full">
-        <div className="sticky top-0 z-40 w-full px-6 py-4 bg-background/80 backdrop-blur-md border-b border-default-100 flex items-center gap-4">
-           <Button 
-            variant="light" 
-            isIconOnly 
-            onPress={() => navigate(-1)} 
-            className=""
-          >
-            <LuArrowLeft size={20} />
-          </Button>
-          <span className="font-semibold text-lg truncate">{mod.name}</span>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex flex-col md:flex-row gap-8 mb-10">
-            <div className="flex-shrink-0">
-              <Image
-                src={mod.logo?.url}
-                alt={mod.name}
-                className="w-32 h-32 object-cover rounded-2xl shadow-lg bg-content2"
-              />
-            </div>
-
-            <div className="flex flex-col flex-grow gap-3">
-              <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">{mod.name}</h1>
-              
-              <div className="flex items-center gap-3 text-default-500 text-sm flex-wrap">
-                <span className="flex items-center gap-1">
-                    {t("curseforge.by", { defaultValue: "By" })}
-                    {mod.authors?.map((author: any, idx: number) => (
-                        <React.Fragment key={author.id}>
-                            <Link 
-                                href={author.url} 
-                                isExternal 
-                                size="sm" 
-                                className="text-primary hover:underline"
-                            >
-                                {author.name}
-                            </Link>
-                            {idx < (mod.authors?.length || 0) - 1 && ", "}
-                        </React.Fragment>
-                    ))}
-                </span>
-                <span className="w-1 h-1 rounded-full bg-default-300"></span>
-                <span className="flex items-center gap-1">
-                    <LuCalendar size={14} />
-                    {t("curseforge.updated_date", { date: formatDate(mod.dateModified), defaultValue: `Updated ${formatDate(mod.dateModified)}` })}
-                </span>
-                <span className="w-1 h-1 rounded-full bg-default-300"></span>
-                 <span className="flex items-center gap-1">
-                    <LuDownload size={14} />
-                    {t("curseforge.download_count", { count: formatNumber(mod.downloadCount), defaultValue: `${formatNumber(mod.downloadCount)} Downloads` })}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap gap-2 mt-1">
-                {mod.categories?.map((cat: any) => (
-                  <Chip 
-                    key={cat.id} 
-                    size="sm" 
-                    variant="flat" 
-                    className="pl-1"
-                    avatar={
-                        cat.iconUrl ? <Image src={cat.iconUrl} className="w-4 h-4" /> : undefined
-                    }
-                  >
-                    {cat.name}
-                  </Chip>
-                ))}
-                 <Chip size="sm" variant="bordered" startContent={<LuGamepad2 size={12} />}>
-                    ID: {mod.id}
-                 </Chip>
-              </div>
-
-              <p className="text-default-600 mt-2 text-base leading-relaxed max-w-4xl">
-                  {mod.summary}
-              </p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col gap-3 min-w-[240px] md:border-l md:border-default-100 md:pl-8 justify-center">
-              <Button 
-                color="primary" 
-                startContent={<LuDownload size={20} />} 
-                size="lg" 
-                className="w-full font-semibold shadow-md shadow-primary/20"
-                onPress={() => {
-                  setSelectedTab("files");
-                  setTimeout(() => {
-                    tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }, 100);
-                }}
-              >
-                {t("curseforge.install_action", { defaultValue: "Install" })}
-              </Button>
-              <div className="flex gap-2">
-                 {mod.links?.websiteUrl && (
-                     <Button as={Link} href={mod.links.websiteUrl} isExternal isIconOnly variant="flat" aria-label={t("curseforge.website", { defaultValue: "Website" })}>
-                        <LuGlobe size={20} />
-                     </Button>
-                 )}
-                 {mod.links?.sourceUrl && (
-                     <Button as={Link} href={mod.links.sourceUrl} isExternal isIconOnly variant="flat" aria-label={t("curseforge.source", { defaultValue: "Source" })}>
-                        <LuGithub size={20} />
-                     </Button>
-                 )}
-                 {mod.links?.issuesUrl && (
-                     <Button as={Link} href={mod.links.issuesUrl} isExternal isIconOnly variant="flat" aria-label={t("curseforge.issues", { defaultValue: "Issues" })}>
-                        <LuBug size={20} />
-                     </Button>
-                 )}
-                 <Button isIconOnly variant="flat" aria-label={t("curseforge.share", { defaultValue: "Share" })}>
-                    <LuShare2 size={20} />
-                 </Button>
-              </div>
-            </div>
-          </div>
-
-
-          <div ref={tabsRef} className="flex w-full flex-col scroll-mt-24">
-            <Tabs 
-                aria-label="Mod Details"  
-                variant="underlined" 
-                color="primary" 
-                selectedKey={selectedTab}
-                onSelectionChange={(key) => setSelectedTab(key as string)}
-                classNames={{
-                    tabList: "gap-8 w-full relative rounded-none p-0 border-b border-default-200 mb-6",
-                    cursor: "w-full bg-primary h-[3px]",
-                    tab: "max-w-fit px-0 h-12 text-base font-medium text-default-500",
-                    tabContent: "group-data-[selected=true]:text-primary"
-                }}
+        <div className="w-full px-4 sm:px-6 py-8 flex flex-col gap-6">
+          <div className="flex items-center">
+            <Button 
+              variant="light" 
+              onPress={() => navigate(-1)} 
+              className="gap-2 px-3 text-default-500 hover:text-default-900"
+              startContent={<LuArrowLeft size={20} />}
             >
-              <Tab key="description" title="Description">
-                <Card className="bg-transparent shadow-none border-none p-0">
-                  <CardBody className="p-0">
-                    <div className="prose dark:prose-invert max-w-none prose-img:rounded-xl prose-img:mx-auto prose-a:text-primary">
-                      {description ? (
-                        <div dangerouslySetInnerHTML={{ __html: description }} />
-                      ) : (
-                         <div className="flex flex-col items-center justify-center py-12 text-default-400 gap-3">
-                            <Spinner color="current" />
-                            <p>Loading description...</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardBody>
-                </Card>
-              </Tab>
-              <Tab key="files" title="Files">
-                 <div className="flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold">All Files</h3>
-                      <div className="w-48">
-                        <Select 
-                          label="Game Version" 
-                          size="sm" 
-                          selectedKeys={[selectedGameVersion]}
-                          onChange={(e) => setSelectedGameVersion(e.target.value || "all")}
-                        >
-                          <SelectItem key="all" value="all">
-                            All Versions
-                          </SelectItem>
-                          {gameVersions.map((version) => (
-                            <SelectItem key={version} value={version}>
-                              {version}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      </div>
-                    </div>
+              {t("curseforge.go_back", { defaultValue: "Go Back" })}
+            </Button>
+          </div>
+          {/* Header Card */}
+          <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+            <CardBody className="p-6 sm:p-8">
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="flex-shrink-0">
+                  <Image
+                    src={mod.logo?.url}
+                    alt={mod.name}
+                    className="w-32 h-32 object-cover rounded-2xl shadow-lg bg-content2"
+                  />
+                </div>
 
-                    {filteredFiles.length > 0 ? (
-                      <Table aria-label="Mod files table" removeWrapper>
-                        <TableHeader>
-                          <TableColumn>Type</TableColumn>
-                          <TableColumn>Name</TableColumn>
-                          <TableColumn>Uploaded</TableColumn>
-                          <TableColumn>Size</TableColumn>
-                          <TableColumn>Game Version</TableColumn>
-                          <TableColumn>Downloads</TableColumn>
-                          <TableColumn>Actions</TableColumn>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredFiles.map(file => {
-                            const sortedVersions = sortGameVersions(file.gameVersions);
-                            return (
-                              <TableRow key={file.id}>
-                                <TableCell>
-                                  <Chip 
+                <div className="flex flex-col flex-grow gap-3">
+                  <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-default-900 pb-1">{mod.name}</h1>
+                  
+                  <div className="flex items-center gap-3 text-default-500 text-sm flex-wrap">
+                    <span className="flex items-center gap-1">
+                        {t("curseforge.by", { defaultValue: "By" })}
+                        {mod.authors?.map((author: any, idx: number) => (
+                            <React.Fragment key={author.id}>
+                                <Link 
+                                    href={author.url} 
+                                    isExternal 
                                     size="sm" 
-                                    color={file.releaseType === 1 ? "success" : file.releaseType === 2 ? "primary" : "warning"}
-                                    variant="flat"
-                                    className="capitalize"
-                                  >
-                                    {file.releaseType === 1 ? 'R' : file.releaseType === 2 ? 'B' : 'A'}
-                                  </Chip>
-                                </TableCell>
-                                <TableCell>
-                                  <span className="font-medium">{file.displayName}</span>
-                                </TableCell>
-                                <TableCell>
-                                  <span className="text-default-500">{formatDate(file.fileDate)}</span>
-                                </TableCell>
-                                <TableCell>
-                                  <span className="text-default-500">{formatFileSize(file.fileLength)}</span>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-1">
-                                    {sortedVersions.length > 0 ? (
-                                      <>
-                                        <span className="text-default-600 bg-default-100 px-2 py-1 rounded text-xs">{sortedVersions[0]}</span>
-                                        {sortedVersions.length > 1 && (
-                                          <Tooltip content={
-                                            <div className="flex flex-wrap gap-1 max-w-xs p-2">
-                                              {sortedVersions.slice(1).map(v => (
-                                                <span key={v} className="text-xs bg-default-50 text-default-500 px-1.5 py-0.5 rounded border border-default-100">
-                                                  {v}
-                                                </span>
-                                              ))}
-                                            </div>
-                                          }>
-                                            <span className="text-xs text-primary cursor-pointer">+{sortedVersions.length - 1}</span>
-                                          </Tooltip>
+                                    className="text-primary hover:underline"
+                                >
+                                    {author.name}
+                                </Link>
+                                {idx < (mod.authors?.length || 0) - 1 && ", "}
+                            </React.Fragment>
+                        ))}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-default-300"></span>
+                    <span className="flex items-center gap-1">
+                        <LuCalendar size={14} />
+                        {t("curseforge.updated_date", { date: formatDate(mod.dateModified), defaultValue: `Updated ${formatDate(mod.dateModified)}` })}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-default-300"></span>
+                     <span className="flex items-center gap-1">
+                        <LuDownload size={14} />
+                        {t("curseforge.download_count", { count: formatNumber(mod.downloadCount), defaultValue: `${formatNumber(mod.downloadCount)} Downloads` })}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {mod.categories?.map((cat: any) => (
+                      <Chip 
+                        key={cat.id} 
+                        size="sm" 
+                        variant="flat" 
+                        className="pl-1"
+                        avatar={
+                            cat.iconUrl ? <Image src={cat.iconUrl} className="w-4 h-4" /> : undefined
+                        }
+                      >
+                        {cat.name}
+                      </Chip>
+                    ))}
+                     <Chip size="sm" variant="bordered" startContent={<LuGamepad2 size={12} />}>
+                        ID: {mod.id}
+                     </Chip>
+                  </div>
+
+                  <p className="text-default-600 mt-2 text-base leading-relaxed max-w-4xl">
+                      {mod.summary}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col gap-3 min-w-[240px] md:border-l md:border-default-100 md:pl-8 justify-center">
+                  <Button 
+                    className="w-full font-semibold shadow-md shadow-emerald-500/20 text-white bg-gradient-to-r from-emerald-500 to-teal-500"
+                    startContent={<LuDownload size={20} />} 
+                    size="lg" 
+                    onPress={() => {
+                      setSelectedTab("files");
+                      setTimeout(() => {
+                        tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 100);
+                    }}
+                  >
+                    {t("curseforge.install_action", { defaultValue: "Install" })}
+                  </Button>
+                  <div className="flex gap-2 justify-center">
+                     {mod.links?.websiteUrl && (
+                         <Button as={Link} href={mod.links.websiteUrl} isExternal isIconOnly variant="flat" aria-label={t("curseforge.website", { defaultValue: "Website" })}>
+                            <LuGlobe size={20} />
+                         </Button>
+                     )}
+                     {mod.links?.sourceUrl && (
+                         <Button as={Link} href={mod.links.sourceUrl} isExternal isIconOnly variant="flat" aria-label={t("curseforge.source", { defaultValue: "Source" })}>
+                            <LuGithub size={20} />
+                         </Button>
+                     )}
+                     {mod.links?.issuesUrl && (
+                         <Button as={Link} href={mod.links.issuesUrl} isExternal isIconOnly variant="flat" aria-label={t("curseforge.issues", { defaultValue: "Issues" })}>
+                            <LuBug size={20} />
+                         </Button>
+                     )}
+                     <Button isIconOnly variant="flat" aria-label={t("curseforge.share", { defaultValue: "Share" })}>
+                        <LuShare2 size={20} />
+                     </Button>
+                  </div>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
+          {/* Content Card */}
+          <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none min-h-[500px]">
+            <CardBody className="p-6 sm:p-8">
+              <div ref={tabsRef} className="flex w-full flex-col scroll-mt-24">
+                <Tabs 
+                    aria-label="Mod Details"  
+                    variant="underlined" 
+                    color="primary" 
+                    selectedKey={selectedTab}
+                    onSelectionChange={(key) => setSelectedTab(key as string)}
+                    classNames={{
+                        tabList: "gap-8 w-full relative rounded-none p-0 border-b border-default-200 mb-6",
+                        cursor: "w-full bg-gradient-to-r from-emerald-500 to-teal-500 h-[3px]",
+                        tab: "max-w-fit px-0 h-12 text-base font-medium text-default-500",
+                        tabContent: "group-data-[selected=true]:text-emerald-600 dark:group-data-[selected=true]:text-emerald-400 font-bold"
+                    }}
+                >
+                  <Tab key="description" title="Description">
+                    <ScrollShadow className="max-h-[800px] w-full pr-4 pretty-scrollbar">
+                        <div className="prose dark:prose-invert max-w-none prose-img:rounded-xl prose-img:mx-auto prose-a:text-emerald-600 dark:prose-a:text-emerald-400">
+                          {description ? (
+                            <div dangerouslySetInnerHTML={{ __html: description }} />
+                          ) : (
+                             <div className="flex flex-col items-center justify-center py-12 text-default-400 gap-3">
+                                <Spinner color="success" />
+                                <p>Loading description...</p>
+                            </div>
+                          )}
+                        </div>
+                    </ScrollShadow>
+                  </Tab>
+                  <Tab key="files" title="Files">
+                     <div className="flex flex-col gap-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="text-lg font-semibold">All Files</h3>
+                          <div className="w-48">
+                            <Select 
+                              label="Game Version" 
+                              size="sm" 
+                              selectedKeys={[selectedGameVersion]}
+                              onChange={(e) => setSelectedGameVersion(e.target.value || "all")}
+                            >
+                              <SelectItem key="all" value="all">
+                                All Versions
+                              </SelectItem>
+                              {gameVersions.map((version) => (
+                                <SelectItem key={version} value={version}>
+                                  {version}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                          </div>
+                        </div>
+
+                        {filteredFiles.length > 0 ? (
+                          <Table aria-label="Mod files table" removeWrapper>
+                            <TableHeader>
+                              <TableColumn>Type</TableColumn>
+                              <TableColumn>Name</TableColumn>
+                              <TableColumn>Uploaded</TableColumn>
+                              <TableColumn>Size</TableColumn>
+                              <TableColumn>Game Version</TableColumn>
+                              <TableColumn>Downloads</TableColumn>
+                              <TableColumn>Actions</TableColumn>
+                            </TableHeader>
+                            <TableBody>
+                              {filteredFiles.map(file => {
+                                const sortedVersions = sortGameVersions(file.gameVersions);
+                                return (
+                                  <TableRow key={file.id}>
+                                    <TableCell>
+                                      <Chip 
+                                        size="sm" 
+                                        color={file.releaseType === 1 ? "success" : file.releaseType === 2 ? "primary" : "warning"}
+                                        variant="flat"
+                                        className="capitalize"
+                                      >
+                                        {file.releaseType === 1 ? 'R' : file.releaseType === 2 ? 'B' : 'A'}
+                                      </Chip>
+                                    </TableCell>
+                                    <TableCell>
+                                      <span className="font-medium">{file.displayName}</span>
+                                    </TableCell>
+                                    <TableCell>
+                                      <span className="text-default-500">{formatDate(file.fileDate)}</span>
+                                    </TableCell>
+                                    <TableCell>
+                                      <span className="text-default-500">{formatFileSize(file.fileLength)}</span>
+                                    </TableCell>
+                                    <TableCell>
+                                      <div className="flex items-center gap-1">
+                                        {sortedVersions.length > 0 ? (
+                                          <>
+                                            <span className="text-default-600 bg-default-100 px-2 py-1 rounded text-xs">{sortedVersions[0]}</span>
+                                            {sortedVersions.length > 1 && (
+                                              <Tooltip content={
+                                                <div className="flex flex-wrap gap-1 max-w-xs p-2">
+                                                  {sortedVersions.slice(1).map(v => (
+                                                    <span key={v} className="text-xs bg-default-50 text-default-500 px-1.5 py-0.5 rounded border border-default-100">
+                                                      {v}
+                                                    </span>
+                                                  ))}
+                                                </div>
+                                              }>
+                                                <span className="text-xs text-primary cursor-pointer">+{sortedVersions.length - 1}</span>
+                                              </Tooltip>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <span className="text-default-400">-</span>
                                         )}
-                                      </>
-                                    ) : (
-                                      <span className="text-default-400">-</span>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell>
                                   <span className="text-default-500">{formatNumber(file.downloadCount)}</span>
                                 </TableCell>
                                 <TableCell>
@@ -763,6 +775,8 @@ const CurseForgeModPage: React.FC = () => {
               </Tab>
             </Tabs>
           </div>
+            </CardBody>
+          </Card>
         </div>
       </ScrollShadow>
 
@@ -779,17 +793,23 @@ const CurseForgeModPage: React.FC = () => {
         }}
         isDismissable={false}
         hideCloseButton={installStep === 'downloading' || installStep === 'importing'}
+        backdrop="blur"
+        classNames={{
+             base: "!bg-white/80 dark:!bg-zinc-900/80 backdrop-blur-2xl !border-white/40 dark:!border-zinc-700/50 shadow-2xl rounded-[2rem]",
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <BaseModalHeader className="flex flex-col gap-1">
-                {installStep === 'downloading' && t("curseforge.install.downloading_title", { defaultValue: "Downloading Content" })}
-                {installStep === 'version_select' && t("curseforge.install.select_version_title", { defaultValue: "Select Game Version" })}
-                {installStep === 'player_select' && t("curseforge.install.select_player_title", { defaultValue: "Select Player" })}
-                {installStep === 'importing' && t("curseforge.install.importing_title", { defaultValue: "Importing Content" })}
-                {installStep === 'success' && t("curseforge.install.success_title", { defaultValue: "Success" })}
-                {installStep === 'error' && t("curseforge.install.error_title", { defaultValue: "Error" })}
+                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                    {installStep === 'downloading' && t("curseforge.install.downloading_title", { defaultValue: "Downloading Content" })}
+                    {installStep === 'version_select' && t("curseforge.install.select_version_title", { defaultValue: "Select Game Version" })}
+                    {installStep === 'player_select' && t("curseforge.install.select_player_title", { defaultValue: "Select Player" })}
+                    {installStep === 'importing' && t("curseforge.install.importing_title", { defaultValue: "Importing Content" })}
+                    {installStep === 'success' && t("curseforge.install.success_title", { defaultValue: "Success" })}
+                    {installStep === 'error' && t("curseforge.install.error_title", { defaultValue: "Error" })}
+                </span>
               </BaseModalHeader>
               <BaseModalBody>
                 {installStep === 'downloading' && (
@@ -905,13 +925,21 @@ const CurseForgeModPage: React.FC = () => {
                         <Button variant="flat" onPress={() => setInstallModalOpen(false)}>
                             {t("common.cancel", { defaultValue: "Cancel" })}
                         </Button>
-                        <Button color="primary" onPress={handleVersionSelectNext}>
+                        <Button 
+                            color="primary" 
+                            onPress={handleVersionSelectNext}
+                            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                        >
                             {t("curseforge.install.next", { defaultValue: "Next" })}
                         </Button>
                     </>
                 )}
                 {(installStep === 'success' || installStep === 'error') && (
-                    <Button color="primary" onPress={onClose}>
+                    <Button 
+                        color="primary" 
+                        onPress={onClose}
+                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                    >
                         {t("curseforge.install.close", { defaultValue: "Close" })}
                     </Button>
                 )}
@@ -929,14 +957,20 @@ const CurseForgeModPage: React.FC = () => {
           }
         }}
         hideCloseButton
+        backdrop="blur"
+        classNames={{
+             base: "!bg-white/80 dark:!bg-zinc-900/80 backdrop-blur-2xl !border-white/40 dark:!border-zinc-700/50 shadow-2xl rounded-[2rem]",
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <BaseModalHeader className="text-primary-600">
-                {t("mods.overwrite_modal_title", {
-                  defaultValue: "检测到重复",
-                })}
+              <BaseModalHeader className="">
+                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                  {t("mods.overwrite_modal_title", {
+                    defaultValue: "检测到重复",
+                  })}
+                </span>
               </BaseModalHeader>
               <BaseModalBody>
                 <div className="text-sm text-default-700">
@@ -966,6 +1000,7 @@ const CurseForgeModPage: React.FC = () => {
                 </Button>
                 <Button
                   color="primary"
+                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                   onPress={() => {
                     try {
                       if (dupResolveRef.current) dupResolveRef.current(true);

@@ -11,8 +11,11 @@ import {
   Select,
   SelectItem,
   Chip,
+  Tooltip,
 } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaArrowLeft, FaSave, FaSync, FaPlus, FaTimes, FaSearch } from "react-icons/fa";
 import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
 
 export default function WorldLevelDatEditorPage() {
@@ -548,20 +551,25 @@ export default function WorldLevelDatEditorPage() {
       delay?: number;
     }) {
       return (
-        <div className="rounded-xl border border-default-200 bg-content1 p-2 min-h-[72px] flex flex-col gap-1 hover:border-default-300">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium truncate">{title}</div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: delay * 0.03 }}
+          className="group relative overflow-hidden rounded-2xl border border-default-200 dark:border-default-100/10 bg-white/50 dark:bg-zinc-900/50 p-4 transition-all hover:bg-default-100 dark:hover:bg-zinc-800/50 hover:shadow-lg"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm font-semibold text-default-700 dark:text-default-300 truncate" title={title}>{title}</div>
             <Chip
               size="sm"
               variant="flat"
               color={chipColor(type)}
-              className="h-6"
+              className="h-6 min-w-[3rem] justify-center font-mono text-xs uppercase"
             >
               {type}
             </Chip>
           </div>
-          <div>{children}</div>
-        </div>
+          <div className="relative z-10">{children}</div>
+        </motion.div>
       );
     };
   }, []);
@@ -569,132 +577,197 @@ export default function WorldLevelDatEditorPage() {
   return (
     <div
       ref={scrollRef}
-      className="w-full h-full p-3 sm:p-4 lg:p-6 overflow-auto"
+      className="w-full h-full p-4 md:p-8 overflow-y-auto pretty-scrollbar bg-default-50/50 dark:bg-black/50"
     >
-      <Card className="rounded-2xl">
-        <CardHeader className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold">
-              {t("contentpage.world_leveldat_editor", {
-                defaultValue: "世界 level.dat 编辑",
-              })}
-            </h2>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <Card className="w-full min-h-[85vh] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 shadow-2xl rounded-[2.5rem]">
+        <CardHeader className="flex flex-col gap-6 px-8 pt-8 pb-6 border-b border-default-100 dark:border-white/5">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                isIconOnly
+                radius="full"
+                variant="light"
+                onPress={() => navigate(-1)}
+                className="text-default-500 hover:text-default-900 dark:hover:text-white"
+              >
+                <FaArrowLeft className="w-5 h-5" />
+              </Button>
+              <div className="flex flex-col gap-1">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  {t("contentpage.world_leveldat_editor", {
+                    defaultValue: "Level.dat Editor",
+                  })}
+                </h2>
+                <p className="text-sm text-default-400 font-mono">
+                  {levelName || "Unknown World"}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Input
+                size="sm"
+                radius="full"
+                variant="flat"
+                placeholder={t("common.search", { defaultValue: "搜索" }) as string}
+                value={filterText}
+                onValueChange={(v) => {
+                  beforeUpdate();
+                  setFilterText(v);
+                }}
+                isClearable
+                startContent={<FaSearch className="text-default-400" />}
+                className="w-48 sm:w-64"
+                classNames={{
+                  inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50",
+                }}
+              />
+              <Tooltip content={t("common.refresh", { defaultValue: "刷新" })}>
+                <Button
+                  isIconOnly
+                  radius="full"
+                  variant="flat"
+                  onPress={load}
+                  isLoading={loading}
+                  className="bg-default-100 dark:bg-default-50/20 text-default-600"
+                >
+                  <FaSync className={loading ? "animate-spin" : ""} />
+                </Button>
+              </Tooltip>
+              <Tooltip content={t("common.save", { defaultValue: "保存" })}>
+                <Button
+                  isIconOnly
+                  radius="full"
+                  color="primary"
+                  onPress={saveAll}
+                  isLoading={saving}
+                  isDisabled={!hasBackend || loading}
+                  className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
+                >
+                  <FaSave className="w-4 h-4" />
+                </Button>
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Input
-              size="sm"
-              variant="bordered"
-              placeholder={
-                t("common.search", { defaultValue: "搜索" }) as string
-              }
-              value={filterText}
-              onValueChange={(v) => {
-                beforeUpdate();
-                setFilterText(v);
-              }}
-              isClearable
-              className="w-[180px] sm:w-[220px]"
-            />
-            <Button size="sm" variant="bordered" onPress={() => navigate(-1)}>
-              {t("common.back", { defaultValue: "返回" })}
-            </Button>
-            <Button
-              size="sm"
-              color="primary"
-              isLoading={saving}
-              onPress={saveAll}
-              isDisabled={!hasBackend || loading}
-            >
-              {t("common.save", { defaultValue: "保存" })}
-            </Button>
-          </div>
+          
+          {error && (
+            <div className="w-full p-4 rounded-2xl bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800/50 text-danger flex items-center gap-2">
+              <FaTimes className="w-4 h-4" />
+              <span>{error}</span>
+            </div>
+          )}
         </CardHeader>
-        <CardBody>
+        <CardBody className="px-8 pb-12 pt-6">
           {loading ? (
-            <div className="flex items-center gap-2">
-              <Spinner size="sm" />
-              <span className="text-default-500">
-                {t("common.loading", { defaultValue: "加载中" })}
-              </span>
+            <div className="flex flex-col items-center justify-center h-64 gap-4">
+              <Spinner size="lg" color="success" />
+              <div className="text-default-400 animate-pulse">
+                {t("common.loading", { defaultValue: "加载中..." })}
+              </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
-              {error ? (
-                <div className="text-danger text-sm">{error}</div>
-              ) : null}
-              <div className="flex flex-col gap-4">
-                <div className="text-lg font-semibold">
-                  {t("contentpage.basic", { defaultValue: "基础" }) as string}
+            <div className="flex flex-col gap-8">
+              {/* Basic Info Section */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="p-6 rounded-2xl bg-white/50 dark:bg-zinc-900/50 border border-default-200 dark:border-default-100/10 backdrop-blur-md shadow-sm"
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-1 h-6 rounded-full bg-gradient-to-b from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
+                  <h3 className="text-lg font-bold text-default-700 dark:text-default-300">
+                    {t("contentpage.basic_info", { defaultValue: "基础信息" })}
+                  </h3>
                 </div>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
-                    size="sm"
-                    variant="bordered"
-                    label={
-                      t("contentpage.version", {
-                        defaultValue: "版本号",
-                      }) as string
-                    }
-                    value={String(typedVersion || 0)}
-                    isReadOnly
-                  />
-                  <Input
-                    size="sm"
-                    variant="bordered"
-                    label={
-                      t("contentpage.world_level_name", {
-                        defaultValue: "世界名称",
-                      }) as string
-                    }
+                    label={t("contentpage.level_name", { defaultValue: "世界名称" })}
+                    labelPlacement="outside"
+                    placeholder="My World"
                     value={levelName}
-                    isReadOnly
+                    onValueChange={(v) => {
+                      beforeUpdate();
+                      setLevelName(v);
+                    }}
+                    variant="flat"
+                    radius="lg"
+                    classNames={{
+                      inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50",
+                    }}
                   />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm text-default-600">
+                      {t("contentpage.version", { defaultValue: "版本" })}
+                    </label>
+                    <div className="h-10 px-3 flex items-center rounded-lg bg-default-100 dark:bg-default-50/20 text-default-500 text-sm font-mono border border-transparent">
+                      {typedVersion}
+                    </div>
+                  </div>
                 </div>
-                <div role="separator" className="h-px bg-default-200 my-2" />
+              </motion.div>
+              <div role="separator" className="h-px bg-default-200/50 my-2" />
+              {/* Add Field Section */}
+              <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                  <div className="text-lg font-semibold">
-                    {
-                      t("contentpage.add_field", {
-                        defaultValue: "新增字段",
-                      }) as string
-                    }
+                  <div className="flex items-center gap-4">
+                    <div className="w-1 h-6 rounded-full bg-gradient-to-b from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
+                    <h3 className="text-lg font-bold text-default-700 dark:text-default-300">
+                      {t("contentpage.add_field", { defaultValue: "新增字段" })}
+                    </h3>
                   </div>
                   <Button
                     size="sm"
-                    variant="light"
+                    radius="full"
+                    variant="flat"
+                    className="bg-default-100 dark:bg-default-50/20 text-default-600"
                     onPress={() => setAddOpen((o) => !o)}
+                    startContent={addOpen ? <FaTimes /> : <FaPlus />}
                   >
                     {addOpen
                       ? t("common.collapse", { defaultValue: "收起" })
                       : t("common.expand", { defaultValue: "展开" })}
                   </Button>
                 </div>
-                {addOpen ? (
-                  <FieldBox
-                    title={
-                      t("contentpage.add_field_panel", {
-                        defaultValue: "新增字段面板",
-                      }) as string
-                    }
-                    type="add"
-                    delay={0}
-                  >
-                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                
+                <AnimatePresence>
+                  {addOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="p-6 rounded-2xl bg-white/50 dark:bg-zinc-900/50 border border-default-200 dark:border-default-100/10 backdrop-blur-md shadow-sm transition-all">
+                    <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr_100px_1fr_80px] gap-4 items-end">
                       <Select
+                        label="Target"
+                        labelPlacement="outside"
                         size="sm"
+                        radius="lg"
+                        variant="flat"
                         selectedKeys={new Set([addTargetKey])}
                         onSelectionChange={(keys: any) => {
                           const v = String(Array.from(keys)[0] || "root");
                           setAddTargetKey(v);
                         }}
+                        classNames={{ trigger: "bg-default-100 dark:bg-default-50/20" }}
                       >
                         {compoundTargetKeys.map((o) => (
                           <SelectItem key={o}>{o}</SelectItem>
                         ))}
                       </Select>
                       <Input
+                        label="Name"
+                        labelPlacement="outside"
                         size="sm"
-                        variant="bordered"
+                        radius="lg"
+                        variant="flat"
                         placeholder={
                           t("contentpage.field_name", {
                             defaultValue: "名称",
@@ -704,22 +777,31 @@ export default function WorldLevelDatEditorPage() {
                         onValueChange={(v) =>
                           setNewUnifiedField((prev) => ({ ...prev, name: v }))
                         }
+                        classNames={{ inputWrapper: "bg-default-100 dark:bg-default-50/20" }}
                       />
                       <Select
+                        label="Type"
+                        labelPlacement="outside"
                         size="sm"
+                        radius="lg"
+                        variant="flat"
                         selectedKeys={new Set([newUnifiedField.tag])}
                         onSelectionChange={(keys: any) => {
                           const v = String(Array.from(keys)[0] || "string");
                           setNewUnifiedField((prev) => ({ ...prev, tag: v }));
                         }}
+                        classNames={{ trigger: "bg-default-100 dark:bg-default-50/20" }}
                       >
                         {tagOptions.map((o) => (
                           <SelectItem key={o}>{o}</SelectItem>
                         ))}
                       </Select>
                       <Input
+                        label="Value"
+                        labelPlacement="outside"
                         size="sm"
-                        variant="bordered"
+                        radius="lg"
+                        variant="flat"
                         placeholder={
                           t("contentpage.initial_value", {
                             defaultValue: "初始值",
@@ -729,10 +811,12 @@ export default function WorldLevelDatEditorPage() {
                         onValueChange={(v) =>
                           setNewUnifiedField((prev) => ({ ...prev, value: v }))
                         }
+                        classNames={{ inputWrapper: "bg-default-100 dark:bg-default-50/20" }}
                       />
                       <Button
                         size="sm"
-                        color="primary"
+                        radius="lg"
+                        className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
                         onPress={() => {
                           const nm = String(newUnifiedField.name || "").trim();
                           const tg = String(
@@ -811,9 +895,12 @@ export default function WorldLevelDatEditorPage() {
                         {t("common.add", { defaultValue: "添加" })}
                       </Button>
                     </div>
-                  </FieldBox>
-                ) : null}
-                <div role="separator" className="h-px bg-default-200 my-2" />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+              </div>
+              <div role="separator" className="h-px bg-default-200/50 my-2" />
                 {(() => {
                   const acc: React.ReactNode[] = [];
                   const out: React.ReactNode[] = [];
@@ -841,7 +928,11 @@ export default function WorldLevelDatEditorPage() {
                                   <Input
                                     key={`tf-${k}-li-${idx}`}
                                     size="sm"
-                                    variant="bordered"
+                                    variant="flat"
+                                    radius="lg"
+                                    classNames={{
+                                      inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50"
+                                    }}
                                     className="w-12 shrink-0"
                                     value={String(it ?? "")}
                                     onValueChange={(v) => {
@@ -885,6 +976,7 @@ export default function WorldLevelDatEditorPage() {
                             <div className="flex justify-end">
                               <Switch
                                 size="sm"
+                                color="success"
                                 isSelected={isOn}
                                 onValueChange={(c) => {
                                   setTypedFieldValueByName(String(k), {
@@ -910,6 +1002,9 @@ export default function WorldLevelDatEditorPage() {
                             >
                               <Select
                                 size="sm"
+                                radius="lg"
+                                variant="flat"
+                                classNames={{ trigger: "bg-default-100 dark:bg-default-50/20" }}
                                 selectedKeys={
                                   new Set([
                                     String((f as any).valueString || "0"),
@@ -942,10 +1037,14 @@ export default function WorldLevelDatEditorPage() {
                               type={tag}
                               delay={i * 0.015}
                             >
-                              <Input
-                                size="sm"
-                                variant="bordered"
-                                value={display}
+                                <Input
+                                  size="sm"
+                                  variant="flat"
+                                  radius="lg"
+                                  classNames={{
+                                    inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50"
+                                  }}
+                                  value={display}
                                 onValueChange={(v) => {
                                   beforeUpdate();
                                   setTypedDrafts((prev) => ({
@@ -1003,7 +1102,7 @@ export default function WorldLevelDatEditorPage() {
                       out.push(
                         <div
                           key={`grid-before-${k}`}
-                          className="grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-3"
+                          className="grid grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-4"
                         >
                           {acc.splice(0, acc.length)}
                         </div>
@@ -1018,7 +1117,9 @@ export default function WorldLevelDatEditorPage() {
                           <div className="flex items-center gap-2">
                             <Button
                               size="sm"
-                              variant="light"
+                              radius="lg"
+                              variant="flat"
+                              className="bg-default-100 dark:bg-default-50/20 text-default-600"
                               onPress={() => {
                                 if (!compoundOpen[pathKey]) {
                                   const hasLocal =
@@ -1052,7 +1153,7 @@ export default function WorldLevelDatEditorPage() {
                           className="h-px bg-default-200 my-2"
                         />
                         {compoundOpen[pathKey] ? (
-                          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+                          <div className="grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-4">
                             {listShow.map((sf, si) => {
                               const stag = normTag(sf.tag);
                               if (stag === "string") {
@@ -1067,6 +1168,9 @@ export default function WorldLevelDatEditorPage() {
                                     >
                                       <Select
                                         size="sm"
+                                        radius="lg"
+                                        variant="flat"
+                                        classNames={{ trigger: "bg-default-100 dark:bg-default-50/20" }}
                                         selectedKeys={
                                           new Set([
                                             String(sf.valueString || "0"),
@@ -1101,7 +1205,11 @@ export default function WorldLevelDatEditorPage() {
                                   >
                                     <Input
                                       size="sm"
-                                      variant="bordered"
+                                      variant="flat"
+                                      radius="lg"
+                                      classNames={{
+                                        inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50"
+                                      }}
                                       value={display}
                                       onValueChange={(v) => {
                                         beforeUpdate();
@@ -1144,9 +1252,13 @@ export default function WorldLevelDatEditorPage() {
                                       <div className="flex gap-1 overflow-x-auto flex-nowrap pretty-scrollbar gutter-stable">
                                         {items.map((it, idx) => (
                                           <Input
-                                            key={`c-${k}-${sf.name}-li-${idx}`}
+                                            key={`c-${k}-li-${idx}`}
                                             size="sm"
-                                            variant="bordered"
+                                            variant="flat"
+                                            radius="lg"
+                                            classNames={{
+                                              inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50"
+                                            }}
                                             className="w-12 shrink-0"
                                             value={String(it ?? "")}
                                             onValueChange={(v) => {
@@ -1206,6 +1318,7 @@ export default function WorldLevelDatEditorPage() {
                                       <div className="flex justify-end">
                                         <Switch
                                           size="sm"
+                                          color="success"
                                           isSelected={isOn}
                                           onValueChange={(c) => {
                                             setCompoundFieldValue(pathKey, si, {
@@ -1233,7 +1346,11 @@ export default function WorldLevelDatEditorPage() {
                                   >
                                     <Input
                                       size="sm"
-                                      variant="bordered"
+                                      variant="flat"
+                                      radius="lg"
+                                      classNames={{
+                                        inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50"
+                                      }}
                                       value={display}
                                       onValueChange={(v) => {
                                         beforeUpdate();
@@ -1275,7 +1392,11 @@ export default function WorldLevelDatEditorPage() {
                                       <>
                                         <Input
                                           size="sm"
-                                          variant="bordered"
+                                          variant="flat"
+                                          radius="lg"
+                                          classNames={{
+                                            inputWrapper: "bg-default-100 dark:bg-default-50/20 group-data-[focus=true]:bg-default-200/50"
+                                          }}
                                           value={display}
                                           onValueChange={(v) => {
                                             beforeUpdate();
@@ -1301,7 +1422,9 @@ export default function WorldLevelDatEditorPage() {
                                         <div className="mt-2">
                                           <Button
                                             size="sm"
-                                            variant="bordered"
+                                            radius="lg"
+                                            variant="flat"
+                                            className="bg-default-100 dark:bg-default-50/20 text-default-600"
                                             onPress={() => {
                                               const segs = pathKey.split("/");
                                               const nextPath = [
@@ -1331,7 +1454,7 @@ export default function WorldLevelDatEditorPage() {
                     out.push(
                       <div
                         key={`grid-last`}
-                        className="grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-3"
+                        className="grid grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-4"
                       >
                         {acc}
                       </div>
@@ -1339,16 +1462,11 @@ export default function WorldLevelDatEditorPage() {
                   }
                   return out;
                 })()}
-              </div>
-              <div className="flex items-center gap-2">
-                <Button size="sm" variant="bordered" onPress={load}>
-                  {t("common.refresh", { defaultValue: "刷新" }) as string}
-                </Button>
-              </div>
             </div>
           )}
         </CardBody>
-      </Card>
+        </Card>
+      </motion.div>
     </div>
   );
 }

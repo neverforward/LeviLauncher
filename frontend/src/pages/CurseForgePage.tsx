@@ -7,6 +7,8 @@ import {
   SelectItem,
   Pagination,
   Skeleton,
+  Card,
+  CardBody,
 } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -400,273 +402,303 @@ export const CurseForgePage: React.FC = () => {
       ref={pageRootRef}
       className="w-full h-full min-h-0 flex flex-col p-4 sm:p-6 gap-4"
     >
-      <div className="flex flex-col gap-4 shrink-0">
-        <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
-          {t("curseforge.title", { defaultValue: "CurseForge" })}
-        </h1>
+      <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+        <CardBody className="p-6 flex flex-col gap-4">
+          <h1 className="text-4xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+            {t("curseforge.title", { defaultValue: "CurseForge" })}
+          </h1>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Input
-            placeholder={t("curseforge.search_placeholder", {
-              defaultValue: "搜索模组...",
-            })}
-            value={query}
-            onValueChange={setQuery}
-            onKeyPress={handleKeyPress}
-            startContent={<LuSearch />}
-            className="flex-1"
-            size="sm"
-          />
-          <Button
-            color="primary"
-            onPress={handleSearch}
-            startContent={<LuSearch />}
-            size="sm"
-          >
-            {t("curseforge.search", { defaultValue: "搜索" })}
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Select
-            label={t("curseforge.minecraft_version", {
-              defaultValue: "Minecraft版本",
-            })}
-            placeholder={t("curseforge.select_version", {
-              defaultValue: "选择版本",
-            })}
-            selectedKeys={[selectedMinecraftVersion]}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys)[0] as string;
-              setSelectedMinecraftVersion(value || "");
-              setCurrentPage(1);
-            }}
-            size="sm"
-          >
-            <SelectItem key="" value="">
-              {t("curseforge.all_versions", { defaultValue: "全部版本" })}
-            </SelectItem>
-            {gameVersions.map((version) => (
-              <SelectItem key={version.name} value={version.name}>
-                {version.name}
-              </SelectItem>
-            ))}
-          </Select>
-
-          <Select
-            label={t("curseforge.class", { defaultValue: "类型" })}
-            placeholder={t("curseforge.select_class", {
-              defaultValue: "选择类型",
-            })}
-            selectedKeys={selectedClass !== undefined ? [String(selectedClass)] : []}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys)[0] as string;
-              setSelectedClass(value ? parseInt(value) : 0);
-              setSelectedCategories([]);
-              setCurrentPage(1);
-            }}
-            size="sm"
-          >
-            <SelectItem key="0" value="0">
-              {t("curseforge.all_classes", { defaultValue: "全部类型" })}
-            </SelectItem>
-            {classes.map((cls) => (
-              <SelectItem key={String(cls.id)} value={String(cls.id)}>
-                {cls.name}
-              </SelectItem>
-            ))}
-          </Select>
-
-          <Select
-            label={t("curseforge.category", { defaultValue: "分类" })}
-            placeholder={t("curseforge.select_category", {
-              defaultValue: "选择分类",
-            })}
-            isDisabled={!selectedClass}
-            selectionMode="multiple"
-            selectedKeys={selectedCategories.map(String)}
-            onSelectionChange={(keys) => {
-              const values = Array.from(keys).map((k) => parseInt(String(k))).filter(n => !isNaN(n));
-              setSelectedCategories(values);
-              setCurrentPage(1);
-            }}
-            size="sm"
-          >
-            {categories.map((cat) => (
-              <SelectItem key={String(cat.id)} value={String(cat.id)}>
-                {cat.name}
-              </SelectItem>
-            ))}
-          </Select>
-
-          <Select
-            label={t("curseforge.sort_by", { defaultValue: "排序" })}
-            placeholder={t("curseforge.select_sort", {
-              defaultValue: "选择排序",
-            })}
-            selectedKeys={selectedSort ? [String(selectedSort)] : []}
-            onSelectionChange={(keys) => {
-              const value = Array.from(keys)[0] as string;
-              setSelectedSort(parseInt(value));
-              setCurrentPage(1);
-            }}
-            size="sm"
-          >
-            {sortOptions.map((opt) => (
-              <SelectItem key={String(opt.value)} value={String(opt.value)}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
-      </div>
-
-      <div 
-        ref={scrollContainerRef}
-        onScroll={(e) => {
-          lastScrollTopRef.current = getScrollTop();
-        }}
-        className="flex-1 min-h-0 overflow-y-auto rounded-xl p-2 relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-      >
-        {error ? (
-          <div className="flex flex-col items-center justify-center h-full gap-4 text-danger">
-            <p>{error}</p>
-            <Button 
-              color="danger" 
-              variant="flat" 
-              onPress={() => {
-                if (gameVersions.length === 0 && allCategories.length === 0) {
-                  void loadInitialData();
-                } else {
-                  setSearchToken(v => v + 1);
-                }
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              placeholder={t("curseforge.search_placeholder", {
+                defaultValue: "搜索模组...",
+              })}
+              value={query}
+              onValueChange={setQuery}
+              onKeyPress={handleKeyPress}
+              startContent={<LuSearch />}
+              className="flex-1"
+              size="sm"
+              classNames={{
+                inputWrapper: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
+            />
+            <Button
+              color="primary"
+              onPress={handleSearch}
+              startContent={<LuSearch />}
+              size="sm"
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             >
-              {t("retry", { defaultValue: "Retry" })}
+              {t("curseforge.search", { defaultValue: "搜索" })}
             </Button>
           </div>
-        ) : (loading || !hasSearched) ? (
-          <div className="flex flex-col gap-3">
-             {renderSkeletons()}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Select
+              label={t("curseforge.minecraft_version", {
+                defaultValue: "Minecraft版本",
+              })}
+              placeholder={t("curseforge.select_version", {
+                defaultValue: "选择版本",
+              })}
+              selectedKeys={[selectedMinecraftVersion]}
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0] as string;
+                setSelectedMinecraftVersion(value || "");
+                setCurrentPage(1);
+              }}
+              size="sm"
+              classNames={{
+                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+              }}
+            >
+              <SelectItem key="" value="">
+                {t("curseforge.all_versions", { defaultValue: "全部版本" })}
+              </SelectItem>
+              {gameVersions.map((version) => (
+                <SelectItem key={version.name} value={version.name}>
+                  {version.name}
+                </SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              label={t("curseforge.class", { defaultValue: "类型" })}
+              placeholder={t("curseforge.select_class", {
+                defaultValue: "选择类型",
+              })}
+              selectedKeys={selectedClass !== undefined ? [String(selectedClass)] : []}
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0] as string;
+                setSelectedClass(value ? parseInt(value) : 0);
+                setSelectedCategories([]);
+                setCurrentPage(1);
+              }}
+              size="sm"
+              classNames={{
+                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+              }}
+            >
+              <SelectItem key="0" value="0">
+                {t("curseforge.all_classes", { defaultValue: "全部类型" })}
+              </SelectItem>
+              {classes.map((cls) => (
+                <SelectItem key={String(cls.id)} value={String(cls.id)}>
+                  {cls.name}
+                </SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              label={t("curseforge.category", { defaultValue: "分类" })}
+              placeholder={t("curseforge.select_category", {
+                defaultValue: "选择分类",
+              })}
+              isDisabled={!selectedClass}
+              selectionMode="multiple"
+              selectedKeys={selectedCategories.map(String)}
+              onSelectionChange={(keys) => {
+                const values = Array.from(keys).map((k) => parseInt(String(k))).filter(n => !isNaN(n));
+                setSelectedCategories(values);
+                setCurrentPage(1);
+              }}
+              size="sm"
+              classNames={{
+                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+              }}
+            >
+              {categories.map((cat) => (
+                <SelectItem key={String(cat.id)} value={String(cat.id)}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              label={t("curseforge.sort_by", { defaultValue: "排序" })}
+              placeholder={t("curseforge.select_sort", {
+                defaultValue: "选择排序",
+              })}
+              selectedKeys={selectedSort ? [String(selectedSort)] : []}
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0] as string;
+                setSelectedSort(parseInt(value));
+                setCurrentPage(1);
+              }}
+              size="sm"
+              classNames={{
+                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+              }}
+            >
+              {sortOptions.map((opt) => (
+                <SelectItem key={String(opt.value)} value={String(opt.value)}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </Select>
           </div>
-        ) : mods.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-default-500">
-            <p>{t("curseforge.no_results", { defaultValue: "未找到结果" })}</p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {mods.map((mod, index) => (
-              <motion.div
-                key={mod.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div
-                  className="w-full p-4 bg-content1 hover:bg-content2 transition-all cursor-pointer rounded-xl flex gap-4 group shadow-sm hover:shadow-md border border-default-100"
-                  onClick={() => {
-                    saveScrollPosition();
-                    navigate(`/curseforge/mod/${mod.id}`);
+        </CardBody>
+      </Card>
+
+      <Card className="flex-1 min-h-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+        <CardBody className="p-0 overflow-hidden flex flex-col">
+          <div 
+            ref={scrollContainerRef}
+            onScroll={(e) => {
+              lastScrollTopRef.current = getScrollTop();
+            }}
+            className="flex-1 overflow-y-auto p-4 relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {error ? (
+              <div className="flex flex-col items-center justify-center h-full gap-4 text-danger">
+                <p>{error}</p>
+                <Button 
+                  color="danger" 
+                  variant="flat" 
+                  onPress={() => {
+                    if (gameVersions.length === 0 && allCategories.length === 0) {
+                      void loadInitialData();
+                    } else {
+                      setSearchToken(v => v + 1);
+                    }
                   }}
                 >
-                  <div className="flex-shrink-0">
-                    <img
-                      src={mod.logo?.thumbnailUrl || mod.logo?.url || ""}
-                      alt={mod.name}
-                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover bg-content3"
-                      loading="lazy"
-                    />
-                  </div>
+                  {t("retry", { defaultValue: "Retry" })}
+                </Button>
+              </div>
+            ) : (loading || !hasSearched) ? (
+              <div className="flex flex-col gap-3">
+                 {renderSkeletons()}
+              </div>
+            ) : mods.length === 0 ? (
+              <div className="flex items-center justify-center h-full text-default-500">
+                <p>{t("curseforge.no_results", { defaultValue: "未找到结果" })}</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {mods.map((mod, index) => (
+                  <motion.div
+                    key={mod.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div
+                      className="w-full p-4 bg-default-50/50 dark:bg-white/5 hover:bg-default-100/50 dark:hover:bg-white/10 transition-all cursor-pointer rounded-2xl flex gap-4 group shadow-sm hover:shadow-md border border-default-100 dark:border-white/5"
+                      onClick={() => {
+                        saveScrollPosition();
+                        navigate(`/curseforge/mod/${mod.id}`);
+                      }}
+                    >
+                      <div className="flex-shrink-0">
+                        <img
+                          src={mod.logo?.thumbnailUrl || mod.logo?.url || ""}
+                          alt={mod.name}
+                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover bg-content3 shadow-sm"
+                          loading="lazy"
+                        />
+                      </div>
 
-                  <div className="flex flex-col flex-1 min-w-0 gap-1">
-                    <div className="flex items-baseline gap-2 truncate">
-                      <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
-                        {mod.name}
-                      </h3>
-                      <span className="text-xs sm:text-sm text-default-500 truncate">
-                        | {t("curseforge.by_author", { author: mod.authors?.[0]?.name || mod.author || "Unknown", defaultValue: `By ${mod.authors?.[0]?.name || mod.author || "Unknown"}` })}
-                      </span>
+                      <div className="flex flex-col flex-1 min-w-0 gap-1">
+                        <div className="flex items-baseline gap-2 truncate">
+                          <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
+                            {mod.name}
+                          </h3>
+                          <span className="text-xs sm:text-sm text-default-500 truncate">
+                            | {t("curseforge.by_author", { author: mod.authors?.[0]?.name || mod.author || "Unknown", defaultValue: `By ${mod.authors?.[0]?.name || mod.author || "Unknown"}` })}
+                          </span>
+                        </div>
+
+                        <p className="text-xs sm:text-sm text-default-500 line-clamp-2 w-full">
+                          {mod.summary || t("curseforge.no_description", { defaultValue: "No description available." })}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-default-400 mt-1">
+                          <div className="flex items-center gap-1" title={t("curseforge.downloads", { defaultValue: "Downloads" })}>
+                            <LuDownload />
+                            <span>{formatNumber(mod.downloadCount)}</span>
+                          </div>
+                          <div className="flex items-center gap-1" title={t("curseforge.updated", { defaultValue: "Updated" })}>
+                            <LuClock />
+                            <span>{formatDate(mod.dateModified)}</span>
+                          </div>
+                          <div className="flex items-center gap-1" title={t("curseforge.created", { defaultValue: "Created" })}>
+                            <LuCalendar />
+                            <span>{formatDate(mod.dateCreated)}</span>
+                          </div>
+                          <div className="flex items-center gap-1" title={t("curseforge.size", { defaultValue: "Size" })}>
+                            <LuFileDigit />
+                            <span>{formatSize(mod.latestFiles?.[0]?.fileLength)}</span>
+                          </div>
+                          <div className="flex items-center gap-1" title={t("curseforge.game_version", { defaultValue: "Game Version" })}>
+                            <LuGamepad2 />
+                            <span>{selectedMinecraftVersion || getLatestSupportedVersion(mod)}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {(() => {
+                            const classCat = allCategories.find((c) => c.id === mod.classId);
+                            if (classCat) {
+                              return (
+                                <Chip
+                                  key={`class-${classCat.id}`}
+                                  size="sm"
+                                  variant="flat"
+                                  radius="sm"
+                                  className="h-5 text-[10px] bg-primary/10 text-primary font-medium"
+                                >
+                                  {classCat.name}
+                                </Chip>
+                              );
+                            }
+                            return null;
+                          })()}
+
+                          {mod.categories
+                            ?.filter((cat) => cat.id !== mod.classId)
+                            .map((cat) => (
+                              <Chip
+                                key={cat.id}
+                                size="sm"
+                                variant="flat"
+                                radius="sm"
+                                className="h-5 text-[10px] bg-default-100 text-default-500 group-hover:bg-default-200 transition-colors"
+                              >
+                                {cat.name}
+                              </Chip>
+                            ))}
+                        </div>
+                      </div>
                     </div>
-
-                    <p className="text-xs sm:text-sm text-default-500 line-clamp-2 w-full">
-                      {mod.summary || t("curseforge.no_description", { defaultValue: "No description available." })}
-                    </p>
-
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-default-400 mt-1">
-                      <div className="flex items-center gap-1" title={t("curseforge.downloads", { defaultValue: "Downloads" })}>
-                        <LuDownload />
-                        <span>{formatNumber(mod.downloadCount)}</span>
-                      </div>
-                      <div className="flex items-center gap-1" title={t("curseforge.updated", { defaultValue: "Updated" })}>
-                        <LuClock />
-                        <span>{formatDate(mod.dateModified)}</span>
-                      </div>
-                      <div className="flex items-center gap-1" title={t("curseforge.created", { defaultValue: "Created" })}>
-                        <LuCalendar />
-                        <span>{formatDate(mod.dateCreated)}</span>
-                      </div>
-                      <div className="flex items-center gap-1" title={t("curseforge.size", { defaultValue: "Size" })}>
-                        <LuFileDigit />
-                        <span>{formatSize(mod.latestFiles?.[0]?.fileLength)}</span>
-                      </div>
-                      <div className="flex items-center gap-1" title={t("curseforge.game_version", { defaultValue: "Game Version" })}>
-                        <LuGamepad2 />
-                        <span>{selectedMinecraftVersion || getLatestSupportedVersion(mod)}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {(() => {
-                        const classCat = allCategories.find((c) => c.id === mod.classId);
-                        if (classCat) {
-                          return (
-                            <Chip
-                              key={`class-${classCat.id}`}
-                              size="sm"
-                              variant="flat"
-                              radius="sm"
-                              className="h-5 text-[10px] bg-primary/10 text-primary font-medium"
-                            >
-                              {classCat.name}
-                            </Chip>
-                          );
-                        }
-                        return null;
-                      })()}
-
-                      {mod.categories
-                        ?.filter((cat) => cat.id !== mod.classId)
-                        .map((cat) => (
-                          <Chip
-                            key={cat.id}
-                            size="sm"
-                            variant="flat"
-                            radius="sm"
-                            className="h-5 text-[10px] bg-default-100 text-default-500 group-hover:bg-default-200 transition-colors"
-                          >
-                            {cat.name}
-                          </Chip>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      {totalPages > 1 && (
-        <div className="flex justify-center">
-          <Pagination
-            total={totalPages}
-            page={currentPage}
-            onChange={setCurrentPage}
-            showControls
-            size="sm"
-          />
-        </div>
-      )}
+          
+          {totalPages > 1 && (
+            <div className="flex justify-center p-4 border-t border-default-100 dark:border-white/5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md shrink-0">
+              <Pagination
+                total={totalPages}
+                page={currentPage}
+                onChange={(page) => {
+                  setCurrentPage(page);
+                  setSearchToken((v) => v + 1);
+                }}
+                showControls
+                color="primary"
+                className="gap-2"
+                radius="full"
+                classNames={{
+                  cursor: "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20 font-bold",
+                }}
+              />
+            </div>
+          )}
+        </CardBody>
+      </Card>
     </div>
   );
 };
