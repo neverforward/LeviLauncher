@@ -1,8 +1,7 @@
 {
   "app": {
     "settings": "Настройки",
-    "lang": "Язык",
-    "quit_launcher": "Выйти"
+    "lang": "Язык"
   },
   "nav": {
     "versions": "Версии",
@@ -12,7 +11,6 @@
   "launcherpage": {
     "launch_button": "Запуск",
     "content_manage": "Управление контентом",
-    "quick_actions": "Быстрые действия",
     "go_version_settings": "Настройки версий",
     "manage_versions": "Версии",
     "search_versions": "Искать версии или названия",
@@ -39,11 +37,6 @@
       "go_settings": "Открыть настройки"
     },
     "delete": {
-      "failed": {
-        "title": "Удаление провалено",
-        "content": "Пожалуйста, попробуйте позже.",
-        "close_button": "Закрыть"
-      },
       "complete": {
         "title": "Удалено",
         "content": "Выбранная версия успешно удалена!",
@@ -54,30 +47,15 @@
         "content": "Вы уверены что хотите удалить эту версию? Это действие не может быть отменено!",
         "delete_button": "Удалить",
         "cancel_button": "Отмена"
-      },
-      "deleting": {
-        "title": "Удаление..."
       }
     },
     "launch": {
       "failed": {
         "title": "Ошибка запуска",
         "content": "Вы не выбрали версию для запуска, пожалуйста, установите версию для начала",
-        "download_button": "Страница загрузок",
         "close_button": "Закрыть"
       },
       "force_run_button": "Принудительный запуск"
-    },
-    "deleting": {
-      "title": "Удаление"
-    },
-    "registering": {
-      "title": "Регистрация"
-    },
-    "startup": {
-      "title": "Успешный запуск",
-      "content": "Выбранная версия успешно запущена!",
-      "close_button": "Закрыть"
     },
     "currentVersion": "Текущая версия",
     "vcruntime": {
@@ -103,7 +81,6 @@
       "installing": {
         "title": "Установка GameInput",
         "body": "Загрузка и запуск установщика. Следуйте системным подсказкам для завершения.",
-        "progress_prefix": "Прогресс: ",
         "preparing": "Подготовка к загрузке..."
       },
       "missing": {
@@ -126,11 +103,9 @@
       "continue": "Продолжить установку",
       "done_and_check": "Готово, проверить заново"
     },
-    "currentVersion_choose_version_aria": "Выбрать версию",
     "currentVersion_none": "Нет",
     "version_select": {
       "title": "Выбор версии",
-      "subtitle": "Доступные локальные версии:",
       "unknown": "Неизвестно"
     },
     "tip": {
@@ -148,8 +123,7 @@
   "moddedcard": {
     "title": "Моды",
     "content": {
-      "none": "Модов не найдено",
-      "found": "Найдено модов: {{count}}"
+      "none": "Модов не найдено"
     },
     "manage": "Управление модами"
   },
@@ -163,13 +137,8 @@
     }
   },
   "downloadpage": {
-    "type": {
-      "install": "Установить",
-      "not_install": "Не устанавливать"
-    },
     "changelog": {
-      "title": "Последний журнал изменений",
-      "loading": "Загрузка..."
+      "title": "Последний журнал изменений"
     },
     "status": {
       "downloaded": "Загружено",
@@ -191,7 +160,6 @@
       }
     },
     "topcontent": {
-      "rowperpage": "Строк на странице: ",
       "types": "Типы",
       "types_all": "Все",
       "status": "Статус",
@@ -212,9 +180,6 @@
       "confirm_title": "Подтверждение папки установки",
       "name_label": "Имя версии",
       "placeholder_name": "Введите имя версии",
-      "suggest_default": "Рекомендуется использовать стандартное: ",
-      "description": "Используется для хранения скопированных файлов игры",
-      "name_required": "Имя обязательно",
       "enable_isolation": "Изоляция версии",
       "enable_isolation_desc": "Перенаправляет данные игры (миры, настройки, кэши и т.д.) в папку versions/<имя>/ вместо AppData.",
       "inherit_label": "Наследовать от",
@@ -230,10 +195,7 @@
       "copy_link": "Скопировать ссылку",
       "recommended": "Рекомендуемое зеркало",
       "auto_testing": "Автоматическое тестирование…",
-      "no_recommended": "Рекомендуемое зеркало отсутствует",
       "others": "Другие зеркала",
-      "testing_short": "Тест",
-      "failed": "Ошибка",
       "no_mirrors": "Для этой версии зеркала недоступны.",
       "filename_fallback": "(файл)",
       "retest": "Повторить тест",
@@ -243,8 +205,6 @@
     },
     "progress": {
       "title": "Прогресс загрузки",
-      "dest_placeholder": "В папке installers (msixvc)",
-      "error_prefix": "Ошибка: ",
       "unknown_error": "Неизвестная ошибка"
     },
     "download": {
@@ -271,9 +231,6 @@
         "hint": "По умолчанию используются файлы из папки installers"
       }
     },
-    "vcr": {
-      "error_generic": "Не удалось подготовить библиотеки выполнения. Проверьте интернет-соединение и попробуйте снова"
-    },
     "customappx": {
       "button": "Пользовательский",
       "modal": {
@@ -281,13 +238,11 @@
           "header": "Информация о версии",
           "body": {
             "select": {
-              "label": "Выберите тип игры",
               "item1": "Релиз",
               "item2": "Предрелиз"
             }
           },
           "footer": {
-            "cancel_button": "Отмена",
             "install_button": "Установить"
           }
         }
@@ -312,62 +267,20 @@
         "base_root": "Базовая папка",
         "apply": "Применить",
         "reset": "Сбросить",
-        "open_installers": "Открыть папку установщиков",
-        "open_versions": "Открыть папку версий",
         "installer": "Установщики",
         "versions": "Версии",
         "unsaved": "Изменения не сохранены",
         "not_writable": "Нет прав на запись"
       },
-      "browse": "Обзор...",
       "language": {
         "name": "Язык",
         "button": "Изменить"
-      },
-      "defaultdev": {
-        "label": "Запускать в режиме разработчика",
-        "description": "При включении Minecraft будет запускаться в режиме разработчика. При выключении — в обычном режиме."
       }
     },
-    "footer": {
-      "cancel_button": "Отмена",
-      "save_button": "Сохранить"
-    },
     "modal": {
-      "1": {
-        "header": {
-          "title": "Проверка обновлений..."
-        },
-        "body": {
-          "content": "Идёт проверка обновлений..."
-        },
-        "footer": {
-          "cancel_button": "Отмена"
-        }
-      },
       "2": {
-        "header": {
-          "title": "Обнаружена новая версия"
-        },
-        "body": {
-          "content": "Доступна новая версия ({{version}})!"
-        },
         "footer": {
-          "download_button": "Обновить",
-          "close_button": "Закрыть"
-        }
-      },
-      "3": {
-        "header": {
-          "title": "Обновление..."
-        }
-      },
-      "-2": {
-        "header": {
-          "title": "У вас уже установлена последняя версия!"
-        },
-        "footer": {
-          "close_button": "Закрыть"
+          "download_button": "Обновить"
         }
       }
     }
@@ -413,61 +326,8 @@
   },
   "downloadmodal": {
     "download_button": "Скачать",
-    "information": {
-      "title": "Подтверждение информации",
-      "spinner": {
-        "label": "Получаем ссылку на скачивание..."
-      },
-      "table": {
-        "version": "ВЕРСИЯ",
-        "type": "ТИП",
-        "size": "РАЗМЕР ФАЙЛА"
-      },
-      "input": {
-        "label": "Имя версии",
-        "placeholder": "Введите имя версии",
-        "errormessage": "Не соответствует правилам именования или уже существует!"
-      },
-      "switch": {
-        "label": "Включить поддержку модов",
-        "description": "Позволит устанавливать моды, автоматически ставить Preloader и изменять оригинальный файл (Minecraft.Windows.exe)."
-      },
-      "close_button": "Закрыть",
-      "download_button": "Скачать"
-    },
-    "downloading": {
-      "title": "Загрузка",
-      "body": {
-        "file_name": " Файл: {{name}}",
-        "estimated_time_remaining": "Осталось примерно: "
-      },
-      "footer": {
-        "close_button": "Закрыть"
-      }
-    },
     "installing": {
       "title": "Установка"
-    },
-    "installcomplete": {
-      "title": "Установка завершена",
-      "content": "Установка прошла успешно!",
-      "close_button": "Закрыть"
-    },
-    "stopdownload": {
-      "title": "Подтверждение остановки загрузки",
-      "content": "Вы действительно хотите остановить загрузку? Это действие нельзя отменить!",
-      "cancel_button": "Отмена",
-      "stop_button": "Остановить"
-    },
-    "downloadfailed": {
-      "title": "Ошибка загрузки",
-      "content": "При загрузке файла произошла ошибка. Попробуйте позже.",
-      "close_button": "Закрыть"
-    },
-    "installfailed": {
-      "title": "Ошибка установки",
-      "content": "Попробуйте повторить попытку позже.",
-      "close_button": "Закрыть"
     },
     "open_folder": "Открыть папку"
   },
@@ -501,9 +361,7 @@
     "ok": "ОК",
     "cancel": "Отмена",
     "error": "Ошибка",
-    "retry": "Повторить",
     "refresh": "Обновить",
-    "cancel_and_clean": "Отменить и очистить",
     "quit_launcher": "Выйти из лаунчера",
     "confirm": "Подтвердить",
     "success": "Успешно",
@@ -512,7 +370,6 @@
     "search": "Поиск",
     "search_placeholder": "Поиск...",
     "open": "Открыть",
-    "select": "Выбрать",
     "select_mode": "Режим выбора",
     "select_all": "Выбрать все",
     "preview": "Предрелиз",
@@ -522,7 +379,6 @@
     "yes": "Да",
     "no": "Нет",
     "close": "Закрыть",
-    "go": "Перейти",
     "empty": "Нет данных",
     "browse": "Обзор...",
     "processing": "Обработка...",
@@ -541,85 +397,50 @@
     "count": {
       "worlds": "Миры",
       "resource_packs": "Ресурспаки",
-      "behavior_packs": "Поведенческие паки",
-      "skin_packs": "Наборы скинов"
+      "behavior_packs": "Поведенческие паки"
     }
   },
   "contentpage": {
-    "not_ready_title": "Страница ещё не готова",
-    "not_ready_body": "Эта страница находится в разработке и пока недоступна. Вернитесь на главную.",
     "current_version": "Текущая версия",
     "none": "Нет",
     "isolation": "Изоляция",
-    "isolation_on": "Изоляция: включена",
-    "isolation_off": "Изоляция отключена",
     "worlds": "Миры",
     "worlds_list": "Список миров",
-    "worlds_desc": "Хранятся индивидуально для каждого игрока в Users/<игрок>/games/com.mojang/minecraftWorlds",
     "select_player": "Выберите игрока",
     "no_players": "Игроки не найдены",
-    "no_worlds": "Миры не найдены",
-    "backup": "Резервная копия",
     "backup_success": "Резервная копия создана",
-    "edit": "Редактировать",
     "resource_packs": "Ресурспаки",
-    "shared_desc": "Общие для всех игроков: Users/Shared/games/com.mojang/resource_packs",
     "no_resource_packs": "Ресурспаки не найдены",
-    "path": "Путь",
-    "path_unknown": "Путь неизвестен",
-    "not_resolved": "Не определён",
     "behavior_packs": "Поведенческие паки",
-    "shared_desc_bp": "Общие для всех игроков: Users/Shared/games/com.mojang/behavior_packs",
     "no_behavior_packs": "Поведенческие паки не найдены",
     "skin_packs": "Наборы скинов",
     "no_skin_packs": "Наборы скинов не найдены",
-    "count": "Количество",
     "error_resolve_paths": "Не удалось определить пути к контенту.",
     "open_users_dir": "Открыть папку хранения",
     "players_aria": "Игроки",
-    "sort_aria": "Сортировка",
     "sort_time": "Время",
-    "sort_az": "Имя A-Z",
-    "sort_za": "Имя Z-A",
     "sort_asc": "По возрастанию",
     "sort_desc": "По убыванию",
-    "min_engine_version": "Мин. версия движка",
     "no_items": "Элементы не найдены",
     "drop_hint": "Перетащите .mcworld/.mcpack/.mcaddon для импорта",
     "import_button": "Импорт .mcworld/.mcpack/.mcaddon",
     "require_player_for_world_import": "Для импорта мира (.mcworld) сначала выберите игрока",
     "no_player_selected": "Игрок не выбран",
     "world_leveldat_editor": "Редактор level.dat мира",
-    "basic": "Основные",
     "version": "Версия",
-    "world_level_name": "Название мира",
     "add_field": "Добавить поле",
-    "add_field_panel": "Панель добавления поля",
     "field_name": "Имя",
     "initial_value": "Начальное значение",
-    "gamerules": "Правила игры",
-    "others": "Прочие поля",
-    "add_child_field": "Добавить дочернее поле",
-    "new_child_item": "Новый дочерний элемент",
-    "field_type": "Тип",
     "select_player_title": "Выберите игрока",
     "select_player_for_import": "Пожалуйста, выберите игрока для импорта"
   },
   "versions": {
-    "rename": {
-      "title": "Переименовать версию",
-      "current": "Текущее имя",
-      "new_name": "Новое имя",
-      "placeholder": "Введите новое имя",
-      "hint": "Переименовывается только папка. Версия и тип игры не меняются."
-    },
     "info": {
       "version": "Версия игры",
       "name": "Имя"
     },
     "edit": {
       "title": "Настройки версии",
-      "current": "Текущее имя",
       "new_name": "Новое имя",
       "placeholder": "Введите новое имя",
       "hint": "Переименовывается только папка. Версия и тип игры не меняются.",
@@ -648,14 +469,6 @@
     },
     "unsaved": {
       "body": "У вас есть несохраненные изменения в настройках версии. Вы хотите сохранить их перед выходом?"
-    },
-    "delete": {
-      "title": "Подтверждение удаления версии",
-      "body": "Будет удалена папка версии: ",
-      "warning": "Это действие нельзя отменить.",
-      "confirm": "Удалить",
-      "success_title": "Удаление завершено",
-      "success_body": "Версия удалена: "
     }
   },
   "errors": {
@@ -702,20 +515,14 @@
     "ERR_NOT_REGISTERED_THIS_VERSION": "Эта версия не зарегистрирована в системе"
   },
   "filemanager": {
-    "title": "Диспетчер файлов",
     "search_placeholder": "Поиск...",
     "sort": {
       "name": "Имя",
-      "size": "Размер",
       "kind": "Тип"
     },
-    "empty": "Элементы не найдены",
-    "drive_label": "Диск",
     "drives_title": "Диски",
     "quick_access": "Быстрый доступ",
     "pinned": "Закреплённые",
-    "navigation": "Навигация",
-    "pins_empty": "Нет закреплённых. Используйте звёздочку на элементах для закрепления.",
     "choose_drive": "Выберите диск",
     "computer": "Этот компьютер",
     "up": "На уровень вверх",
@@ -723,8 +530,7 @@
     "refreshing": "Обновление…",
     "choose_this_dir": "Выбрать эту папку",
     "dir_not_writable": "В эту папку нельзя записывать. Выберите другую.",
-    "new_folder": "Новая папка",
-    "new_folder_placeholder": "Введите имя папки"
+    "new_folder": "Новая папка"
   },
   "file": {
     "types": {
@@ -779,17 +585,13 @@
     "err_unknown": "Неизвестная ошибка",
     "overwrite_modal_title": "Обнаружен дубликат",
     "overwrite_modal_body": "Папка модуля с таким именем уже существует. Перезаписать (обновить)?",
-    "drag_import_unsupported_title": "Перетаскивание не поддерживается",
-    "drag_import_unsupported_body": "Пока не поддерживается; ждём поддержки в Wails.",
     "toggle_label": "Включить мод",
     "toggle_on": "Включён",
     "toggle_off": "Выключён",
-    "toggle_tip": "Вкл/выкл мод",
     "toggle_desc_on": "Мод включён и будет загружаться при запуске игры.",
     "toggle_desc_off": "Мод выключен и не будет загружаться при запуске игры.",
     "only_enabled": "Показывать только включённые моды",
-    "drop_hint": "Перетащите .zip или .dll для импорта модов/плагинов",
-    "type_mod": "Мод"
+    "drop_hint": "Перетащите .zip или .dll для импорта модов/плагинов"
   },
   "versionselect": {
     "unsaved": {
@@ -816,11 +618,6 @@
       "cancel": "Отмена",
       "save": "Сохранить и завершить"
     }
-  },
-  "curseforgecard": {
-    "title": "CurseForge",
-    "content": "Просмотр и загрузка игровых ресурсов",
-    "browse": "Просмотреть CurseForge"
   },
   "contentdownload": {
     "title": "Загрузка контента"

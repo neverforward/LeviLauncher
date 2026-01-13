@@ -50,14 +50,9 @@ export default function OnboardingPage() {
   } = useDisclosure();
 
   React.useEffect(() => {
-    if (hasBackend) {
-      GetLanguageNames().then((res: any) => setLangNames(res));
-    } else {
-      setLangNames([
-        { language: "English", code: "en_US" },
-        { language: "简体中文", code: "zh_CN" },
-      ]);
-    }
+
+    GetLanguageNames().then((res: any) => setLangNames(res));
+    
     const normalize = (lng: string) => {
       if (!lng) return "en_US";
       const lower = lng.toLowerCase();

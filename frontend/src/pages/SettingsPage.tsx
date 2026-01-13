@@ -122,17 +122,9 @@ export const SettingsPage: React.FC = () => {
     GetAppVersion().then((version) => {
       setAppVersion(version);
     });
-    if (hasBackend) {
-      GetLanguageNames().then((res) => setLangNames(res));
-    } else {
-      setLangNames([
-        { language: "English", code: "en_US" } as unknown as types.LanguageJson,
-        {
-          language: "简体中文",
-          code: "zh_CN",
-        } as unknown as types.LanguageJson,
-      ]);
-    }
+
+    GetLanguageNames().then((res) => setLangNames(res));
+    
     const normalize = (lng: string) => {
       if (!lng) return "en_US";
       const lower = lng.toLowerCase();
