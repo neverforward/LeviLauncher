@@ -32,8 +32,7 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="relative w-full p-4 lg:p-8 flex flex-col">
-      {/* Background Gradients */}
+    <div className="relative w-full p-4 flex flex-col">
 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -41,9 +40,9 @@ export default function AboutPage() {
         transition={{ duration: 0.4 }}
         className="mb-8"
       >
-        <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+        <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
           <CardBody className="p-8">
-            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-2">
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-2">
               {t("sidebar.about", { defaultValue: "About" })}
             </h1>
             <p className="mt-2 text-lg font-medium text-default-500 dark:text-zinc-400">
@@ -61,7 +60,7 @@ export default function AboutPage() {
           animate="visible"
           variants={cardVariants}
         >
-          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
             <CardBody className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -130,7 +129,7 @@ export default function AboutPage() {
           animate="visible"
           variants={cardVariants}
         >
-          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
             <CardBody className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-xl bg-warning-500/10 text-warning-600 dark:text-warning-400">
@@ -177,7 +176,7 @@ export default function AboutPage() {
           variants={cardVariants}
           className="lg:col-span-2"
         >
-          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
             <CardBody className="p-6">
               <div className="flex items-center gap-3 mb-4">
                  <div className="p-2 rounded-xl bg-danger-500/10 text-danger-600 dark:text-danger-400">
@@ -204,7 +203,7 @@ export default function AboutPage() {
           variants={cardVariants}
           className="lg:col-span-2"
         >
-          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
             <CardBody className="p-6">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div className="flex-1">
@@ -269,7 +268,7 @@ export default function AboutPage() {
                     <Button
                       size="sm"
                       color="primary"
-                      className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
+                      className="bg-linear-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
                       startContent={<FaStar />}
                       onPress={() => Browser.OpenURL(`${repoUrl}`)}
                     >

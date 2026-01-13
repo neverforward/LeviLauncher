@@ -90,7 +90,7 @@ export const ModCard = (args: {
         </ScrollShadow>
 
         {/* Action Overlay / Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-white/90 via-white/50 to-transparent dark:from-zinc-900/90 dark:via-zinc-900/50 pt-6 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-linear-to-t from-white/90 via-white/50 to-transparent dark:from-zinc-900/90 dark:via-zinc-900/50 pt-6 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200">
            <Button
              size="sm"
              color="primary"

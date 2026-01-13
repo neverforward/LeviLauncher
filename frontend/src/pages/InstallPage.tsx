@@ -415,7 +415,7 @@ export default function InstallPage() {
 
   return (
     <motion.div
-      className="w-full max-w-full mx-auto px-4 py-2 h-full flex flex-col"
+      className="w-full max-w-full mx-auto p-4 h-full flex flex-col"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
@@ -425,7 +425,7 @@ export default function InstallPage() {
           <CardHeader className="p-4 sm:p-6 pb-2 flex flex-col sm:flex-row gap-4 justify-between items-center border-b border-default-200 dark:border-white/10">
             <div className="flex w-full items-center justify-between gap-2">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+                <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
                   {headerTitle}
                 </h1>
                 <div className="text-small text-default-500 flex items-center gap-2">
@@ -476,7 +476,7 @@ export default function InstallPage() {
                       damping: 20,
                       delay: 0.1,
                     }}
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30"
+                    className="w-16 h-16 rounded-full bg-linear-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -500,7 +500,7 @@ export default function InstallPage() {
                 </div>
 
                 <div className="flex flex-col items-center gap-1 text-center">
-                  <h2 className="text-2xl font-black bg-gradient-to-br from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  <h2 className="text-2xl font-black bg-linear-to-br from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                     {t("downloadpage.install.success_title", {
                       defaultValue: "安装完成",
                     })}
@@ -534,7 +534,7 @@ export default function InstallPage() {
 
                 <div className="mt-2">
                   <Button
-                    className="font-bold text-white shadow-lg shadow-emerald-500/20 bg-gradient-to-r from-emerald-500 to-teal-600 px-8"
+                    className="font-bold text-white shadow-lg shadow-emerald-500/20 bg-linear-to-r from-emerald-500 to-teal-600 px-8"
                     radius="full"
                     size="md"
                     onPress={() => navigate(returnTo)}
@@ -708,7 +708,7 @@ export default function InstallPage() {
                     {t("common.cancel")}
                   </Button>
                   <Button
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                    className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                     radius="full"
                     onPress={handleInstall}
                   >
@@ -773,7 +773,7 @@ export default function InstallPage() {
                       size="sm"
                       color="success"
                       classNames={{
-                        indicator: "bg-gradient-to-r from-emerald-500 to-teal-500",
+                        indicator: "bg-linear-to-r from-emerald-500 to-teal-500",
                         track: "bg-default-200/50 dark:bg-zinc-700/50 border border-default-100 dark:border-white/5",
                       }}
                       className="w-full"

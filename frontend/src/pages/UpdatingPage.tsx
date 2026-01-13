@@ -172,7 +172,7 @@ export default function UpdatingPage() {
                 }
               </BaseModalHeader>
               <BaseModalBody>
-                <div className="text-default-700 text-sm break-words whitespace-pre-wrap">
+                <div className="text-default-700 text-sm wrap-break-word whitespace-pre-wrap">
                   {error}
                 </div>
               </BaseModalBody>

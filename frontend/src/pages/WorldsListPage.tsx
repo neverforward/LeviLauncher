@@ -425,7 +425,7 @@ export default function WorldsListPage() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="w-full max-w-full mx-auto px-4 py-2 h-full flex flex-col"
+      className="w-full max-w-full mx-auto p-4 h-full flex flex-col"
     >
       <Card className="flex-1 min-h-0 rounded-[2.5rem] shadow-xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl border-none">
         <CardBody className="p-0 flex flex-col h-full overflow-hidden">
@@ -441,7 +441,7 @@ export default function WorldsListPage() {
                 >
                   <FaArrowLeft size={20} />
                 </Button>
-                <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+                <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
             {t("contentpage.worlds_list", { defaultValue: "存档列表" })}
           </h1>
               </div>

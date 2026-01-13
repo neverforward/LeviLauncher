@@ -304,7 +304,7 @@ export const SettingsPage: React.FC = () => {
   }, [hasBackend]);
 
   return (
-    <div className="relative w-full p-4 lg:p-8 flex flex-col">
+    <div className="relative w-full p-4 flex flex-col">
       {/* Background Gradients */}
 
 
@@ -314,9 +314,9 @@ export const SettingsPage: React.FC = () => {
         transition={{ duration: 0.18, ease: [0.16, 0.84, 0.44, 1] }}
         className="mb-8"
       >
-        <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+        <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
           <CardBody className="p-8">
-            <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+            <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
               {t("settingscard.header.title")}
             </h1>
             <p className="mt-2 text-lg font-medium text-default-500 dark:text-zinc-400">
@@ -333,7 +333,7 @@ export const SettingsPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: 0.1 }}
             >
-              <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+              <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
                 <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -361,7 +361,7 @@ export const SettingsPage: React.FC = () => {
                         size="sm"
                         isDisabled={!newBaseRoot || !baseRootWritable}
                         isLoading={savingBaseRoot}
-                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                        className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                         onPress={async () => {
                           setSavingBaseRoot(true);
                           try {
@@ -403,7 +403,7 @@ export const SettingsPage: React.FC = () => {
                       variant="bordered"
                       classNames={{
                         inputWrapper:
-                          "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:!border-emerald-500",
+                          "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:border-emerald-500!",
                       }}
                       endContent={
                         <Button
@@ -498,7 +498,7 @@ export const SettingsPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: 0.15 }}
               >
-                <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+                <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
                   <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
                     {/* Language */}
                     <div className="flex items-center justify-between">
@@ -635,7 +635,7 @@ export const SettingsPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: 0.2 }}
               >
-                <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+                <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
                   <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col">
@@ -678,7 +678,7 @@ export const SettingsPage: React.FC = () => {
                                   size="sm"
                                   onPress={onUpdate}
                                   isDisabled={updating}
-                                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                                  className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                                   startContent={<RxUpdate />}
                                 >
                                   {updating
@@ -688,7 +688,7 @@ export const SettingsPage: React.FC = () => {
                              </div>
                              
                              {changelog && (
-                                <div className="text-small break-words leading-6 max-h-[200px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-default-300">
+                                <div className="text-small wrap-break-word leading-6 max-h-[200px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-default-300">
                                   <ReactMarkdown
                                     remarkPlugins={[remarkGfm]}
                                     components={{
@@ -713,7 +713,7 @@ export const SettingsPage: React.FC = () => {
                                      color="success"
                                      isIndeterminate={true}
                                      classNames={{
-                                         indicator: "bg-gradient-to-r from-emerald-500 to-teal-600",
+                                         indicator: "bg-linear-to-r from-emerald-500 to-teal-600",
                                      }}
                                    />
                                 </div>
@@ -727,7 +727,7 @@ export const SettingsPage: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 p-2 border border-emerald-500/20 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-emerald-500/20 to-teal-500/20 p-2 border border-emerald-500/20 flex items-center justify-center">
                           <img
                             src={Logo}
                             alt="Logo"

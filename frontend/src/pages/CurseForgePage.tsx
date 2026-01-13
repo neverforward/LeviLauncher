@@ -400,11 +400,11 @@ export const CurseForgePage: React.FC = () => {
   return (
     <div
       ref={pageRootRef}
-      className="w-full h-full min-h-0 flex flex-col p-4 sm:p-6 gap-4"
+      className="w-full max-w-full mx-auto p-4 h-full min-h-0 flex flex-col gap-4"
     >
-      <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+      <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
         <CardBody className="p-6 flex flex-col gap-4">
-          <h1 className="text-4xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+          <h1 className="text-4xl sm:text-3xl font-black tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
             {t("curseforge.title", { defaultValue: "CurseForge" })}
           </h1>
 
@@ -428,7 +428,7 @@ export const CurseForgePage: React.FC = () => {
               onPress={handleSearch}
               startContent={<LuSearch />}
               size="sm"
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+              className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             >
               {t("curseforge.search", { defaultValue: "搜索" })}
             </Button>
@@ -541,7 +541,7 @@ export const CurseForgePage: React.FC = () => {
         </CardBody>
       </Card>
 
-      <Card className="flex-1 min-h-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+      <Card className="flex-1 min-h-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
         <CardBody className="p-0 overflow-hidden flex flex-col">
           <div 
             ref={scrollContainerRef}
@@ -591,7 +591,7 @@ export const CurseForgePage: React.FC = () => {
                         navigate(`/curseforge/mod/${mod.id}`);
                       }}
                     >
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <img
                           src={mod.logo?.thumbnailUrl || mod.logo?.url || ""}
                           alt={mod.name}
@@ -692,7 +692,7 @@ export const CurseForgePage: React.FC = () => {
                 className="gap-2"
                 radius="full"
                 classNames={{
-                  cursor: "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20 font-bold",
+                  cursor: "bg-linear-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20 font-bold",
                 }}
               />
             </div>

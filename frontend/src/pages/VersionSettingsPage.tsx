@@ -310,11 +310,11 @@ export default function VersionSettingsPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.18, ease: [0.16, 0.84, 0.44, 1] }}
           >
-            <Card className="rounded-[2rem] shadow-xl mb-6 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
+            <Card className="rounded-4xl shadow-xl mb-6 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
               <CardBody className="px-6 sm:px-8 py-5 w-full">
                 <div className="w-full">
                   <div className="flex items-center justify-between gap-4 w-full">
-                    <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent text-left !text-left pb-1">
+                    <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent text-left text-left! pb-1">
                       {t("versions.edit.title")}
                     </h1>
                     <div className="hidden sm:flex items-center gap-3">
@@ -329,14 +329,14 @@ export default function VersionSettingsPage() {
                       <Button 
                         color="primary" 
                         radius="full"
-                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                        className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                         onPress={onSave}
                       >
                         {t("common.ok")}
                       </Button>
                     </div>
                   </div>
-                  <div className="mt-1 text-sm text-default-500 truncate text-left !text-left">
+                  <div className="mt-1 text-sm text-default-500 truncate text-left text-left!">
                     {t("versions.info.version")}
                     :{" "}
                     <span className="text-default-700 font-medium">
@@ -380,7 +380,7 @@ export default function VersionSettingsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: 0.1 }}
           >
-            <Card className="rounded-[2rem] shadow-lg h-full min-h-[160px] bg-white/80 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
+            <Card className="rounded-4xl shadow-lg h-full min-h-[160px] bg-white/80 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
               <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
                 <div>
                   <label className="text-small font-medium text-default-700 dark:text-default-200 mb-2 block">
@@ -396,7 +396,7 @@ export default function VersionSettingsPage() {
                     variant="bordered"
                     radius="lg"
                     classNames={{
-                        inputWrapper: "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:!border-emerald-500",
+                        inputWrapper: "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:border-emerald-500!",
                     }}
                     isDisabled={isRegistered || loading}
                     placeholder={
@@ -508,7 +508,7 @@ export default function VersionSettingsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: 0.15 }}
           >
-            <Card className="rounded-[2rem] shadow-lg h-full min-h-[160px] bg-white/80 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
+            <Card className="rounded-4xl shadow-lg h-full min-h-[160px] bg-white/80 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
               <CardBody className="p-6 sm:p-8 flex flex-col gap-5">
                 <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
                   <div className="text-medium font-medium">
@@ -649,7 +649,7 @@ export default function VersionSettingsPage() {
         <Button 
           color="primary" 
           radius="full"
-          className="min-w-0 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+          className="min-w-0 bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
           onPress={onSave}
         >
           {t("common.ok")}
@@ -744,7 +744,7 @@ export default function VersionSettingsPage() {
                 <Button
                   color="primary"
                   radius="full"
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                   onPress={() => {
                     onClose?.();
                     setUnregisterSuccessOpen(false);
@@ -809,7 +809,7 @@ export default function VersionSettingsPage() {
                 <Button
                   color="primary"
                   radius="full"
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                   onPress={() => {
                     onClose?.();
                     setGdkMissingOpen(false);
@@ -834,7 +834,7 @@ export default function VersionSettingsPage() {
         closeButton
         aria-label="error-modal"
         classNames={{
-          base: "!bg-white dark:!bg-zinc-900 border border-default-200 dark:border-zinc-700 shadow-2xl rounded-[2.5rem]",
+          base: "bg-white! dark:bg-zinc-900! border border-default-200 dark:border-zinc-700 shadow-2xl rounded-[2.5rem]",
           closeButton: "absolute right-5 top-5 z-50 hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 dark:active:bg-white/10 text-default-500",
         }}
       >
@@ -858,7 +858,7 @@ export default function VersionSettingsPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.25, delay: 0.1 }}
                 >
-                    <div className="text-medium break-words">{getErrorText(error)}</div>
+                    <div className="text-medium wrap-break-word">{getErrorText(error)}</div>
                 </motion.div>
               </BaseModalBody>
               <BaseModalFooter>
@@ -885,7 +885,7 @@ export default function VersionSettingsPage() {
         }}
         size="md"
         classNames={{
-          base: "!bg-white dark:!bg-zinc-900 border border-default-200 dark:border-zinc-700 shadow-2xl rounded-[2.5rem]",
+          base: "bg-white! dark:bg-zinc-900! border border-default-200 dark:border-zinc-700 shadow-2xl rounded-[2.5rem]",
           closeButton: "absolute right-5 top-5 z-50 hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 dark:active:bg-white/10 text-default-500",
         }}
       >
@@ -920,7 +920,7 @@ export default function VersionSettingsPage() {
                 <Button
                   color="primary"
                   radius="full"
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                   onPress={() => {
                     onClose?.();
                     setShortcutSuccessOpen(false);
@@ -944,7 +944,7 @@ export default function VersionSettingsPage() {
         hideCloseButton
         isDismissable={!deleting}
         classNames={{
-          base: "!bg-white dark:!bg-zinc-900 border border-default-200 dark:border-zinc-700 shadow-2xl rounded-[2.5rem]",
+          base: "bg-white! dark:bg-zinc-900! border border-default-200 dark:border-zinc-700 shadow-2xl rounded-[2.5rem]",
         }}
       >
         <ModalContent className="shadow-none">
@@ -967,10 +967,10 @@ export default function VersionSettingsPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.25, delay: 0.1 }}
                 >
-                  <div className="text-medium font-medium text-default-600 break-words whitespace-pre-wrap">
+                  <div className="text-medium font-medium text-default-600 wrap-break-word whitespace-pre-wrap">
                     {t("launcherpage.delete.confirm.content")}
                   </div>
-                  <div className="p-4 rounded-2xl bg-danger-50 dark:bg-danger-500/10 border border-danger-100 dark:border-danger-500/20 text-danger-600 dark:text-danger-400 text-sm break-words whitespace-pre-wrap font-mono">
+                  <div className="p-4 rounded-2xl bg-danger-50 dark:bg-danger-500/10 border border-danger-100 dark:border-danger-500/20 text-danger-600 dark:text-danger-400 text-sm wrap-break-word whitespace-pre-wrap font-mono">
                     {targetName}
                   </div>
                 </motion.div>
@@ -1062,7 +1062,7 @@ export default function VersionSettingsPage() {
                 <Button
                   color="primary"
                   radius="full"
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                   onPress={() => {
                     onClose?.();
                     setDeleteSuccessOpen(false);

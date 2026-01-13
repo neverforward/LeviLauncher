@@ -139,22 +139,22 @@ export default function OnboardingPage() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full h-full"
       >
-        <Card className="relative w-full h-full overflow-hidden border-none shadow-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[2rem]">
+        <Card className="relative w-full h-full overflow-hidden border-none shadow-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl rounded-4xl">
           <div className="flex flex-col md:flex-row h-full">
             {/* Left Panel: Hero & Info */}
-            <div className="w-full md:w-[35%] lg:w-[40%] bg-gradient-to-br from-emerald-50/50 to-teal-50/50 dark:from-emerald-900/10 dark:to-teal-900/10 p-8 flex flex-col justify-center relative min-h-[400px] h-full">
+            <div className="w-full md:w-[35%] lg:w-[40%] bg-linear-to-br from-emerald-50/50 to-teal-50/50 dark:from-emerald-900/10 dark:to-teal-900/10 p-8 flex flex-col justify-center relative min-h-[400px] h-full">
                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                   <div className="absolute -top-20 -left-20 w-60 h-60 bg-emerald-400/20 rounded-full blur-3xl" />
                   <div className="absolute bottom-0 right-0 w-60 h-60 bg-teal-400/20 rounded-full blur-3xl" />
                </div>
                
                <div className="relative z-10">
-                 <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 flex items-center justify-center text-white">
+                 <div className="w-16 h-16 mb-6 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 flex items-center justify-center text-white">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                  </div>
-                 <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-2">
+                 <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-2">
                   {t("onboarding.title", { defaultValue: "首次启动引导" })}
                  </h1>
                  <p className="text-medium font-medium text-default-500 dark:text-zinc-400 mt-2 leading-relaxed">
@@ -166,7 +166,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Right Panel: Settings */}
-            <div className="w-full md:w-[65%] lg:w-[60%] p-6 lg:p-8 flex flex-col h-full overflow-hidden">
+            <div className="w-full md:w-[65%] lg:w-[60%] p-6 flex flex-col h-full overflow-hidden">
               <div className="flex-1 flex flex-col justify-center space-y-8 pr-2">
                 {/* Paths Section */}
                 <motion.div
@@ -233,7 +233,7 @@ export default function OnboardingPage() {
                                 size="sm"
                                 color="primary"
                                 radius="full"
-                                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                                className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                                 isDisabled={!newBaseRoot || !baseRootWritable || (newBaseRoot === baseRoot)}
                                 isLoading={savingBaseRoot}
                                 onPress={async () => {
@@ -360,7 +360,7 @@ export default function OnboardingPage() {
                   <Button 
                     color="primary" 
                     radius="full"
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20 px-8"
+                    className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20 px-8"
                     onPress={requestFinish}
                   >
                     {t("onboarding.finish", { defaultValue: "完成" })}

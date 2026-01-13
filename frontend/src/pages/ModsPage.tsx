@@ -845,7 +845,7 @@ export const ModsPage: React.FC = () => {
                   })}
                 </div>
                 {currentFile ? (
-                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm break-words whitespace-pre-wrap">
+                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm wrap-break-word whitespace-pre-wrap">
                     {currentFile}
                   </div>
                 ) : null}
@@ -890,7 +890,7 @@ export const ModsPage: React.FC = () => {
                       {t("mods.summary_success", { defaultValue: "成功" })} (
                       {resultSuccess.length})
                     </div>
-                    <div className="mt-1 rounded-md bg-success/5 border border-success/30 px-3 py-2 text-success-700 text-sm break-words whitespace-pre-wrap">
+                    <div className="mt-1 rounded-md bg-success/5 border border-success/30 px-3 py-2 text-success-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultSuccess.join("\n")}
                     </div>
                   </div>
@@ -901,7 +901,7 @@ export const ModsPage: React.FC = () => {
                       {t("mods.summary_failed", { defaultValue: "失败" })} (
                       {resultFailed.length})
                     </div>
-                    <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm break-words whitespace-pre-wrap">
+                    <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultFailed
                         .map(
                           (it) => `${it.name} - ${resolveImportError(it.err)}`
@@ -966,7 +966,7 @@ export const ModsPage: React.FC = () => {
                       {t("mods.summary_deleted", { defaultValue: "已删除" })} (
                       {resultSuccess.length})
                     </div>
-                    <div className="mt-1 rounded-md bg-success/5 border border-success/30 px-3 py-2 text-success-700 text-sm break-words whitespace-pre-wrap">
+                    <div className="mt-1 rounded-md bg-success/5 border border-success/30 px-3 py-2 text-success-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultSuccess.join("\n")}
                     </div>
                   </div>
@@ -977,7 +977,7 @@ export const ModsPage: React.FC = () => {
                       {t("mods.summary_failed", { defaultValue: "失败" })} (
                       {resultFailed.length})
                     </div>
-                    <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm break-words whitespace-pre-wrap">
+                    <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultFailed
                         .map(
                           (it) => `${it.name} - ${resolveImportError(it.err)}`
@@ -1108,7 +1108,7 @@ export const ModsPage: React.FC = () => {
                   })}
                 </div>
                 {dupNameRef.current ? (
-                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm break-words whitespace-pre-wrap">
+                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm wrap-break-word whitespace-pre-wrap">
                     {dupNameRef.current}
                   </div>
                 ) : null}
@@ -1153,9 +1153,9 @@ export const ModsPage: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-[2rem] shadow-2xl flex flex-col items-center gap-4 border border-white/20">
+            <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-4xl shadow-2xl flex flex-col items-center gap-4 border border-white/20">
               <FiUploadCloud className="w-16 h-16 text-primary-500" />
-              <div className="text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+              <div className="text-xl font-bold bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                 {t("mods.drop_hint", {
                   defaultValue: "拖入 .zip 或 .dll 以导入模组/插件",
                 })}
@@ -1165,14 +1165,14 @@ export const ModsPage: React.FC = () => {
         ) : null}
       </AnimatePresence>
 
-      <div className="flex flex-col gap-4 mb-6 shrink-0 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md p-6 rounded-[2rem] border border-white/40 dark:border-white/5 shadow-sm">
+      <div className="flex flex-col gap-4 mb-6 shrink-0 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md p-6 rounded-4xl border border-white/40 dark:border-white/5 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl text-emerald-600 dark:text-emerald-400 shadow-sm">
               <FaPuzzlePiece className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 {t("moddedcard.title", { defaultValue: "Mods" })}
               </h1>
               <div className="text-default-500 text-sm font-medium flex items-center gap-2">
@@ -1202,7 +1202,7 @@ export const ModsPage: React.FC = () => {
             <Button
               color="primary"
               variant="shadow"
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
+              className="bg-linear-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
               startContent={<FiUploadCloud />}
               onPress={() =>
                 navigate("/filemanager", {
@@ -1287,7 +1287,7 @@ export const ModsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden rounded-[2rem] bg-white/40 dark:bg-zinc-900/30 backdrop-blur-sm border border-white/20 dark:border-white/5 p-1">
+      <div className="flex-1 overflow-hidden rounded-4xl bg-white/40 dark:bg-zinc-900/30 backdrop-blur-sm border border-white/20 dark:border-white/5 p-1">
         <div className="h-full overflow-y-auto p-4 custom-scrollbar">
           {!currentVersionName ? (
             <div className="flex flex-col items-center justify-center h-full text-default-400 gap-2">
@@ -1553,14 +1553,14 @@ export const ModsPage: React.FC = () => {
                 {t("mods.confirm_delete_title", { defaultValue: "确认删除" })}
               </BaseModalHeader>
               <BaseModalBody>
-                <div className="text-sm text-default-700 break-words whitespace-pre-wrap">
+                <div className="text-sm text-default-700 wrap-break-word whitespace-pre-wrap">
                   {t("mods.confirm_delete_body", {
                     type: t("moddedcard.title"),
                     defaultValue: "确定要删除此模组吗？此操作不可撤销。",
                   })}
                 </div>
                 {activeMod ? (
-                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm break-words whitespace-pre-wrap">
+                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm wrap-break-word whitespace-pre-wrap">
                     {activeMod.name}
                   </div>
                 ) : null}

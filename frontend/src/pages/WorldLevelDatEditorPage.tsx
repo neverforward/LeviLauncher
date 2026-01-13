@@ -563,7 +563,7 @@ export default function WorldLevelDatEditorPage() {
               size="sm"
               variant="flat"
               color={chipColor(type)}
-              className="h-6 min-w-[3rem] justify-center font-mono text-xs uppercase"
+              className="h-6 min-w-12 justify-center font-mono text-xs uppercase"
             >
               {type}
             </Chip>
@@ -598,7 +598,7 @@ export default function WorldLevelDatEditorPage() {
                 <FaArrowLeft className="w-5 h-5" />
               </Button>
               <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                <h2 className="text-3xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                   {t("contentpage.world_leveldat_editor", {
                     defaultValue: "Level.dat Editor",
                   })}
@@ -646,7 +646,7 @@ export default function WorldLevelDatEditorPage() {
                   onPress={saveAll}
                   isLoading={saving}
                   isDisabled={!hasBackend || loading}
-                  className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
                 >
                   <FaSave className="w-4 h-4" />
                 </Button>
@@ -679,7 +679,7 @@ export default function WorldLevelDatEditorPage() {
                 className="p-6 rounded-2xl bg-white/50 dark:bg-zinc-900/50 border border-default-200 dark:border-default-100/10 backdrop-blur-md shadow-sm"
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-1 h-6 rounded-full bg-gradient-to-b from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
+                  <div className="w-1 h-6 rounded-full bg-linear-to-b from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
                   <h3 className="text-lg font-bold text-default-700 dark:text-default-300">
                     {t("contentpage.basic_info", { defaultValue: "基础信息" })}
                   </h3>
@@ -715,7 +715,7 @@ export default function WorldLevelDatEditorPage() {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-1 h-6 rounded-full bg-gradient-to-b from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
+                    <div className="w-1 h-6 rounded-full bg-linear-to-b from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
                     <h3 className="text-lg font-bold text-default-700 dark:text-default-300">
                       {t("contentpage.add_field", { defaultValue: "新增字段" })}
                     </h3>
@@ -816,7 +816,7 @@ export default function WorldLevelDatEditorPage() {
                       <Button
                         size="sm"
                         radius="lg"
-                        className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
+                        className="bg-linear-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
                         onPress={() => {
                           const nm = String(newUnifiedField.name || "").trim();
                           const tg = String(

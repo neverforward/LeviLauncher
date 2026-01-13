@@ -349,7 +349,7 @@ function App() {
         {splashVisible && (
           <motion.div
             key="splash-overlay"
-            className="fixed inset-0 z-[9999]"
+            className="fixed inset-0 z-9999"
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -361,7 +361,7 @@ function App() {
       </AnimatePresence>
 
       <div
-        className={`w-full min-h-[100dvh] flex flex-col overflow-x-hidden ${
+        className={`w-full min-h-dvh flex flex-col overflow-x-hidden ${
           updateOpen ? "overflow-y-hidden" : ""
         }`}
       >
@@ -600,7 +600,7 @@ function App() {
                   {t("terms.title", { defaultValue: "用户协议" })}
                 </BaseModalHeader>
                 <BaseModalBody>
-                  <div className="text-[15px] sm:text-[16px] leading-7 text-default-900 font-medium antialiased whitespace-pre-wrap break-words max-h-[56vh] overflow-y-auto pr-1">
+                  <div className="text-[15px] sm:text-[16px] leading-7 text-default-900 font-medium antialiased whitespace-pre-wrap wrap-break-word max-h-[56vh] overflow-y-auto pr-1">
                     {t("terms.body", {
                       defaultValue:
                         "在使用本启动器之前，请仔细阅读并同意《用户协议》和相关条款。继续使用即表示您已同意。",
@@ -654,7 +654,7 @@ function App() {
                           defaultValue: "最新更新日志",
                         })}
                       </div>
-                      <div className="text-small break-words leading-6 max-h-[32vh] sm:max-h-[40vh] lg:max-h-[44vh] overflow-y-auto pr-1">
+                      <div className="text-small wrap-break-word leading-6 max-h-[32vh] sm:max-h-[40vh] lg:max-h-[44vh] overflow-y-auto pr-1">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{

@@ -328,16 +328,16 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
 
   return (
     <>
-      <div className="relative w-full p-4 lg:p-8 flex flex-col gap-6">
+      <div className="relative w-full p-4 flex flex-col gap-6">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <Card className="w-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+          <Card className="w-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
             <CardHeader className="flex flex-col gap-4 p-6">
               <div className="flex w-full items-center justify-between gap-4">
-                <div className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-1">
+                <div className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 pb-1">
                   {t("launcherpage.version_select.title", {
                     defaultValue: "选择版本",
                   })}
@@ -354,7 +354,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
                   </Button>
                   <Button
                     color="primary"
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                    className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                     onPress={handleConfirm}
                   >
                     {t("common.ok", { defaultValue: "确定" })}
@@ -370,7 +370,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
                   classNames={{
                     tabList: "bg-default-100/50 rounded-xl px-1",
                     cursor:
-                      "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-md",
+                      "bg-linear-to-r from-emerald-500 to-teal-600 shadow-md",
                     tabContent: "group-data-[selected=true]:text-white",
                   }}
                 >
@@ -403,7 +403,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
                     variant="bordered"
                     size="sm"
                     classNames={{
-                      inputWrapper: "focus-within:!border-emerald-500",
+                      inputWrapper: "focus-within:border-emerald-500!",
                     }}
                   />
                 </div>
@@ -486,6 +486,8 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
               key={it.name}
               layout
               variants={itemVariants}
+              initial="hidden"
+              animate="show"
               transition={{
                 layout: { duration: 0.35, ease: [0.22, 0.61, 0.36, 1] },
               }}
@@ -494,7 +496,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
               className="w-full min-w-0"
             >
               <Card
-                className={`h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] transition ${
+                className={`h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl transition ${
                   selectedVersionName === it.name
                     ? "ring-2 ring-emerald-500"
                     : ""

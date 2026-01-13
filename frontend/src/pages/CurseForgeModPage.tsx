@@ -444,7 +444,7 @@ const CurseForgeModPage: React.FC = () => {
                   {t("curseforge.go_back", { defaultValue: "Go Back" })}
                 </Button>
             </div>
-            <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+            <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
               <CardBody className="p-6">
                  <div className="flex flex-col md:flex-row gap-6">
                    <div className="flex items-start gap-4 flex-1">
@@ -473,7 +473,7 @@ const CurseForgeModPage: React.FC = () => {
               </CardBody>
             </Card>
 
-            <Card className="min-h-[300px] bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+            <Card className="min-h-[300px] bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
                <CardBody className="p-6">
                   <div className="flex gap-6 mb-6">
                      <Skeleton className="h-8 w-24 rounded-lg" />
@@ -495,13 +495,13 @@ const CurseForgeModPage: React.FC = () => {
   if (!mod) {
     return (
       <div className="w-full h-full min-h-0 flex flex-col p-4 sm:p-6 gap-4 items-center justify-center">
-        <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] p-8">
+        <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl p-8">
            <CardBody className="flex flex-col items-center gap-4">
               <p className="text-xl font-bold">{t("curseforge.mod_not_found", { defaultValue: "Mod not found" })}</p>
               <Button 
                 onPress={() => navigate(-1)} 
                 color="primary" 
-                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
               >
                 {t("curseforge.go_back", { defaultValue: "Go Back" })}
               </Button>
@@ -514,7 +514,7 @@ const CurseForgeModPage: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col overflow-hidden relative bg-background">
       <ScrollShadow className="w-full h-full">
-        <div className="w-full px-4 sm:px-6 py-8 flex flex-col gap-6">
+        <div className="w-full max-w-full mx-auto p-4 flex flex-col gap-6">
           <div className="flex items-center">
             <Button 
               variant="light" 
@@ -526,10 +526,10 @@ const CurseForgeModPage: React.FC = () => {
             </Button>
           </div>
           {/* Header Card */}
-          <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none">
+          <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
             <CardBody className="p-6 sm:p-8">
               <div className="flex flex-col md:flex-row gap-8">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <Image
                     src={mod.logo?.url}
                     alt={mod.name}
@@ -537,7 +537,7 @@ const CurseForgeModPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="flex flex-col flex-grow gap-3">
+                <div className="flex flex-col grow gap-3">
                   <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-default-900 pb-1">{mod.name}</h1>
                   
                   <div className="flex items-center gap-3 text-default-500 text-sm flex-wrap">
@@ -596,7 +596,7 @@ const CurseForgeModPage: React.FC = () => {
                 {/* Actions */}
                 <div className="flex flex-col gap-3 min-w-[240px] md:border-l md:border-default-100 md:pl-8 justify-center">
                   <Button 
-                    className="w-full font-semibold shadow-md shadow-emerald-500/20 text-white bg-gradient-to-r from-emerald-500 to-teal-500"
+                    className="w-full font-semibold shadow-md shadow-emerald-500/20 text-white bg-linear-to-r from-emerald-500 to-teal-500"
                     startContent={<LuDownload size={20} />} 
                     size="lg" 
                     onPress={() => {
@@ -634,7 +634,7 @@ const CurseForgeModPage: React.FC = () => {
           </Card>
 
           {/* Content Card */}
-          <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem] shadow-md border-none min-h-[500px]">
+          <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none min-h-[500px]">
             <CardBody className="p-6 sm:p-8">
               <div ref={tabsRef} className="flex w-full flex-col scroll-mt-24">
                 <Tabs 
@@ -645,7 +645,7 @@ const CurseForgeModPage: React.FC = () => {
                     onSelectionChange={(key) => setSelectedTab(key as string)}
                     classNames={{
                         tabList: "gap-8 w-full relative rounded-none p-0 border-b border-default-200 mb-6",
-                        cursor: "w-full bg-gradient-to-r from-emerald-500 to-teal-500 h-[3px]",
+                        cursor: "w-full bg-linear-to-r from-emerald-500 to-teal-500 h-[3px]",
                         tab: "max-w-fit px-0 h-12 text-base font-medium text-default-500",
                         tabContent: "group-data-[selected=true]:text-emerald-600 dark:group-data-[selected=true]:text-emerald-400 font-bold"
                     }}
@@ -795,14 +795,14 @@ const CurseForgeModPage: React.FC = () => {
         hideCloseButton={installStep === 'downloading' || installStep === 'importing'}
         backdrop="blur"
         classNames={{
-             base: "!bg-white/80 dark:!bg-zinc-900/80 backdrop-blur-2xl !border-white/40 dark:!border-zinc-700/50 shadow-2xl rounded-[2rem]",
+             base: "bg-white/80! dark:bg-zinc-900/80! backdrop-blur-2xl border-white/40! dark:border-zinc-700/50! shadow-2xl rounded-4xl",
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <BaseModalHeader className="flex flex-col gap-1">
-                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                     {installStep === 'downloading' && t("curseforge.install.downloading_title", { defaultValue: "Downloading Content" })}
                     {installStep === 'version_select' && t("curseforge.install.select_version_title", { defaultValue: "Select Game Version" })}
                     {installStep === 'player_select' && t("curseforge.install.select_player_title", { defaultValue: "Select Player" })}
@@ -928,7 +928,7 @@ const CurseForgeModPage: React.FC = () => {
                         <Button 
                             color="primary" 
                             onPress={handleVersionSelectNext}
-                            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                         >
                             {t("curseforge.install.next", { defaultValue: "Next" })}
                         </Button>
@@ -938,7 +938,7 @@ const CurseForgeModPage: React.FC = () => {
                     <Button 
                         color="primary" 
                         onPress={onClose}
-                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                        className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                     >
                         {t("curseforge.install.close", { defaultValue: "Close" })}
                     </Button>
@@ -959,14 +959,14 @@ const CurseForgeModPage: React.FC = () => {
         hideCloseButton
         backdrop="blur"
         classNames={{
-             base: "!bg-white/80 dark:!bg-zinc-900/80 backdrop-blur-2xl !border-white/40 dark:!border-zinc-700/50 shadow-2xl rounded-[2rem]",
+             base: "bg-white/80! dark:bg-zinc-900/80! backdrop-blur-2xl border-white/40! dark:border-zinc-700/50! shadow-2xl rounded-4xl",
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <BaseModalHeader className="">
-                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                   {t("mods.overwrite_modal_title", {
                     defaultValue: "检测到重复",
                   })}
@@ -980,7 +980,7 @@ const CurseForgeModPage: React.FC = () => {
                   })}
                 </div>
                 {dupName ? (
-                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm break-words whitespace-pre-wrap">
+                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm wrap-break-word whitespace-pre-wrap">
                     {dupName}
                   </div>
                 ) : null}
@@ -1000,7 +1000,7 @@ const CurseForgeModPage: React.FC = () => {
                 </Button>
                 <Button
                   color="primary"
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
                   onPress={() => {
                     try {
                       if (dupResolveRef.current) dupResolveRef.current(true);

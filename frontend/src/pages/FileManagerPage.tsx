@@ -766,7 +766,7 @@ const FileManagerPage: React.FC = () => {
                 {refreshing ? t("filemanager.refreshing") : t("common.refresh")}
               </Button>
             </div>
-            <div className="text-xs text-default-400 break-words min-h-[1.5rem] leading-tight">
+            <div className="text-xs text-default-400 wrap-break-word min-h-6 leading-tight">
               {path || t("filemanager.choose_drive")}
             </div>
           </CardBody>
@@ -777,7 +777,7 @@ const FileManagerPage: React.FC = () => {
 
   const Sidebar = () => (
     <aside className="hidden sm:block w-60 shrink-0 h-full">
-      <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+      <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
         <CardBody className="p-4 flex h-full flex-col gap-4">
           <div className="flex items-center gap-2 px-2">
             <div className="text-sm font-bold text-default-500 uppercase tracking-wider">
@@ -817,7 +817,7 @@ const FileManagerPage: React.FC = () => {
                   size="sm"
                   className={`w-full justify-between h-10 font-medium ${
                     isActive 
-                    ? "bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 dark:text-emerald-400" 
+                    ? "bg-linear-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 dark:text-emerald-400" 
                     : "text-default-600 hover:bg-default-100 dark:hover:bg-white/5"
                   }`}
                   variant="light"
@@ -931,7 +931,7 @@ const FileManagerPage: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="text-xs text-default-400 break-words min-h-[1.5rem] leading-tight px-2 opacity-60">
+          <div className="text-xs text-default-400 wrap-break-word min-h-6 leading-tight px-2 opacity-60">
             {path || t("filemanager.choose_drive")}
           </div>
         </CardBody>
@@ -957,7 +957,7 @@ const FileManagerPage: React.FC = () => {
         {screenSize !== "mobile" && <Sidebar />}
 
         {/* File Browser Card */}
-        <Card className="flex-1 min-w-0 border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-[2rem]">
+        <Card className="flex-1 min-w-0 border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
           <CardBody className="p-0 flex flex-col h-full">
             {/* Toolbar Area */}
             <div className="p-4 border-b border-default-100 dark:border-white/5 flex flex-col gap-4">
@@ -1244,7 +1244,7 @@ const FileManagerPage: React.FC = () => {
                 </Button>
                 <Button
                   color="primary"
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
+                  className="bg-linear-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
                   isDisabled={
                     fmState?.directoryPickMode
                       ? !path || !dirWritable
@@ -1272,7 +1272,7 @@ const FileManagerPage: React.FC = () => {
           if (!o) setMkdirName("");
         }}
         classNames={{
-          base: "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 shadow-2xl rounded-[2rem]",
+          base: "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 shadow-2xl rounded-4xl",
         }}
       >
         <ModalContent>

@@ -562,7 +562,7 @@ export const DownloadPage: React.FC = () => {
   return (
     <>
       <motion.div
-        className="w-full max-w-full mx-auto px-4 py-2 h-full flex flex-col"
+        className="w-full max-w-full mx-auto p-4 h-full flex flex-col"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
@@ -722,7 +722,7 @@ export const DownloadPage: React.FC = () => {
                         showControls
                         variant="light" 
                         classNames={{
-                          cursor: "bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/30"
+                          cursor: "bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/30"
                         }}
                       />
                     </div>
@@ -847,8 +847,8 @@ export const DownloadPage: React.FC = () => {
                           !hasStatus(item) && refreshing
                             ? ""
                             : isDownloaded(item)
-                            ? "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 text-white font-bold"
-                            : "bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30 text-white font-bold"
+                            ? "bg-linear-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 text-white font-bold"
+                            : "bg-linear-to-r from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30 text-white font-bold"
                         }`}
                         variant={
                           !hasStatus(item) && refreshing ? "flat" : "solid"
@@ -911,7 +911,7 @@ export const DownloadPage: React.FC = () => {
               <BaseModalHeader className="flex flex-col gap-1 px-8 pt-6 pb-2">
                 <div className="flex flex-col gap-2">
                   <motion.h2
-                    className="text-3xl font-black tracking-tight bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent"
+                    className="text-3xl font-black tracking-tight bg-linear-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
@@ -973,7 +973,7 @@ export const DownloadPage: React.FC = () => {
                           <Button
                             size="sm"
                             variant="flat"
-                            className="h-7 min-w-[5rem] bg-default-200/50 dark:bg-white/10"
+                            className="h-7 min-w-20 bg-default-200/50 dark:bg-white/10"
                             onPress={() =>
                               navigator.clipboard?.writeText(target)
                             }
@@ -1142,7 +1142,7 @@ export const DownloadPage: React.FC = () => {
                   })}
                 </Button>
                 <Button
-                  className="font-bold text-white shadow-lg shadow-emerald-500/20 bg-gradient-to-r from-emerald-500 to-teal-600 hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                  className="font-bold text-white shadow-lg shadow-emerald-500/20 bg-linear-to-r from-emerald-500 to-teal-600 hover:scale-[1.02] active:scale-[0.98] transition-transform"
                   radius="full"
                   size="lg"
                   isDisabled={!selectedUrl}
@@ -1701,7 +1701,7 @@ export const DownloadPage: React.FC = () => {
                       isIndeterminate
                       size="md"
                       classNames={{
-                        indicator: "bg-gradient-to-r from-emerald-500 to-teal-500",
+                        indicator: "bg-linear-to-r from-emerald-500 to-teal-500",
                         track: "bg-default-100",
                       }}
                       className="flex-1"
@@ -1804,7 +1804,7 @@ export const DownloadPage: React.FC = () => {
                         }
                         size="md"
                         classNames={{
-                          indicator: "bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/20",
+                          indicator: "bg-linear-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/20",
                           track: "bg-default-200/50 dark:bg-white/5",
                         }}
                       />

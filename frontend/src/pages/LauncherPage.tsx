@@ -811,7 +811,7 @@ export const LauncherPage = (args: any) => {
     7: (onClose) => (
       <>
         <BaseModalHeader>
-          <h2 className="text-2xl font-black tracking-tight bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl font-black tracking-tight bg-linear-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
             {t("launcherpage.gameinput.installing.title", {
               defaultValue: "正在安装 GameInput",
             })}
@@ -836,7 +836,7 @@ export const LauncherPage = (args: any) => {
                     color="success" 
                     size="md"
                     classNames={{
-                        indicator: "bg-gradient-to-r from-emerald-500 to-teal-600"
+                        indicator: "bg-linear-to-r from-emerald-500 to-teal-600"
                     }}
                  />
               </div>
@@ -885,7 +885,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={() => {
               setPendingInstallCheck("gi");
               EnsureGameInputInteractive();
@@ -946,7 +946,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={() => {
               setPendingInstallCheck("gs");
               Browser.OpenURL("ms-windows-store://pdp/?ProductId=9MWPM2CQNLHN");
@@ -964,7 +964,7 @@ export const LauncherPage = (args: any) => {
     10: (onClose) => (
       <>
         <BaseModalHeader>
-          <h2 className="text-2xl font-black tracking-tight bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl font-black tracking-tight bg-linear-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
             {t("launcherpage.install_confirm.title", {
               defaultValue: "是否已完成安装？",
             })}
@@ -995,7 +995,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={() => {
               try {
                 if (pendingInstallCheck === "gi") {
@@ -1037,7 +1037,7 @@ export const LauncherPage = (args: any) => {
       <>
         <BaseModalHeader>
           <motion.h2
-            className="text-2xl font-black tracking-tight bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent"
+            className="text-2xl font-black tracking-tight bg-linear-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
@@ -1061,7 +1061,7 @@ export const LauncherPage = (args: any) => {
       <>
         <BaseModalHeader>
           <motion.h2
-            className="text-2xl font-black tracking-tight bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent"
+            className="text-2xl font-black tracking-tight bg-linear-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
@@ -1101,7 +1101,7 @@ export const LauncherPage = (args: any) => {
                 size="sm" 
                 isIndeterminate 
                 aria-label="Loading" 
-                classNames={{ indicator: "bg-gradient-to-r from-emerald-500 to-teal-600" }} 
+                classNames={{ indicator: "bg-linear-to-r from-emerald-500 to-teal-600" }} 
             />
           </div>
         </BaseModalBody>
@@ -1109,7 +1109,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.();
               setOverlayActive(false);
@@ -1140,7 +1140,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.(e);
             }}
@@ -1169,7 +1169,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.(e);
             }}
@@ -1203,7 +1203,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.(e);
               setOverlayActive(false);
@@ -1218,7 +1218,7 @@ export const LauncherPage = (args: any) => {
     13: (onClose) => (
       <>
         <BaseModalHeader className="flex flex-col gap-1 px-8 pt-6 pb-2">
-          <h2 className="text-2xl font-black tracking-tight bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl font-black tracking-tight bg-linear-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
             {t("launcherpage.register.installing.title", {
               defaultValue: "正在注册到系统",
             })}
@@ -1234,7 +1234,7 @@ export const LauncherPage = (args: any) => {
             size="sm" 
             isIndeterminate 
             aria-label="Registering" 
-            classNames={{ indicator: "bg-gradient-to-r from-emerald-500 to-teal-600" }} 
+            classNames={{ indicator: "bg-linear-to-r from-emerald-500 to-teal-600" }} 
           />
         </BaseModalBody>
       </>
@@ -1259,7 +1259,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.(e);
               setOverlayActive(false);
@@ -1299,7 +1299,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.(e);
               setOverlayActive(false);
@@ -1343,7 +1343,7 @@ export const LauncherPage = (args: any) => {
           <Button
             color="primary"
             radius="full"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
+            className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg shadow-emerald-500/20"
             onPress={(e) => {
               onClose?.(e);
               setOverlayActive(false);
@@ -1394,7 +1394,7 @@ export const LauncherPage = (args: any) => {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="mb-4 sm:mb-6"
         >
-          <Card className="relative overflow-hidden border-none shadow-xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[2rem]">
+          <Card className="relative overflow-hidden border-none shadow-xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl rounded-4xl">
             
             <CardBody className="p-6 sm:p-8 relative flex flex-col gap-6">
               {/* Main Layout */}
@@ -1404,7 +1404,7 @@ export const LauncherPage = (args: any) => {
                 <div className="flex flex-col gap-1 min-w-0">
                    <div className="flex items-center gap-3">
                     <motion.h1 
-                      className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 truncate pb-2"
+                      className="text-4xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 truncate pb-2"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.2 }}
@@ -1433,7 +1433,7 @@ export const LauncherPage = (args: any) => {
                 </div>
 
                 {/* Right: Actions */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
                   {/* Version Selector */}
                   <div className="flex items-center gap-3 p-1.5 rounded-2xl">
                     <Dropdown placement="bottom-end">
@@ -1515,7 +1515,7 @@ export const LauncherPage = (args: any) => {
                             textValue={item.name}
                             description={item.version}
                             startContent={
-                              <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-default-100 dark:bg-white/10 flex items-center justify-center overflow-hidden">
+                              <div className="w-8 h-8 shrink-0 rounded-lg bg-default-100 dark:bg-white/10 flex items-center justify-center overflow-hidden">
                                 {(() => {
                                   const u = item.logo || logoByName.get(item.name);
                                   if (!u) ensureLogo(item.name);
@@ -1609,7 +1609,7 @@ export const LauncherPage = (args: any) => {
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
                       size="lg"
-                      className="h-14 px-8 text-lg font-bold text-white shadow-emerald-500/30 shadow-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 rounded-2xl w-full sm:w-auto"
+                      className="h-14 px-8 text-lg font-bold text-white shadow-emerald-500/30 shadow-lg bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 rounded-2xl w-full sm:w-auto"
                       startContent={<FaRocket className="mb-0.5" />}
                       onPress={doLaunch}
                       isLoading={modalState === 5} 

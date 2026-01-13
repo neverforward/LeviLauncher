@@ -736,7 +736,7 @@ export default function ContentPage() {
 
   return (
     <motion.div
-      className={`fixed inset-0 z-40 w-full h-full flex flex-col pt-[84px] px-6 pb-6 overflow-hidden bg-default-50 dark:bg-black ${
+      className={`relative w-full max-w-full mx-auto p-4 h-full flex flex-col ${
         dragActive ? "cursor-copy" : ""
       }`}
       onDragOver={(e) => {
@@ -791,9 +791,9 @@ export default function ContentPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-[2rem] shadow-2xl flex flex-col items-center gap-4 border border-white/20">
+            <div className="bg-white/90 dark:bg-zinc-900/90 p-8 rounded-4xl shadow-2xl flex flex-col items-center gap-4 border border-white/20">
               <FiUploadCloud className="w-16 h-16 text-primary-500" />
-              <div className="text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+              <div className="text-xl font-bold bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                 {t("contentpage.drop_hint", {
                   defaultValue: "拖入 .mcworld/.mcpack/.mcaddon 以导入",
                 })}
@@ -804,9 +804,9 @@ export default function ContentPage() {
       </AnimatePresence>
 
       <div className="flex-1 overflow-auto">
-        <div className="px-3 sm:px-5 lg:px-8 pt-3 sm:pt-4 lg:pt-6 pb-12 sm:pb-16 lg:pb-20 w-full max-w-none">
+        <div className="w-full max-w-none pb-12">
           {/* Header Card */}
-          <Card className="rounded-[2rem] shadow-lg mb-6 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
+          <Card className="rounded-4xl shadow-lg mb-6 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50">
             <CardBody className="px-6 sm:px-8 py-5">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -820,7 +820,7 @@ export default function ContentPage() {
                       >
                         <FaArrowLeft size={20} />
                       </Button>
-                      <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
+                      <h1 className="text-3xl sm:text-1xl font-black tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent pb-1">
                         {t("launcherpage.content_manage", { defaultValue: "内容管理" })}
                       </h1>
                     </div>
@@ -935,7 +935,7 @@ export default function ContentPage() {
             <Card
               isPressable
               onPress={() => navigate("/content/worlds", { state: { player: selectedPlayer } })}
-              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+              className="rounded-4xl shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
             >
               <CardBody className="p-6">
                 <div className="flex items-center justify-between w-full">
@@ -961,7 +961,7 @@ export default function ContentPage() {
             <Card
               isPressable
               onPress={() => navigate("/content/resource-packs")}
-              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+              className="rounded-4xl shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
             >
               <CardBody className="p-6">
                 <div className="flex items-center justify-between w-full">
@@ -987,7 +987,7 @@ export default function ContentPage() {
             <Card
               isPressable
               onPress={() => navigate("/content/behavior-packs")}
-              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+              className="rounded-4xl shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
             >
               <CardBody className="p-6">
                 <div className="flex items-center justify-between w-full">
@@ -1013,7 +1013,7 @@ export default function ContentPage() {
             <Card
               isPressable
               onPress={() => navigate("/content/skin-packs", { state: { player: selectedPlayer } })}
-              className="rounded-[2rem] shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
+              className="rounded-4xl shadow-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 h-full"
             >
               <CardBody className="p-6">
                 <div className="flex items-center justify-between w-full">
@@ -1093,7 +1093,7 @@ export default function ContentPage() {
                   })}
                 </div>
                 {currentFile ? (
-                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm break-words whitespace-pre-wrap">
+                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm wrap-break-word whitespace-pre-wrap">
                     {currentFile}
                   </div>
                 ) : null}
@@ -1138,7 +1138,7 @@ export default function ContentPage() {
                       {t("mods.summary_success", { defaultValue: "成功" })} (
                       {resultSuccess.length})
                     </div>
-                    <div className="mt-1 rounded-md bg-success/5 border border-success/30 px-3 py-2 text-success-700 text-sm break-words whitespace-pre-wrap">
+                    <div className="mt-1 rounded-md bg-success/5 border border-success/30 px-3 py-2 text-success-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultSuccess.join("\n")}
                     </div>
                   </div>
@@ -1149,7 +1149,7 @@ export default function ContentPage() {
                       {t("mods.summary_failed", { defaultValue: "失败" })} (
                       {resultFailed.length})
                     </div>
-                    <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm break-words whitespace-pre-wrap">
+                    <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultFailed
                         .map(
                           (it) => `${it.name} - ${resolveImportError(it.err)}`
@@ -1197,7 +1197,7 @@ export default function ContentPage() {
                   })}
                 </div>
                 {dupNameRef.current ? (
-                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm break-words whitespace-pre-wrap">
+                  <div className="mt-1 rounded-md bg-default-100/60 border border-default-200 px-3 py-2 text-default-800 text-sm wrap-break-word whitespace-pre-wrap">
                     {dupNameRef.current}
                   </div>
                 ) : null}
