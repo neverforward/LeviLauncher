@@ -458,14 +458,13 @@ export const ModsPage: React.FC = () => {
       );
       for (const f of files) {
         const lower = f.name.toLowerCase();
-        const buf = await f.arrayBuffer();
-        const bytes = Array.from(new Uint8Array(buf));
         if (lower.endsWith(".zip")) {
           if (!started) {
             setImporting(true);
             started = true;
           }
           setCurrentFile(f.name);
+          await new Promise<void>((r) => setTimeout(r, 0));
           let err = await postImportModZip(currentVersionName, f, false);
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
@@ -495,7 +494,6 @@ export const ModsPage: React.FC = () => {
           setDllType("preload-native");
           setDllVersion("0.0.0");
           dllFileRef.current = f;
-          dllBytesRef.current = bytes;
           await new Promise<void>((resolve) => setTimeout(resolve, 0));
           dllOnOpen();
           const ok = await new Promise<boolean>((resolve) => {
@@ -509,6 +507,7 @@ export const ModsPage: React.FC = () => {
             started = true;
           }
           setCurrentFile(f.name);
+          await new Promise<void>((r) => setTimeout(r, 0));
           const vals = dllConfirmRef.current || {
             name: dllName,
             type: dllType,
@@ -674,14 +673,13 @@ export const ModsPage: React.FC = () => {
     try {
       for (const f of files) {
         const lower = f.name.toLowerCase();
-        const buf = await f.arrayBuffer();
-        const bytes = Array.from(new Uint8Array(buf));
         if (lower.endsWith(".zip")) {
           if (!started) {
             setImporting(true);
             started = true;
           }
           setCurrentFile(f.name);
+          await new Promise<void>((r) => setTimeout(r, 0));
           let err = await postImportModZip(currentVersionName, f, false);
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
@@ -709,7 +707,6 @@ export const ModsPage: React.FC = () => {
           setDllType("preload-native");
           setDllVersion("0.0.0");
           dllFileRef.current = f;
-          dllBytesRef.current = bytes;
           await new Promise<void>((resolve) => setTimeout(resolve, 0));
           dllOnOpen();
           const ok = await new Promise<boolean>((resolve) => {
@@ -723,6 +720,7 @@ export const ModsPage: React.FC = () => {
             started = true;
           }
           setCurrentFile(f.name);
+          await new Promise<void>((r) => setTimeout(r, 0));
           const vals = dllConfirmRef.current || {
             name: dllName,
             type: dllType,
@@ -784,16 +782,29 @@ export const ModsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const onDragEnter = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dragCounter.current += 1;
-      if (e.dataTransfer?.items && e.dataTransfer.items.length > 0) {
-        setDragActive(true);
+    const isFileDrag = (e: DragEvent) => {
+      try {
+        const dt = e?.dataTransfer;
+        if (!dt) return false;
+        const types = dt.types ? Array.from(dt.types) : [];
+        if (types.includes("Files")) return true;
+        const items = dt.items ? Array.from(dt.items) : [];
+        return items.some((it) => it?.kind === "file");
+      } catch {
+        return false;
       }
     };
 
+    const onDragEnter = (e: DragEvent) => {
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter.current += 1;
+      setDragActive(true);
+    };
+
     const onDragLeave = (e: DragEvent) => {
+      if (dragCounter.current <= 0) return;
       e.preventDefault();
       e.stopPropagation();
       dragCounter.current -= 1;
@@ -804,24 +815,30 @@ export const ModsPage: React.FC = () => {
     };
 
     const onDragOver = (e: DragEvent) => {
+      if (!isFileDrag(e) && dragCounter.current <= 0) return;
       e.preventDefault();
       e.stopPropagation();
+      try {
+        (e.dataTransfer as any).dropEffect = "copy";
+      } catch {}
     };
 
     const onDrop = (e: DragEvent) => {
+      const hasFiles = (e.dataTransfer?.files?.length || 0) > 0;
+      if (!hasFiles && dragCounter.current <= 0 && !isFileDrag(e)) return;
       handleDrop(e);
     };
 
-    window.addEventListener("dragenter", onDragEnter);
-    window.addEventListener("dragleave", onDragLeave);
-    window.addEventListener("dragover", onDragOver);
-    window.addEventListener("drop", onDrop);
+    document.addEventListener("dragenter", onDragEnter, true);
+    document.addEventListener("dragleave", onDragLeave, true);
+    document.addEventListener("dragover", onDragOver, true);
+    document.addEventListener("drop", onDrop, true);
 
     return () => {
-      window.removeEventListener("dragenter", onDragEnter);
-      window.removeEventListener("dragleave", onDragLeave);
-      window.removeEventListener("dragover", onDragOver);
-      window.removeEventListener("drop", onDrop);
+      document.removeEventListener("dragenter", onDragEnter, true);
+      document.removeEventListener("dragleave", onDragLeave, true);
+      document.removeEventListener("dragover", onDragOver, true);
+      document.removeEventListener("drop", onDrop, true);
     };
   });
 

@@ -579,53 +579,73 @@ export default function ContentPage() {
       );
       return;
     }
-    
-    // Check for world or skin pack
-    const hasWorld = files.some((f) =>
-      f?.name?.toLowerCase().endsWith(".mcworld")
-    );
-    let hasSkin = false;
-    for (const f of files) {
-      if (f?.name?.toLowerCase().endsWith(".mcpack")) {
-        const buf = await f.arrayBuffer();
-        const bytes = Array.from(new Uint8Array(buf));
-        const isSkin = await (minecraft as any)?.IsMcpackSkinPack?.(bytes);
-        if (isSkin) {
-          hasSkin = true;
-          break;
-        }
-      }
-    }
 
     let chosenPlayer = "";
-    if (hasWorld || hasSkin) {
-      pendingImportFilesRef.current = files;
-      playerSelectOnOpen();
-      chosenPlayer = await new Promise<string>((resolve) => {
-        playerSelectResolveRef.current = resolve;
-      });
-      if (!chosenPlayer) {
-        pendingImportFilesRef.current = [];
-        return;
-      }
-      setSelectedPlayer(chosenPlayer);
-      await onChangePlayer(chosenPlayer);
-    }
-
     let started = false;
     const succFiles: string[] = [];
     const errPairs: Array<{ name: string; err: string }> = [];
-    const filesToImport = pendingImportFilesRef.current.length > 0 ? pendingImportFilesRef.current : files;
-    pendingImportFilesRef.current = [];
-    const playerToUse = chosenPlayer || selectedPlayer || "";
+    let filesToImport: File[] = files;
+    let playerToUse = selectedPlayer || "";
 
     try {
+      setImporting(true);
+      started = true;
+      setCurrentFile(files[0]?.name || "");
+      await new Promise<void>((r) => setTimeout(r, 0));
+
+      const hasWorld = files.some((f) =>
+        f?.name?.toLowerCase().endsWith(".mcworld")
+      );
+      let hasSkin = false;
+      for (const f of files) {
+        if (f?.name?.toLowerCase().endsWith(".mcpack")) {
+          setCurrentFile(f.name);
+          await new Promise<void>((r) => setTimeout(r, 0));
+          const buf = await f.arrayBuffer();
+          const bytes = Array.from(new Uint8Array(buf));
+          const isSkin = await (minecraft as any)?.IsMcpackSkinPack?.(bytes);
+          if (isSkin) {
+            hasSkin = true;
+            break;
+          }
+        }
+      }
+
+      if (hasWorld || hasSkin) {
+        setImporting(false);
+        setCurrentFile("");
+        started = false;
+        await new Promise<void>((r) => setTimeout(r, 0));
+
+        pendingImportFilesRef.current = files;
+        playerSelectOnOpen();
+        chosenPlayer = await new Promise<string>((resolve) => {
+          playerSelectResolveRef.current = resolve;
+        });
+        if (!chosenPlayer) {
+          pendingImportFilesRef.current = [];
+          return;
+        }
+        setSelectedPlayer(chosenPlayer);
+        await onChangePlayer(chosenPlayer);
+
+        setImporting(true);
+        started = true;
+        filesToImport = pendingImportFilesRef.current.length
+          ? pendingImportFilesRef.current
+          : files;
+        pendingImportFilesRef.current = [];
+        playerToUse = chosenPlayer || selectedPlayer || "";
+        setCurrentFile(filesToImport[0]?.name || "");
+        await new Promise<void>((r) => setTimeout(r, 0));
+      } else {
+        pendingImportFilesRef.current = [];
+        filesToImport = files;
+        playerToUse = selectedPlayer || "";
+      }
+
       for (const f of filesToImport) {
         const lower = f.name.toLowerCase();
-        if (!started) {
-          setImporting(true);
-          started = true;
-        }
         setCurrentFile(f.name);
 
         let err = "";
@@ -735,16 +755,29 @@ export default function ContentPage() {
   };
 
   React.useEffect(() => {
-    const onDragEnter = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dragCounter.current += 1;
-      if (e.dataTransfer?.items && e.dataTransfer.items.length > 0) {
-        setDragActive(true);
+    const isFileDrag = (e: DragEvent) => {
+      try {
+        const dt = e?.dataTransfer;
+        if (!dt) return false;
+        const types = dt.types ? Array.from(dt.types) : [];
+        if (types.includes("Files")) return true;
+        const items = dt.items ? Array.from(dt.items) : [];
+        return items.some((it) => it?.kind === "file");
+      } catch {
+        return false;
       }
     };
 
+    const onDragEnter = (e: DragEvent) => {
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter.current += 1;
+      setDragActive(true);
+    };
+
     const onDragLeave = (e: DragEvent) => {
+      if (dragCounter.current <= 0) return;
       e.preventDefault();
       e.stopPropagation();
       dragCounter.current -= 1;
@@ -755,11 +788,17 @@ export default function ContentPage() {
     };
 
     const onDragOver = (e: DragEvent) => {
+      if (!isFileDrag(e) && dragCounter.current <= 0) return;
       e.preventDefault();
       e.stopPropagation();
+      try {
+        (e.dataTransfer as any).dropEffect = "copy";
+      } catch {}
     };
 
     const onDrop = async (e: DragEvent) => {
+      const hasFiles = (e.dataTransfer?.files?.length || 0) > 0;
+      if (!hasFiles && dragCounter.current <= 0 && !isFileDrag(e)) return;
       e.preventDefault();
       e.stopPropagation();
       dragCounter.current = 0;
@@ -780,16 +819,16 @@ export default function ContentPage() {
       }
     };
 
-    window.addEventListener("dragenter", onDragEnter);
-    window.addEventListener("dragleave", onDragLeave);
-    window.addEventListener("dragover", onDragOver);
-    window.addEventListener("drop", onDrop);
+    document.addEventListener("dragenter", onDragEnter, true);
+    document.addEventListener("dragleave", onDragLeave, true);
+    document.addEventListener("dragover", onDragOver, true);
+    document.addEventListener("drop", onDrop, true);
 
     return () => {
-      window.removeEventListener("dragenter", onDragEnter);
-      window.removeEventListener("dragleave", onDragLeave);
-      window.removeEventListener("dragover", onDragOver);
-      window.removeEventListener("drop", onDrop);
+      document.removeEventListener("dragenter", onDragEnter, true);
+      document.removeEventListener("dragleave", onDragLeave, true);
+      document.removeEventListener("dragover", onDragOver, true);
+      document.removeEventListener("drop", onDrop, true);
     };
   });
 
