@@ -22,8 +22,9 @@ import {
   useDisclosure,
   Card,
   CardBody,
+  ButtonGroup,
 } from "@heroui/react";
-import { FaDownload, FaCopy, FaSync, FaTrash } from "react-icons/fa";
+import { FaDownload, FaCopy, FaSync, FaTrash, FaBoxOpen, FaChevronDown } from "react-icons/fa";
 import { Events } from "@wailsio/runtime";
 import { useVersionStatus } from "../utils/VersionStatusContext";
 import { useTranslation } from "react-i18next";
@@ -775,56 +776,14 @@ export const DownloadPage: React.FC = () => {
                         })}
                       </Chip>
                     ) : isDownloaded(item) ? (
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Chip
-                            color="success"
-                            variant="flat"
-                            className="cursor-pointer"
-                          >
-                            {t("downloadpage.status.downloaded", {
-                              defaultValue: "Downloaded",
-                            })}
-                          </Chip>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                          aria-label="Downloaded actions"
-                          onAction={async (key) => {
-                            if (String(key) !== "delete_msixvc") return;
-                            setDeleteError("");
-                            setDeleteLoading(false);
-                            let fname = "";
-                            try {
-                              if (
-                                hasBackend &&
-                                typeof minecraft?.ResolveDownloadedMsixvc ===
-                                  "function"
-                              ) {
-                                fname = await minecraft.ResolveDownloadedMsixvc(
-                                  `${item.type} ${item.short}`,
-                                  String(item.type).toLowerCase()
-                                );
-                              }
-                            } catch {}
-                            setDeleteItem({
-                              short: item.short,
-                              type: item.type,
-                              fileName: fname || `${item.type} ${item.short}`,
-                            });
-                            deleteDisclosure.onOpen();
-                          }}
-                        >
-                          <DropdownItem
-                            key="delete_msixvc"
-                            color="danger"
-                            startContent={<FaTrash size={12} />}
-                          >
-                            {t("downloadpage.actions.delete_installer", {
-                              defaultValue: "删除下载包",
-                            })}
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
+                      <Chip
+                        color="success"
+                        variant="flat"
+                      >
+                        {t("downloadpage.status.downloaded", {
+                          defaultValue: "Downloaded",
+                        })}
+                      </Chip>
                     ) : (
                       <Chip color="danger" variant="flat">
                         {t("downloadpage.status.not_downloaded", {
@@ -837,59 +796,95 @@ export const DownloadPage: React.FC = () => {
                     <motion.div
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
-                      className="inline-flex items-center gap-2 w-[120px] justify-end"
+                      className="inline-flex items-center gap-2 min-w-[120px] justify-end"
                     >
-                      <Button
-                        radius="full"
-                        size="sm"
-                        startContent={<FaDownload size={14} />}
-                        className={`px-4 h-8 w-full transition-transform hover:-translate-y-0.5 ${
-                          !hasStatus(item) && refreshing
-                            ? ""
-                            : isDownloaded(item)
-                            ? "bg-linear-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 text-white font-bold"
-                            : "bg-linear-to-r from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30 text-white font-bold"
-                        }`}
-                        variant={
-                          !hasStatus(item) && refreshing ? "flat" : "solid"
-                        }
-                        color={
-                          !hasStatus(item) && refreshing ? "default" : undefined
-                        }
-                        isDisabled={!hasStatus(item) && refreshing}
-                        onPress={() => {
-                          const urls = item.urls || [];
-                          setMirrorUrls(urls);
-                          setMirrorVersion(item.short);
-                          setMirrorType(item.type);
-                          setSelectedUrl(null);
-                          const already = Boolean(isDownloaded(item));
-                          setInstallMode(already);
-                          if (already) {
-                            navigate("/install", {
-                              state: {
-                                mirrorVersion: item.short,
-                                mirrorType: item.type,
-                                returnTo: "/download",
-                              },
-                            });
-                          } else {
-                            setCurrentDownloadingInfo(item.short, item.type);
-                            onOpen();
-                            startMirrorTests(urls);
-                          }
-                        }}
-                      >
-                        {!hasStatus(item) && refreshing
-                          ? t("downloadpage.status.checking", {
-                              defaultValue: "检查中…",
-                            })
-                          : isDownloaded(item)
-                          ? t("downloadpage.mirror.install_button", {
-                              defaultValue: "安装",
-                            })
-                          : t("downloadmodal.download_button")}
-                      </Button>
+                      {isDownloaded(item) ? (
+                        <ButtonGroup radius="full" size="sm" variant="bordered" color="default" className="w-full">
+                            <Button
+                                className="px-3 h-8 font-bold flex-1"
+                                startContent={<FaBoxOpen size={14} />}
+                                onPress={() => {
+                                  navigate("/install", {
+                                    state: {
+                                      mirrorVersion: item.short,
+                                      mirrorType: item.type,
+                                      returnTo: "/download",
+                                    },
+                                  });
+                                }}
+                            >
+                                {t("downloadpage.mirror.install_button", { defaultValue: "安装" })}
+                            </Button>
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <Button isIconOnly className="h-8 min-w-8 w-8 px-0">
+                                        <FaChevronDown size={12} />
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                  aria-label="Actions"
+                                  onAction={async (key) => {
+                                    if (String(key) !== "delete_msixvc") return;
+                                    setDeleteError("");
+                                    setDeleteLoading(false);
+                                    let fname = "";
+                                    try {
+                                      if (
+                                        hasBackend &&
+                                        typeof minecraft?.ResolveDownloadedMsixvc === "function"
+                                      ) {
+                                        fname = await minecraft.ResolveDownloadedMsixvc(
+                                          `${item.type} ${item.short}`,
+                                          String(item.type).toLowerCase()
+                                        );
+                                      }
+                                    } catch {}
+                                    setDeleteItem({
+                                      short: item.short,
+                                      type: item.type,
+                                      fileName: fname || `${item.type} ${item.short}`,
+                                    });
+                                    deleteDisclosure.onOpen();
+                                  }}
+                                >
+                                    <DropdownItem
+                                      key="delete_msixvc"
+                                      color="danger"
+                                      startContent={<FaTrash size={12} />}
+                                    >
+                                      {t("downloadpage.actions.delete_installer", { defaultValue: "删除下载包" })}
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </ButtonGroup>
+                      ) : (
+                          <Button
+                            radius="full"
+                            size="sm"
+                            startContent={<FaDownload size={14} />}
+                            className="px-4 h-8 w-full font-bold transition-transform hover:-translate-y-0.5"
+                            variant="bordered"
+                            color="default"
+                            isDisabled={!hasStatus(item) && refreshing}
+                            onPress={() => {
+                              const urls = item.urls || [];
+                              setMirrorUrls(urls);
+                              setMirrorVersion(item.short);
+                              setMirrorType(item.type);
+                              setSelectedUrl(null);
+                              setInstallMode(false);
+                              setCurrentDownloadingInfo(item.short, item.type);
+                              onOpen();
+                              startMirrorTests(urls);
+                            }}
+                          >
+                            {!hasStatus(item) && refreshing
+                              ? t("downloadpage.status.checking", {
+                                  defaultValue: "检查中…",
+                                })
+                              : t("downloadmodal.download_button")}
+                          </Button>
+                      )}
                     </motion.div>
                   </TableCell>
                 </TableRow>

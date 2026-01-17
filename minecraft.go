@@ -22,6 +22,8 @@ import (
 	"github.com/liteldev/LeviLauncher/internal/gdk"
 	"github.com/liteldev/LeviLauncher/internal/lang"
 	"github.com/liteldev/LeviLauncher/internal/launch"
+	lipclient "github.com/liteldev/LeviLauncher/internal/lip/client"
+	liptypes "github.com/liteldev/LeviLauncher/internal/lip/client/types"
 	"github.com/liteldev/LeviLauncher/internal/mcservice"
 	"github.com/liteldev/LeviLauncher/internal/mods"
 	"github.com/liteldev/LeviLauncher/internal/packages"
@@ -244,14 +246,24 @@ func (a *Minecraft) DeleteVersionFolder(name string) string {
 type Minecraft struct {
 	ctx         context.Context
 	curseClient client.CurseClient
+	lipClient   *lipclient.Client
 	packManager *packages.PackManager
 }
 
 func NewMinecraft() *Minecraft {
 	return &Minecraft{
 		curseClient: client.NewCurseClient(curseForgeAPIKey),
+		lipClient:   lipclient.NewClient(),
 		packManager: packages.NewPackManager(),
 	}
+}
+
+func (a *Minecraft) SearchLIPPackages(q string, perPage int, page int, sort string, order string) (*liptypes.SearchPackagesResponse, error) {
+	return a.lipClient.SearchPackages(q, perPage, page, sort, order)
+}
+
+func (a *Minecraft) GetLIPPackage(identifier string) (*liptypes.GetPackageResponse, error) {
+	return a.lipClient.GetPackage(identifier)
 }
 
 func (a *Minecraft) startup() {

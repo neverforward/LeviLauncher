@@ -52,6 +52,8 @@ import AboutPage from "./pages/AboutPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import CurseForgePage from "./pages/CurseForgePage";
 import CurseForgeModPage from "./pages/CurseForgeModPage";
+import LIPPage from "./pages/LIPPage";
+import LIPPackagePage from "./pages/LIPPackagePage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -361,7 +363,7 @@ function App() {
       </AnimatePresence>
 
       <div
-        className={`w-full min-h-dvh flex flex-col overflow-x-hidden ${
+        className={`w-full min-h-dvh flex flex-col overflow-x-hidden bg-background text-foreground ${
           updateOpen ? "overflow-y-hidden" : ""
         }`}
       >
@@ -563,6 +565,8 @@ function App() {
                 <Route path="/mods" element={<ModsPage />} />
                 <Route path="/curseforge" element={<CurseForgePage />} />
                 <Route path="/curseforge/mod/:id" element={<CurseForgeModPage />} />
+                <Route path="/lip" element={<LIPPage />} />
+                <Route path="/lip/package/:id" element={<LIPPackagePage />} />
                 <Route path="/updating" element={<UpdatingPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
                 <Route path="/filemanager" element={<FileManagerPage />} />

@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SiCurseforge } from "react-icons/si";
-import { FaCloudDownloadAlt } from "react-icons/fa";
+import { FaCloudDownloadAlt, FaCube } from "react-icons/fa";
 
 export const ContentDownloadCard = () => {
   const { t } = useTranslation();
@@ -32,7 +32,18 @@ export const ContentDownloadCard = () => {
             <span className="font-medium text-default-700 dark:text-zinc-200">{t("curseforge.title", { defaultValue: "CurseForge" })}</span>
           </div>
         </div>
+        
+        <div 
+          className="flex items-center justify-between p-3 rounded-xl hover:bg-default-200/50 dark:hover:bg-zinc-700/50 cursor-pointer transition-all border border-transparent hover:border-default-200/50 dark:hover:border-white/10"
+          onClick={() => navigate("/lip")}
+        >
+          <div className="flex items-center gap-3">
+            <FaCube className="text-emerald-500 text-xl" />
+            <span className="font-medium text-default-700 dark:text-zinc-200">LIP</span>
+          </div>
+        </div>
       </CardBody>
     </Card>
   );
 };
+
