@@ -15,7 +15,12 @@ import {
   ModalContent,
   useDisclosure,
 } from "@heroui/react";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { PageHeader, SectionHeader } from "@/components/PageHeader";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -26,8 +31,8 @@ import {
   GetInstallerDir,
   GetVersionsDir,
   CanWriteToDir,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 
 export default function OnboardingPage() {
   const { t, i18n } = useTranslation();
@@ -51,9 +56,8 @@ export default function OnboardingPage() {
   } = useDisclosure();
 
   React.useEffect(() => {
-
     GetLanguageNames().then((res: any) => setLangNames(res));
-    
+
     const normalize = (lng: string) => {
       if (!lng) return "en_US";
       const lower = lng.toLowerCase();
@@ -71,7 +75,7 @@ export default function OnboardingPage() {
           setNewBaseRoot(
             typeof pick === "string" && pick.length > 0
               ? String(pick)
-              : String(br || "")
+              : String(br || ""),
           );
           const id = await GetInstallerDir();
           setInstallerDir(String(id || ""));
@@ -144,25 +148,38 @@ export default function OnboardingPage() {
           <div className="flex flex-col md:flex-row h-full">
             {/* Left Panel: Hero & Info */}
             <div className="w-full md:w-[35%] lg:w-[40%] bg-linear-to-br from-emerald-50/50 to-teal-50/50 dark:from-emerald-900/10 dark:to-teal-900/10 p-8 flex flex-col justify-center relative min-h-[400px] h-full">
-               <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                  <div className="absolute -top-20 -left-20 w-60 h-60 bg-emerald-400/20 rounded-full blur-3xl" />
-                  <div className="absolute bottom-0 right-0 w-60 h-60 bg-teal-400/20 rounded-full blur-3xl" />
-               </div>
-               
-               <div className="relative z-10">
-                 <div className="w-16 h-16 mb-6 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-900/20 flex items-center justify-center text-white">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                 </div>
-                 <PageHeader
-                   title={t("onboarding.title", { defaultValue: "首次启动引导" })}
-                   description={t("onboarding.subtitle", {
-                     defaultValue: "请先设置内容路径与语言",
-                   })}
-                   titleClassName="text-3xl lg:text-4xl"
-                 />
-               </div>
+              <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute -top-20 -left-20 w-60 h-60 bg-emerald-400/20 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 right-0 w-60 h-60 bg-teal-400/20 rounded-full blur-3xl" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="w-16 h-16 mb-6 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-900/20 flex items-center justify-center text-white">
+                  <svg
+                    className="w-8 h-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                </div>
+                <PageHeader
+                  title={t("onboarding.title", {
+                    defaultValue: "首次启动引导",
+                  })}
+                  description={t("onboarding.subtitle", {
+                    defaultValue: "请先设置内容路径与语言",
+                  })}
+                  titleClassName="text-3xl lg:text-4xl"
+                />
+              </div>
             </div>
 
             {/* Right Panel: Settings */}
@@ -177,111 +194,139 @@ export default function OnboardingPage() {
                 >
                   <div className="mb-6">
                     <SectionHeader
-                      title={t("settingscard.body.paths.title", { defaultValue: "内容路径" })}
-                      description={t("settingscard.body.paths.subtitle", { defaultValue: "管理游戏数据存储位置" })}
+                      title={t("settingscard.body.paths.title", {
+                        defaultValue: "内容路径",
+                      })}
+                      description={t("settingscard.body.paths.subtitle", {
+                        defaultValue: "管理游戏数据存储位置",
+                      })}
                     />
                   </div>
 
                   <div className="space-y-6">
-                     <Input
-                        labelPlacement="outside"
-                        label={t("settingscard.body.paths.base_root", { defaultValue: "根目录" })}
-                        placeholder={t("settingscard.body.paths.base_root", { defaultValue: "根目录" })}
-                        value={newBaseRoot}
-                        onValueChange={setNewBaseRoot}
-                        variant="bordered"
-                        classNames={{
-                            inputWrapper: "bg-default-50/50 dark:bg-black/20 border-default-200 dark:border-white/10 shadow-none",
-                        }}
-                        description={
-                            newBaseRoot && newBaseRoot !== baseRoot ? (
-                                <span className={baseRootWritable ? "text-warning-500 font-medium" : "text-danger-500 font-medium"}>
-                                    {baseRootWritable 
-                                        ? t("settingscard.body.paths.unsaved", { defaultValue: "更改未保存" })
-                                        : t("settingscard.body.paths.not_writable", { defaultValue: "目录不可写入" })
-                                    }
-                                </span>
-                            ) : null
-                        }
-                        endContent={
-                          <Button
-                            size="sm"
-                            variant="flat"
-                            className="bg-default-200/50 dark:bg-white/10 font-medium"
-                            onPress={() => {
-                              navigate("/filemanager", {
-                                state: {
-                                  directoryPickMode: true,
-                                  returnTo: "/onboarding",
-                                  returnState: {},
-                                  title: t("settingscard.body.paths.title", { defaultValue: "内容路径" }),
-                                  initialPath: newBaseRoot || baseRoot || "",
-                                },
-                              });
-                            }}
+                    <Input
+                      labelPlacement="outside"
+                      label={t("settingscard.body.paths.base_root", {
+                        defaultValue: "根目录",
+                      })}
+                      placeholder={t("settingscard.body.paths.base_root", {
+                        defaultValue: "根目录",
+                      })}
+                      value={newBaseRoot}
+                      onValueChange={setNewBaseRoot}
+                      variant="bordered"
+                      classNames={{
+                        inputWrapper:
+                          "bg-default-50/50 dark:bg-black/20 border-default-200 dark:border-white/10 shadow-none",
+                      }}
+                      description={
+                        newBaseRoot && newBaseRoot !== baseRoot ? (
+                          <span
+                            className={
+                              baseRootWritable
+                                ? "text-warning-500 font-medium"
+                                : "text-danger-500 font-medium"
+                            }
                           >
-                            {t("common.browse", { defaultValue: "选择..." })}
-                          </Button>
-                        }
-                      />
+                            {baseRootWritable
+                              ? t("settingscard.body.paths.unsaved", {
+                                  defaultValue: "更改未保存",
+                                })
+                              : t("settingscard.body.paths.not_writable", {
+                                  defaultValue: "目录不可写入",
+                                })}
+                          </span>
+                        ) : null
+                      }
+                      endContent={
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          className="bg-default-200/50 dark:bg-white/10 font-medium"
+                          onPress={() => {
+                            navigate("/filemanager", {
+                              state: {
+                                directoryPickMode: true,
+                                returnTo: "/onboarding",
+                                returnState: {},
+                                title: t("settingscard.body.paths.title", {
+                                  defaultValue: "内容路径",
+                                }),
+                                initialPath: newBaseRoot || baseRoot || "",
+                              },
+                            });
+                          }}
+                        >
+                          {t("common.browse", { defaultValue: "选择..." })}
+                        </Button>
+                      }
+                    />
 
-                      <div className="flex items-center justify-between">
-                         <div className="flex gap-2">
-                            <Button
-                                size="sm"
-                                color="primary"
-                                radius="full"
-                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
-                                isDisabled={!newBaseRoot || !baseRootWritable || (newBaseRoot === baseRoot)}
-                                isLoading={savingBaseRoot}
-                                onPress={async () => {
-                                    setSavingBaseRoot(true);
-                                    try {
-                                      const ok = await CanWriteToDir(newBaseRoot);
-                                      if (!ok) {
-                                        setBaseRootWritable(false);
-                                      } else {
-                                        const err = await SetBaseRoot(newBaseRoot);
-                                        if (!err) {
-                                          const br = await GetBaseRoot();
-                                          setBaseRoot(String(br || ""));
-                                          const id = await GetInstallerDir();
-                                          setInstallerDir(String(id || ""));
-                                          const vd = await GetVersionsDir();
-                                          setVersionsDir(String(vd || ""));
-                                        }
-                                      }
-                                    } catch {}
-                                    setSavingBaseRoot(false);
-                                }}
-                            >
-                                {t("settingscard.body.paths.apply", { defaultValue: "应用" })}
-                            </Button>
-                            <Button
-                                size="sm"
-                                variant="light"
-                                radius="full"
-                                className="text-default-500 hover:text-default-700"
-                                onPress={async () => {
-                                    try {
-                                      const err = await ResetBaseRoot();
-                                      if (!err) {
-                                        const br = await GetBaseRoot();
-                                        setBaseRoot(String(br || ""));
-                                        setNewBaseRoot(String(br || ""));
-                                        const id = await GetInstallerDir();
-                                        setInstallerDir(String(id || ""));
-                                        const vd = await GetVersionsDir();
-                                        setVersionsDir(String(vd || ""));
-                                        setBaseRootWritable(true);
-                                      }
-                                    } catch {}
-                                }}
-                            >
-                                {t("settingscard.body.paths.reset", { defaultValue: "恢复默认" })}
-                            </Button>
-                         </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          color="primary"
+                          radius="full"
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
+                          isDisabled={
+                            !newBaseRoot ||
+                            !baseRootWritable ||
+                            newBaseRoot === baseRoot
+                          }
+                          isLoading={savingBaseRoot}
+                          onPress={async () => {
+                            setSavingBaseRoot(true);
+                            try {
+                              const ok = await CanWriteToDir(newBaseRoot);
+                              if (!ok) {
+                                setBaseRootWritable(false);
+                              } else {
+                                const err = await SetBaseRoot(newBaseRoot);
+                                if (!err) {
+                                  const br = await GetBaseRoot();
+                                  setBaseRoot(String(br || ""));
+                                  const id = await GetInstallerDir();
+                                  setInstallerDir(String(id || ""));
+                                  const vd = await GetVersionsDir();
+                                  setVersionsDir(String(vd || ""));
+                                }
+                              }
+                            } catch {}
+                            setSavingBaseRoot(false);
+                          }}
+                        >
+                          {t("settingscard.body.paths.apply", {
+                            defaultValue: "应用",
+                          })}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="light"
+                          radius="full"
+                          className="text-default-500 hover:text-default-700"
+                          onPress={async () => {
+                            try {
+                              const err = await ResetBaseRoot();
+                              if (!err) {
+                                const br = await GetBaseRoot();
+                                setBaseRoot(String(br || ""));
+                                setNewBaseRoot(String(br || ""));
+                                const id = await GetInstallerDir();
+                                setInstallerDir(String(id || ""));
+                                const vd = await GetVersionsDir();
+                                setVersionsDir(String(vd || ""));
+                                setBaseRootWritable(true);
+                              }
+                            } catch {}
+                          }}
+                        >
+                          {t("settingscard.body.paths.reset", {
+                            defaultValue: "恢复默认",
+                          })}
+                        </Button>
                       </div>
+                    </div>
                   </div>
                 </motion.div>
 
@@ -296,12 +341,15 @@ export default function OnboardingPage() {
                     title={t("settingscard.body.language.name", {
                       defaultValue: t("app.lang"),
                     })}
-                    description={langNames.find((l) => l.code === selectedLang)?.language || selectedLang}
+                    description={
+                      langNames.find((l) => l.code === selectedLang)
+                        ?.language || selectedLang
+                    }
                     action={
                       <Dropdown>
                         <DropdownTrigger>
-                          <Button 
-                            radius="full" 
+                          <Button
+                            radius="full"
                             variant="flat"
                             className="bg-default-100 dark:bg-white/10 font-medium"
                           >
@@ -318,20 +366,27 @@ export default function OnboardingPage() {
                           className="max-h-60 overflow-y-auto"
                           selectedKeys={new Set([selectedLang])}
                           onSelectionChange={(keys) => {
-                            const arr = Array.from(keys as unknown as Set<string>);
+                            const arr = Array.from(
+                              keys as unknown as Set<string>,
+                            );
                             const next = arr[0];
                             if (typeof next === "string" && next.length > 0) {
                               setSelectedLang(next);
-                              Promise.resolve(i18n.changeLanguage(next)).then(() => {
-                                try {
-                                  localStorage.setItem("i18nextLng", next);
-                                } catch {}
-                              });
+                              Promise.resolve(i18n.changeLanguage(next)).then(
+                                () => {
+                                  try {
+                                    localStorage.setItem("i18nextLng", next);
+                                  } catch {}
+                                },
+                              );
                             }
                           }}
                         >
                           {langNames.map((lang) => (
-                            <DropdownItem key={lang.code} textValue={lang.language}>
+                            <DropdownItem
+                              key={lang.code}
+                              textValue={lang.language}
+                            >
                               {lang.language}
                             </DropdownItem>
                           ))}
@@ -344,28 +399,27 @@ export default function OnboardingPage() {
 
               {/* Bottom Actions */}
               <div className="flex items-center justify-end gap-3 pt-6 mt-auto">
-                  <Button 
-                    variant="light"   
-                    radius="full" 
-                    onPress={requestFinish}
-                    className="font-medium text-default-500"
-                  >
-                    {t("onboarding.skip", { defaultValue: "跳过" })}
-                  </Button>
-                  <Button 
-                    color="primary" 
-                    radius="full"
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20 px-8"
-                    onPress={requestFinish}
-                  >
-                    {t("onboarding.finish", { defaultValue: "完成" })}
-                  </Button>
+                <Button
+                  variant="light"
+                  radius="full"
+                  onPress={requestFinish}
+                  className="font-medium text-default-500"
+                >
+                  {t("onboarding.skip", { defaultValue: "跳过" })}
+                </Button>
+                <Button
+                  color="primary"
+                  radius="full"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20 px-8"
+                  onPress={requestFinish}
+                >
+                  {t("onboarding.finish", { defaultValue: "完成" })}
+                </Button>
               </div>
             </div>
           </div>
         </Card>
       </motion.div>
-
 
       <BaseModal
         size="md"

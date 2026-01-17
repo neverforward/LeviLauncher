@@ -17,10 +17,18 @@ import {
   GetCurseForgeGameVersions,
   SearchCurseForgeMods,
   GetCurseForgeCategories,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { useCurseForge } from "@/utils/CurseForgeContext";
-import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
-import { LuSearch, LuDownload, LuEye, LuClock, LuCalendar, LuFileDigit, LuGamepad2 } from "react-icons/lu";
+import * as types from "bindings/github.com/liteldev/LeviLauncher/internal/types/models";
+import {
+  LuSearch,
+  LuDownload,
+  LuEye,
+  LuClock,
+  LuCalendar,
+  LuFileDigit,
+  LuGamepad2,
+} from "react-icons/lu";
 import { motion } from "framer-motion";
 
 const CURSEFORGE_GAME_ID = "78022";
@@ -52,25 +60,25 @@ const formatSize = (bytes: number | undefined) => {
 
 const getLatestSupportedVersion = (mod: types.CurseForgeMod) => {
   const versions = new Set<string>();
-  
-  mod.latestFilesIndexes?.forEach(idx => {
+
+  mod.latestFilesIndexes?.forEach((idx) => {
     if (idx.gameVersion) versions.add(idx.gameVersion);
   });
-  
-  mod.latestFiles?.forEach(file => {
-    file.gameVersions?.forEach(v => {
-       if (v && /^\d/.test(v)) {
-         versions.add(v);
-       }
+
+  mod.latestFiles?.forEach((file) => {
+    file.gameVersions?.forEach((v) => {
+      if (v && /^\d/.test(v)) {
+        versions.add(v);
+      }
     });
   });
 
   if (versions.size === 0) return "-";
 
   const sorted = Array.from(versions).sort((a, b) => {
-    const partsA = a.split('.').map(p => parseInt(p) || 0);
-    const partsB = b.split('.').map(p => parseInt(p) || 0);
-    
+    const partsA = a.split(".").map((p) => parseInt(p) || 0);
+    const partsB = b.split(".").map((p) => parseInt(p) || 0);
+
     for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
       const valA = partsA[i] || 0;
       const valB = partsB[i] || 0;
@@ -86,20 +94,34 @@ export const CurseForgePage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const {
-    query, setQuery,
-    mods, setMods,
-    gameVersions, setGameVersions,
-    selectedMinecraftVersion, setSelectedMinecraftVersion,
-    allCategories, setAllCategories,
-    selectedClass, setSelectedClass,
-    selectedCategories, setSelectedCategories,
-    currentPage, setCurrentPage,
-    searchToken, setSearchToken,
-    totalCount, setTotalCount,
-    selectedSort, setSelectedSort,
-    initialLoaded, setInitialLoaded,
-    scrollPosition, setScrollPosition,
-    hasSearched, setHasSearched,
+    query,
+    setQuery,
+    mods,
+    setMods,
+    gameVersions,
+    setGameVersions,
+    selectedMinecraftVersion,
+    setSelectedMinecraftVersion,
+    allCategories,
+    setAllCategories,
+    selectedClass,
+    setSelectedClass,
+    selectedCategories,
+    setSelectedCategories,
+    currentPage,
+    setCurrentPage,
+    searchToken,
+    setSearchToken,
+    totalCount,
+    setTotalCount,
+    selectedSort,
+    setSelectedSort,
+    initialLoaded,
+    setInitialLoaded,
+    scrollPosition,
+    setScrollPosition,
+    hasSearched,
+    setHasSearched,
   } = useCurseForge();
 
   const [loading, setLoading] = useState(false);
@@ -110,7 +132,9 @@ export const CurseForgePage: React.FC = () => {
   const searchSeqRef = React.useRef(0);
 
   const classes = useMemo(() => {
-    return allCategories.filter((c) => c.isClass).sort((a, b) => a.displayIndex - b.displayIndex);
+    return allCategories
+      .filter((c) => c.isClass)
+      .sort((a, b) => a.displayIndex - b.displayIndex);
   }, [allCategories]);
 
   const categories = useMemo(() => {
@@ -250,13 +274,16 @@ export const CurseForgePage: React.FC = () => {
     };
 
     const prevDeps = prevDepsRef.current;
-    const depsChanged = !prevDeps ||
-      prevDeps.selectedMinecraftVersion !== currentDeps.selectedMinecraftVersion ||
+    const depsChanged =
+      !prevDeps ||
+      prevDeps.selectedMinecraftVersion !==
+        currentDeps.selectedMinecraftVersion ||
       prevDeps.selectedClass !== currentDeps.selectedClass ||
       prevDeps.selectedSort !== currentDeps.selectedSort ||
       prevDeps.currentPage !== currentDeps.currentPage ||
       prevDeps.searchToken !== currentDeps.searchToken ||
-      JSON.stringify(prevDeps.selectedCategories) !== JSON.stringify(currentDeps.selectedCategories);
+      JSON.stringify(prevDeps.selectedCategories) !==
+        JSON.stringify(currentDeps.selectedCategories);
 
     prevDepsRef.current = currentDeps;
 
@@ -339,7 +366,11 @@ export const CurseForgePage: React.FC = () => {
       }
     } catch (error) {
       console.error("Failed to load initial data:", error);
-      setError(t("curseforge.load_error", { defaultValue: "Failed to load data, please retry" }));
+      setError(
+        t("curseforge.load_error", {
+          defaultValue: "Failed to load data, please retry",
+        }),
+      );
     } finally {
       setLoading(false);
       setInitialLoaded(true);
@@ -361,7 +392,7 @@ export const CurseForgePage: React.FC = () => {
         selectedSort,
         0,
         pageSize,
-        index
+        index,
       );
 
       if (seq !== searchSeqRef.current) return;
@@ -378,7 +409,11 @@ export const CurseForgePage: React.FC = () => {
       console.error("Failed to search mods:", error);
       setMods([]);
       setTotalCount(0);
-      setError(t("curseforge.search_error", { defaultValue: "Search failed, please retry" }));
+      setError(
+        t("curseforge.search_error", {
+          defaultValue: "Search failed, please retry",
+        }),
+      );
     } finally {
       if (seq !== searchSeqRef.current) return;
       setLoading(false);
@@ -405,7 +440,9 @@ export const CurseForgePage: React.FC = () => {
     >
       <Card className="shrink-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
         <CardBody className="p-6 flex flex-col gap-4">
-          <PageHeader title={t("curseforge.title", { defaultValue: "CurseForge" })} />
+          <PageHeader
+            title={t("curseforge.title", { defaultValue: "CurseForge" })}
+          />
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Input
@@ -419,7 +456,8 @@ export const CurseForgePage: React.FC = () => {
               className="flex-1"
               size="sm"
               classNames={{
-                inputWrapper: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                inputWrapper:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             />
             <Button
@@ -449,7 +487,8 @@ export const CurseForgePage: React.FC = () => {
               }}
               size="sm"
               classNames={{
-                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                trigger:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             >
               <SelectItem key="" value="">
@@ -467,7 +506,9 @@ export const CurseForgePage: React.FC = () => {
               placeholder={t("curseforge.select_class", {
                 defaultValue: "选择类型",
               })}
-              selectedKeys={selectedClass !== undefined ? [String(selectedClass)] : []}
+              selectedKeys={
+                selectedClass !== undefined ? [String(selectedClass)] : []
+              }
               onSelectionChange={(keys) => {
                 const value = Array.from(keys)[0] as string;
                 setSelectedClass(value ? parseInt(value) : 0);
@@ -476,7 +517,8 @@ export const CurseForgePage: React.FC = () => {
               }}
               size="sm"
               classNames={{
-                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                trigger:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             >
               <SelectItem key="0" value="0">
@@ -498,13 +540,16 @@ export const CurseForgePage: React.FC = () => {
               selectionMode="multiple"
               selectedKeys={selectedCategories.map(String)}
               onSelectionChange={(keys) => {
-                const values = Array.from(keys).map((k) => parseInt(String(k))).filter(n => !isNaN(n));
+                const values = Array.from(keys)
+                  .map((k) => parseInt(String(k)))
+                  .filter((n) => !isNaN(n));
                 setSelectedCategories(values);
                 setCurrentPage(1);
               }}
               size="sm"
               classNames={{
-                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                trigger:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             >
               {categories.map((cat) => (
@@ -527,7 +572,8 @@ export const CurseForgePage: React.FC = () => {
               }}
               size="sm"
               classNames={{
-                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                trigger:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             >
               {sortOptions.map((opt) => (
@@ -542,7 +588,7 @@ export const CurseForgePage: React.FC = () => {
 
       <Card className="flex-1 min-h-0 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl shadow-md border-none">
         <CardBody className="p-0 overflow-hidden flex flex-col">
-          <div 
+          <div
             ref={scrollContainerRef}
             onScroll={(e) => {
               lastScrollTopRef.current = getScrollTop();
@@ -552,27 +598,30 @@ export const CurseForgePage: React.FC = () => {
             {error ? (
               <div className="flex flex-col items-center justify-center h-full gap-4 text-danger">
                 <p>{error}</p>
-                <Button 
-                  color="danger" 
-                  variant="flat" 
+                <Button
+                  color="danger"
+                  variant="flat"
                   onPress={() => {
-                    if (gameVersions.length === 0 && allCategories.length === 0) {
+                    if (
+                      gameVersions.length === 0 &&
+                      allCategories.length === 0
+                    ) {
                       void loadInitialData();
                     } else {
-                      setSearchToken(v => v + 1);
+                      setSearchToken((v) => v + 1);
                     }
                   }}
                 >
                   {t("retry", { defaultValue: "Retry" })}
                 </Button>
               </div>
-            ) : (loading || !hasSearched) ? (
-              <div className="flex flex-col gap-3">
-                 {renderSkeletons()}
-              </div>
+            ) : loading || !hasSearched ? (
+              <div className="flex flex-col gap-3">{renderSkeletons()}</div>
             ) : mods.length === 0 ? (
               <div className="flex items-center justify-center h-full text-default-500">
-                <p>{t("curseforge.no_results", { defaultValue: "未找到结果" })}</p>
+                <p>
+                  {t("curseforge.no_results", { defaultValue: "未找到结果" })}
+                </p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
@@ -605,40 +654,82 @@ export const CurseForgePage: React.FC = () => {
                             {mod.name}
                           </h3>
                           <span className="text-xs sm:text-sm text-default-500 truncate">
-                            | {t("curseforge.by_author", { author: mod.authors?.[0]?.name || mod.author || "Unknown", defaultValue: `By ${mod.authors?.[0]?.name || mod.author || "Unknown"}` })}
+                            |{" "}
+                            {t("curseforge.by_author", {
+                              author:
+                                mod.authors?.[0]?.name ||
+                                mod.author ||
+                                "Unknown",
+                              defaultValue: `By ${mod.authors?.[0]?.name || mod.author || "Unknown"}`,
+                            })}
                           </span>
                         </div>
 
                         <p className="text-xs sm:text-sm text-default-500 line-clamp-2 w-full">
-                          {mod.summary || t("curseforge.no_description", { defaultValue: "No description available." })}
+                          {mod.summary ||
+                            t("curseforge.no_description", {
+                              defaultValue: "No description available.",
+                            })}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-default-400 mt-1">
-                          <div className="flex items-center gap-1" title={t("curseforge.downloads", { defaultValue: "Downloads" })}>
+                          <div
+                            className="flex items-center gap-1"
+                            title={t("curseforge.downloads", {
+                              defaultValue: "Downloads",
+                            })}
+                          >
                             <LuDownload />
                             <span>{formatNumber(mod.downloadCount)}</span>
                           </div>
-                          <div className="flex items-center gap-1" title={t("curseforge.updated", { defaultValue: "Updated" })}>
+                          <div
+                            className="flex items-center gap-1"
+                            title={t("curseforge.updated", {
+                              defaultValue: "Updated",
+                            })}
+                          >
                             <LuClock />
                             <span>{formatDate(mod.dateModified)}</span>
                           </div>
-                          <div className="flex items-center gap-1" title={t("curseforge.created", { defaultValue: "Created" })}>
+                          <div
+                            className="flex items-center gap-1"
+                            title={t("curseforge.created", {
+                              defaultValue: "Created",
+                            })}
+                          >
                             <LuCalendar />
                             <span>{formatDate(mod.dateCreated)}</span>
                           </div>
-                          <div className="flex items-center gap-1" title={t("curseforge.size", { defaultValue: "Size" })}>
+                          <div
+                            className="flex items-center gap-1"
+                            title={t("curseforge.size", {
+                              defaultValue: "Size",
+                            })}
+                          >
                             <LuFileDigit />
-                            <span>{formatSize(mod.latestFiles?.[0]?.fileLength)}</span>
+                            <span>
+                              {formatSize(mod.latestFiles?.[0]?.fileLength)}
+                            </span>
                           </div>
-                          <div className="flex items-center gap-1" title={t("curseforge.game_version", { defaultValue: "Game Version" })}>
+                          <div
+                            className="flex items-center gap-1"
+                            title={t("curseforge.game_version", {
+                              defaultValue: "Game Version",
+                            })}
+                          >
                             <LuGamepad2 />
-                            <span>{selectedMinecraftVersion || getLatestSupportedVersion(mod)}</span>
+                            <span>
+                              {selectedMinecraftVersion ||
+                                getLatestSupportedVersion(mod)}
+                            </span>
                           </div>
                         </div>
 
                         <div className="flex flex-wrap gap-1 mt-2">
                           {(() => {
-                            const classCat = allCategories.find((c) => c.id === mod.classId);
+                            const classCat = allCategories.find(
+                              (c) => c.id === mod.classId,
+                            );
                             if (classCat) {
                               return (
                                 <Chip
@@ -676,7 +767,7 @@ export const CurseForgePage: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           {totalPages > 1 && (
             <div className="flex justify-center p-4 border-t border-default-100 dark:border-white/5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md shrink-0">
               <Pagination
@@ -691,7 +782,8 @@ export const CurseForgePage: React.FC = () => {
                 className="gap-2"
                 radius="full"
                 classNames={{
-                  cursor: "bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20 font-bold",
+                  cursor:
+                    "bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20 font-bold",
                 }}
               />
             </div>

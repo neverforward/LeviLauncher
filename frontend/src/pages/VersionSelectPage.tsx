@@ -28,10 +28,10 @@ import {
   readCurrentVersionName,
   saveCurrentVersionName,
 } from "@/utils/currentVersion";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 
 export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
-  props
+  props,
 ) => {
   const [localVersionMap, setLocalVersionMap] = React.useState<
     Map<string, any>
@@ -137,8 +137,8 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
               const names = Array.from(newLocalVersionMap.keys());
               Promise.all(
                 names.map((n) =>
-                  getter(n).then((u: string) => [n, String(u || "")] as const)
-                )
+                  getter(n).then((u: string) => [n, String(u || "")] as const),
+                ),
               ).then((entries) => {
                 const m = new Map<string, string>();
                 entries.forEach(([n, u]) => {
@@ -200,7 +200,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
         transition: { staggerChildren: 0.05, delayChildren: 0.05 },
       },
     }),
-    []
+    [],
   );
 
   const itemVariants = React.useMemo(
@@ -208,7 +208,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
       hidden: { opacity: 0, y: 6 },
       show: { opacity: 1, y: 0 },
     }),
-    []
+    [],
   );
 
   const handleConfirm = () => {
@@ -228,7 +228,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
     (name: string) => {
       navigate("/version-settings", { state: { name, returnTo: "/versions" } });
     },
-    [navigate]
+    [navigate],
   );
 
   const selectVersionByUser = (name: string) => {
@@ -283,7 +283,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
       if (!guardActive || guardBypassRef.current)
         return originalPush.apply(
           window.history,
-          args as [any, string, (string | URL | null)?]
+          args as [any, string, (string | URL | null)?],
         );
       openModalWithAttempt("push", args);
       return;
@@ -295,7 +295,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
       if (!guardActive || guardBypassRef.current)
         return originalPush.apply(
           window.history,
-          args as [any, string, (string | URL | null)?]
+          args as [any, string, (string | URL | null)?],
         );
       openModalWithAttempt("replace", args);
       return;
@@ -337,9 +337,11 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
         >
           <Card className="w-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
             <CardHeader className="flex flex-col gap-4 p-6">
-              <PageHeader 
+              <PageHeader
                 className="w-full"
-                title={t("launcherpage.version_select.title", { defaultValue: "选择版本" })}
+                title={t("launcherpage.version_select.title", {
+                  defaultValue: "选择版本",
+                })}
                 titleClassName="text-left pb-1"
                 endContent={
                   <div className="flex items-center gap-2">
@@ -370,8 +372,7 @@ export const VersionSelectPage: React.FC<{ refresh?: () => void }> = (
                   variant="solid"
                   classNames={{
                     tabList: "bg-default-100/50 rounded-xl px-1",
-                    cursor:
-                      "bg-emerald-600 hover:bg-emerald-500 shadow-md",
+                    cursor: "bg-emerald-600 hover:bg-emerald-500 shadow-md",
                     tabContent: "group-data-[selected=true]:text-white",
                   }}
                 >

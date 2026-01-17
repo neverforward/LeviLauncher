@@ -74,7 +74,7 @@ export function McText({ text }: McTextProps): React.ReactElement {
     const children = s
       .split("\n")
       .flatMap((seg, idx) =>
-        idx > 0 ? [<br key={`${key}-br-${idx}`} />, seg] : [seg]
+        idx > 0 ? [<br key={`${key}-br-${idx}`} />, seg] : [seg],
       );
     parts.push(
       <span
@@ -86,7 +86,7 @@ export function McText({ text }: McTextProps): React.ReactElement {
         }}
       >
         {children}
-      </span>
+      </span>,
     );
   };
   while (i < text.length) {

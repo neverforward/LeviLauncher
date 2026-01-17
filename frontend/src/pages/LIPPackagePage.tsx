@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { GetLIPPackage } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as liptypes from "../../bindings/github.com/liteldev/LeviLauncher/internal/lip/client/types";
+import { GetLIPPackage } from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as liptypes from "bindings/github.com/liteldev/LeviLauncher/internal/lip/client/types";
 import {
   Button,
   Card,
@@ -19,7 +19,15 @@ import {
   TableCell,
 } from "@heroui/react";
 import { PageHeader, SectionHeader } from "@/components/PageHeader";
-import { LuArrowLeft, LuDownload, LuGlobe, LuUser, LuClock, LuFlame, LuTag } from "react-icons/lu";
+import {
+  LuArrowLeft,
+  LuDownload,
+  LuGlobe,
+  LuUser,
+  LuClock,
+  LuFlame,
+  LuTag,
+} from "react-icons/lu";
 import { motion } from "framer-motion";
 
 const LIPPackagePage: React.FC = () => {
@@ -100,11 +108,13 @@ const LIPPackagePage: React.FC = () => {
 
               <div className="flex flex-col grow gap-3">
                 <PageHeader title={pkg.name} />
-                
+
                 <div className="flex items-center gap-4 text-default-500 text-sm flex-wrap">
                   <div className="flex items-center gap-1">
                     <LuUser />
-                    <span className="font-medium text-default-700">{pkg.author}</span>
+                    <span className="font-medium text-default-700">
+                      {pkg.author}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <LuFlame className="text-orange-500" />
@@ -112,7 +122,9 @@ const LIPPackagePage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     <LuClock />
-                    <span>Updated {new Date(pkg.updated).toLocaleDateString()}</span>
+                    <span>
+                      Updated {new Date(pkg.updated).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
 
@@ -121,8 +133,13 @@ const LIPPackagePage: React.FC = () => {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {pkg.tags.map(tag => (
-                    <Chip key={tag} variant="flat" size="sm" startContent={<LuTag size={12} />}>
+                  {pkg.tags.map((tag) => (
+                    <Chip
+                      key={tag}
+                      variant="flat"
+                      size="sm"
+                      startContent={<LuTag size={12} />}
+                    >
                       {tag}
                     </Chip>
                   ))}
@@ -130,11 +147,11 @@ const LIPPackagePage: React.FC = () => {
 
                 <div className="flex gap-2 mt-4">
                   {pkg.projectUrl && (
-                    <Button 
-                      as={Link} 
-                      href={pkg.projectUrl} 
-                      isExternal 
-                      showAnchorIcon 
+                    <Button
+                      as={Link}
+                      href={pkg.projectUrl}
+                      isExternal
+                      showAnchorIcon
                       variant="flat"
                       startContent={<LuGlobe />}
                     >
@@ -151,12 +168,16 @@ const LIPPackagePage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md border-none shadow-sm">
               <CardBody className="p-4">
-                <SectionHeader 
-                  title="Versions" 
+                <SectionHeader
+                  title="Versions"
                   className="mb-4"
                   icon={<LuDownload size={20} />}
                 />
-                <Table aria-label="Versions table" removeWrapper color="default">
+                <Table
+                  aria-label="Versions table"
+                  removeWrapper
+                  color="default"
+                >
                   <TableHeader>
                     <TableColumn>VERSION</TableColumn>
                     <TableColumn>RELEASED</TableColumn>
@@ -166,19 +187,23 @@ const LIPPackagePage: React.FC = () => {
                   <TableBody>
                     {pkg.versions.map((ver) => (
                       <TableRow key={ver.version}>
-                        <TableCell className="font-medium">{ver.version}</TableCell>
-                        <TableCell>{new Date(ver.releasedAt).toLocaleDateString()}</TableCell>
+                        <TableCell className="font-medium">
+                          {ver.version}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(ver.releasedAt).toLocaleDateString()}
+                        </TableCell>
                         <TableCell>{ver.platformVersionRequirement}</TableCell>
                         <TableCell>
-                          <Button 
-                            size="sm" 
-                            color="primary" 
+                          <Button
+                            size="sm"
+                            color="primary"
                             variant="flat"
                             startContent={<LuDownload />}
                             isDisabled={!ver.source}
                             onPress={() => {
-                                // TODO: Implement install logic
-                                window.open(ver.source, '_blank');
+                              // TODO: Implement install logic
+                              window.open(ver.source, "_blank");
                             }}
                           >
                             Download
@@ -195,19 +220,24 @@ const LIPPackagePage: React.FC = () => {
           <div className="space-y-6">
             <Card className="bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md border-none shadow-sm">
               <CardBody className="p-4">
-                <SectionHeader 
-                  title="Contributors" 
+                <SectionHeader
+                  title="Contributors"
                   className="mb-4"
                   icon={<LuUser size={20} />}
                 />
                 <div className="flex flex-col gap-3">
                   {pkg.contributors.map((contrib) => (
-                    <div key={contrib.username} className="flex justify-between items-center">
+                    <div
+                      key={contrib.username}
+                      className="flex justify-between items-center"
+                    >
                       <div className="flex items-center gap-2">
                         <LuUser className="text-default-400" />
                         <span>{contrib.username}</span>
                       </div>
-                      <Chip size="sm" variant="flat">{contrib.contributions} commits</Chip>
+                      <Chip size="sm" variant="flat">
+                        {contrib.contributions} commits
+                      </Chip>
                     </div>
                   ))}
                 </div>

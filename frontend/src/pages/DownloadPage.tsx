@@ -32,7 +32,7 @@ import { useVersionStatus } from "@/utils/VersionStatusContext";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 
 type ItemType = "Preview" | "Release";
 

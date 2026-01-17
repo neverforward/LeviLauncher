@@ -40,13 +40,18 @@ import {
   GetDisableDiscordRPC,
   SetDisableDiscordRPC,
   ResetBaseRoot,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { Browser, Events } from "@wailsio/runtime";
-import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import * as types from "bindings/github.com/liteldev/LeviLauncher/internal/types/models";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { PageHeader } from "@/components/PageHeader";
-import Logo from "../assets/images/ic_leaf_logo.png";
+import Logo from "@/assets/images/ic_leaf_logo.png";
 
 export const SettingsPage: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -125,7 +130,7 @@ export const SettingsPage: React.FC = () => {
     });
 
     GetLanguageNames().then((res) => setLangNames(res));
-    
+
     const normalize = (lng: string) => {
       if (!lng) return "en_US";
       const lower = lng.toLowerCase();
@@ -145,7 +150,7 @@ export const SettingsPage: React.FC = () => {
             setNewBaseRoot(
               typeof pick === "string" && pick.length > 0
                 ? String(pick)
-                : String(br || "")
+                : String(br || ""),
             );
             const id = await GetInstallerDir();
             setInstallerDir(String(id || ""));
@@ -247,7 +252,7 @@ export const SettingsPage: React.FC = () => {
             speedRef.ts = now;
             speedRef.bytes = downloaded;
           } catch {}
-        })
+        }),
       );
       offs.push(
         Events.On("gdk_download_status", (event) => {
@@ -260,12 +265,12 @@ export const SettingsPage: React.FC = () => {
             } catch {}
             setGdkDlSpeed(0);
           }
-        })
+        }),
       );
       offs.push(
         Events.On("gdk_download_error", (event) => {
           setGdkDlError(String(event?.data || ""));
-        })
+        }),
       );
       offs.push(
         Events.On("gdk_download_done", async (event) => {
@@ -275,7 +280,7 @@ export const SettingsPage: React.FC = () => {
             gdkInstallDisclosure.onOpen();
             await InstallGDKFromZip(dest);
           } catch {}
-        })
+        }),
       );
       offs.push(
         Events.On("gdk_install_done", (_event) => {
@@ -286,13 +291,13 @@ export const SettingsPage: React.FC = () => {
               setGdkInstalled(Boolean(ok));
             } catch {}
           }, 500);
-        })
+        }),
       );
       offs.push(
         Events.On("gdk_install_error", (event) => {
           gdkInstallDisclosure.onClose();
           setGdkDlError(String(event?.data || ""));
-        })
+        }),
       );
     } catch {}
     return () => {
@@ -307,7 +312,6 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="relative w-full p-4 flex flex-col">
       {/* Background Gradients */}
-
 
       <motion.div
         initial={{ y: -8, opacity: 0 }}
@@ -326,446 +330,465 @@ export const SettingsPage: React.FC = () => {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Column: Paths */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.1 }}
-            >
-              <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
-                <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <p className="text-large font-bold">
-                        {t("settingscard.body.paths.title", {
-                          defaultValue: "内容路径",
-                        })}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="light"
-                        radius="full"
-                        size="sm"
-                        onPress={() => resetOnOpen()}
-                      >
-                        {t("settingscard.body.paths.reset", {
-                          defaultValue: "恢复默认",
-                        })}
-                      </Button>
-                      <Button
-                        color="primary"
-                        radius="full"
-                        size="sm"
-                        isDisabled={!newBaseRoot || !baseRootWritable}
-                        isLoading={savingBaseRoot}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
-                        onPress={async () => {
-                          setSavingBaseRoot(true);
-                          try {
-                            const ok = await CanWriteToDir(newBaseRoot);
-                            if (!ok) {
-                              setBaseRootWritable(false);
-                            } else {
-                              const err = await SetBaseRoot(newBaseRoot);
-                              if (!err) {
-                                const br = await GetBaseRoot();
-                                setBaseRoot(String(br || ""));
-                                const id = await GetInstallerDir();
-                                setInstallerDir(String(id || ""));
-                                const vd = await GetVersionsDir();
-                                setVersionsDir(String(vd || ""));
-                              }
-                            }
-                          } catch {}
-                          setSavingBaseRoot(false);
-                        }}
-                      >
-                        {t("settingscard.body.paths.apply", {
-                          defaultValue: "应用",
-                        })}
-                      </Button>
-                    </div>
-                  </div>
+        {/* Left Column: Paths */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.1 }}
+        >
+          <Card className="h-full border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
+            <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <p className="text-large font-bold">
+                    {t("settingscard.body.paths.title", {
+                      defaultValue: "内容路径",
+                    })}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="light"
+                    radius="full"
+                    size="sm"
+                    onPress={() => resetOnOpen()}
+                  >
+                    {t("settingscard.body.paths.reset", {
+                      defaultValue: "恢复默认",
+                    })}
+                  </Button>
+                  <Button
+                    color="primary"
+                    radius="full"
+                    size="sm"
+                    isDisabled={!newBaseRoot || !baseRootWritable}
+                    isLoading={savingBaseRoot}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
+                    onPress={async () => {
+                      setSavingBaseRoot(true);
+                      try {
+                        const ok = await CanWriteToDir(newBaseRoot);
+                        if (!ok) {
+                          setBaseRootWritable(false);
+                        } else {
+                          const err = await SetBaseRoot(newBaseRoot);
+                          if (!err) {
+                            const br = await GetBaseRoot();
+                            setBaseRoot(String(br || ""));
+                            const id = await GetInstallerDir();
+                            setInstallerDir(String(id || ""));
+                            const vd = await GetVersionsDir();
+                            setVersionsDir(String(vd || ""));
+                          }
+                        }
+                      } catch {}
+                      setSavingBaseRoot(false);
+                    }}
+                  >
+                    {t("settingscard.body.paths.apply", {
+                      defaultValue: "应用",
+                    })}
+                  </Button>
+                </div>
+              </div>
 
-                  <div className="space-y-4">
-                    <Input
-                      label={
-                        t("settingscard.body.paths.base_root", {
-                          defaultValue: "根目录",
-                        }) as string
-                      }
-                      value={newBaseRoot}
-                      onValueChange={setNewBaseRoot}
-                      radius="lg"
-                      variant="bordered"
-                      classNames={{
-                        inputWrapper:
-                          "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:border-emerald-500!",
+              <div className="space-y-4">
+                <Input
+                  label={
+                    t("settingscard.body.paths.base_root", {
+                      defaultValue: "根目录",
+                    }) as string
+                  }
+                  value={newBaseRoot}
+                  onValueChange={setNewBaseRoot}
+                  radius="lg"
+                  variant="bordered"
+                  classNames={{
+                    inputWrapper:
+                      "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:border-emerald-500!",
+                  }}
+                  endContent={
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      radius="full"
+                      onPress={() => {
+                        navigate("/filemanager", {
+                          state: {
+                            directoryPickMode: true,
+                            returnTo: "/settings",
+                            returnState: {},
+                            title: t("settingscard.body.paths.title", {
+                              defaultValue: "内容路径",
+                            }),
+                            initialPath: newBaseRoot || baseRoot || "",
+                          },
+                        });
                       }}
-                      endContent={
-                        <Button
-                          size="sm"
-                          variant="flat"
-                          radius="full"
-                          onPress={() => {
-                            navigate("/filemanager", {
-                              state: {
-                                directoryPickMode: true,
-                                returnTo: "/settings",
-                                returnState: {},
-                                title: t("settingscard.body.paths.title", {
-                                  defaultValue: "内容路径",
-                                }),
-                                initialPath: newBaseRoot || baseRoot || "",
-                              },
-                            });
-                          }}
-                        >
-                          {t("common.browse", { defaultValue: "选择..." })}
-                        </Button>
-                      }
-                    />
-                    {newBaseRoot &&
-                    newBaseRoot !== baseRoot &&
-                    baseRootWritable ? (
-                      <div
-                        className="text-tiny text-warning-500 px-1"
-                        title={newBaseRoot}
-                      >
-                        {t("settingscard.body.paths.base_root", {
-                          defaultValue: "根目录",
-                        }) +
-                          ": " +
-                          newBaseRoot}
-                      </div>
-                    ) : null}
-                    {!baseRootWritable ? (
-                      <div className="text-tiny text-danger-500 px-1">
-                        {t("settingscard.body.paths.not_writable", {
-                          defaultValue: "目录不可写入",
-                        })}
-                      </div>
-                    ) : null}
+                    >
+                      {t("common.browse", { defaultValue: "选择..." })}
+                    </Button>
+                  }
+                />
+                {newBaseRoot && newBaseRoot !== baseRoot && baseRootWritable ? (
+                  <div
+                    className="text-tiny text-warning-500 px-1"
+                    title={newBaseRoot}
+                  >
+                    {t("settingscard.body.paths.base_root", {
+                      defaultValue: "根目录",
+                    }) +
+                      ": " +
+                      newBaseRoot}
+                  </div>
+                ) : null}
+                {!baseRootWritable ? (
+                  <div className="text-tiny text-danger-500 px-1">
+                    {t("settingscard.body.paths.not_writable", {
+                      defaultValue: "目录不可写入",
+                    })}
+                  </div>
+                ) : null}
 
-                    <div className="grid grid-cols-1 gap-2 pt-2">
-                      <div className="p-3 rounded-xl bg-default-100/50 dark:bg-zinc-800/30 border border-default-200/50 dark:border-white/5">
-                        <div
-                          className="text-tiny text-default-500 flex items-center gap-2 truncate"
-                          title={installerDir || "-"}
-                        >
-                          <LuHardDrive size={14} />
-                          <span className="font-medium">
-                            {t("settingscard.body.paths.installer", {
-                              defaultValue: "安装器目录",
-                            })}
-                            :
-                          </span>
-                          <span className="opacity-70">
-                            {installerDir || "-"}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-3 rounded-xl bg-default-100/50 dark:bg-zinc-800/30 border border-default-200/50 dark:border-white/5">
-                        <div
-                          className="text-tiny text-default-500 flex items-center gap-2 truncate"
-                          title={versionsDir || "-"}
-                        >
-                          <LuHardDrive size={14} />
-                          <span className="font-medium">
-                            {t("settingscard.body.paths.versions", {
-                              defaultValue: "版本目录",
-                            })}
-                            :
-                          </span>
-                          <span className="opacity-70">
-                            {versionsDir || "-"}
-                          </span>
-                        </div>
-                      </div>
+                <div className="grid grid-cols-1 gap-2 pt-2">
+                  <div className="p-3 rounded-xl bg-default-100/50 dark:bg-zinc-800/30 border border-default-200/50 dark:border-white/5">
+                    <div
+                      className="text-tiny text-default-500 flex items-center gap-2 truncate"
+                      title={installerDir || "-"}
+                    >
+                      <LuHardDrive size={14} />
+                      <span className="font-medium">
+                        {t("settingscard.body.paths.installer", {
+                          defaultValue: "安装器目录",
+                        })}
+                        :
+                      </span>
+                      <span className="opacity-70">{installerDir || "-"}</span>
                     </div>
                   </div>
-                </CardBody>
-              </Card>
-            </motion.div>
+                  <div className="p-3 rounded-xl bg-default-100/50 dark:bg-zinc-800/30 border border-default-200/50 dark:border-white/5">
+                    <div
+                      className="text-tiny text-default-500 flex items-center gap-2 truncate"
+                      title={versionsDir || "-"}
+                    >
+                      <LuHardDrive size={14} />
+                      <span className="font-medium">
+                        {t("settingscard.body.paths.versions", {
+                          defaultValue: "版本目录",
+                        })}
+                        :
+                      </span>
+                      <span className="opacity-70">{versionsDir || "-"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </motion.div>
 
-            {/* Right Column: Preferences, GDK, Update, About */}
-            <div className="flex flex-col gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, delay: 0.15 }}
-              >
-                <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
-                  <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
-                    {/* Language */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <p className="font-medium text-large">
-                          {t("settingscard.body.language.name", {
-                            defaultValue: t("app.lang"),
-                          })}
-                        </p>
-                        <p className="text-small text-default-500">
-                          {langNames.find((l) => l.code === selectedLang)
-                            ?.language || selectedLang}
-                        </p>
-                        {languageChanged && (
-                          <div className="text-tiny text-warning-500 mt-1">
-                            {t("settings.lang.changed", {
-                              defaultValue: "语言已更改",
-                            })}
+        {/* Right Column: Preferences, GDK, Update, About */}
+        <div className="flex flex-col gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: 0.15 }}
+          >
+            <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
+              <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
+                {/* Language */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <p className="font-medium text-large">
+                      {t("settingscard.body.language.name", {
+                        defaultValue: t("app.lang"),
+                      })}
+                    </p>
+                    <p className="text-small text-default-500">
+                      {langNames.find((l) => l.code === selectedLang)
+                        ?.language || selectedLang}
+                    </p>
+                    {languageChanged && (
+                      <div className="text-tiny text-warning-500 mt-1">
+                        {t("settings.lang.changed", {
+                          defaultValue: "语言已更改",
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button radius="full" variant="bordered">
+                        {t("settingscard.body.language.button", {
+                          defaultValue: "更改",
+                        })}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      aria-label="Language selection"
+                      variant="flat"
+                      disallowEmptySelection
+                      selectionMode="single"
+                      className="max-h-60 overflow-y-auto"
+                      selectedKeys={new Set([selectedLang])}
+                      onSelectionChange={(keys) => {
+                        const arr = Array.from(keys as unknown as Set<string>);
+                        const next = arr[0];
+                        if (typeof next === "string" && next.length > 0) {
+                          setSelectedLang(next);
+                          Promise.resolve(i18n.changeLanguage(next)).then(
+                            () => {
+                              try {
+                                localStorage.setItem("i18nextLng", next);
+                              } catch {}
+                              setLanguageChanged(true);
+                            },
+                          );
+                        }
+                      }}
+                    >
+                      {langNames.map((lang) => (
+                        <DropdownItem key={lang.code} textValue={lang.language}>
+                          {lang.language}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+
+                <Divider className="bg-default-200/50" />
+
+                {/* Discord RPC */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="font-medium">
+                      {t("settings.discord_rpc.title", {
+                        defaultValue: "Discord 游戏状态",
+                      })}
+                    </p>
+                    <p className="text-tiny text-default-500">
+                      {t("settings.discord_rpc.desc", {
+                        defaultValue: "在 Discord 上显示您的游戏状态",
+                      })}
+                    </p>
+                  </div>
+                  <Switch
+                    size="sm"
+                    isSelected={discordRpcEnabled}
+                    onValueChange={(isSelected) => {
+                      setDiscordRpcEnabled(isSelected);
+                      SetDisableDiscordRPC(!isSelected);
+                    }}
+                    classNames={{
+                      wrapper: "group-data-[selected=true]:bg-emerald-500",
+                    }}
+                  />
+                </div>
+
+                <Divider className="bg-default-200/50" />
+
+                {/* GDK */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="font-medium">{t("settings.gdk.title")}</p>
+                    <p className="text-tiny text-default-500">
+                      {t("settings.gdk.path_label", {
+                        path: "C:\\Program Files (x86)\\Microsoft GDK",
+                      })}
+                    </p>
+                  </div>
+                  {gdkInstalled ? (
+                    <Chip color="success" variant="flat" size="sm">
+                      {t("settings.gdk.installed")}
+                    </Chip>
+                  ) : (
+                    <Button
+                      radius="full"
+                      variant="bordered"
+                      size="sm"
+                      onPress={() => {
+                        setGdkLicenseAccepted(false);
+                        gdkLicenseDisclosure.onOpen();
+                      }}
+                    >
+                      {t("settings.gdk.install_button")}
+                    </Button>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: 0.2 }}
+          >
+            <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
+              <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <p className="font-medium text-large">
+                      {t("settingscard.body.version.name")}
+                    </p>
+                    <p className="text-small text-default-500">v{appVersion}</p>
+                  </div>
+                  {checkingUpdate ? (
+                    <Spinner size="sm" color="success" />
+                  ) : (
+                    <Button
+                      radius="full"
+                      variant="bordered"
+                      onPress={onCheckUpdate}
+                    >
+                      {t("settingscard.body.version.button")}
+                    </Button>
+                  )}
+                </div>
+
+                <AnimatePresence>
+                  {hasUpdate && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="rounded-xl bg-default-100/50 dark:bg-zinc-800/30 p-4 border border-default-200/50 dark:border-white/5">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-small font-bold text-emerald-600 dark:text-emerald-500">
+                            {t("settingscard.body.version.hasnew")} {newVersion}
+                          </p>
+                          <Button
+                            color="primary"
+                            radius="full"
+                            size="sm"
+                            onPress={onUpdate}
+                            isDisabled={updating}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
+                            startContent={<RxUpdate />}
+                          >
+                            {updating
+                              ? t("common.updating", { defaultValue: "更新中" })
+                              : t(
+                                  "settingscard.modal.2.footer.download_button",
+                                )}
+                          </Button>
+                        </div>
+
+                        {changelog && (
+                          <div className="text-small wrap-break-word leading-6 max-h-[200px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-default-300">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                h1: ({ children }) => (
+                                  <h1 className="text-base font-bold my-1">
+                                    {children}
+                                  </h1>
+                                ),
+                                h2: ({ children }) => (
+                                  <h2 className="text-sm font-bold my-1">
+                                    {children}
+                                  </h2>
+                                ),
+                                p: ({ children }) => (
+                                  <p className="my-1 text-default-600">
+                                    {children}
+                                  </p>
+                                ),
+                                ul: ({ children }) => (
+                                  <ul className="list-disc pl-5 my-1 text-default-600">
+                                    {children}
+                                  </ul>
+                                ),
+                                li: ({ children }) => (
+                                  <li className="my-0.5">{children}</li>
+                                ),
+                                a: ({ href, children }) => (
+                                  <a
+                                    href={href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-emerald-500 underline"
+                                  >
+                                    {children}
+                                  </a>
+                                ),
+                              }}
+                            >
+                              {changelog}
+                            </ReactMarkdown>
+                          </div>
+                        )}
+
+                        {updating && (
+                          <div className="mt-3">
+                            <Progress
+                              size="sm"
+                              radius="sm"
+                              color="success"
+                              isIndeterminate={true}
+                              classNames={{
+                                indicator:
+                                  "bg-emerald-600 hover:bg-emerald-500",
+                              }}
+                            />
                           </div>
                         )}
                       </div>
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button radius="full" variant="bordered">
-                            {t("settingscard.body.language.button", {
-                              defaultValue: "更改",
-                            })}
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                          aria-label="Language selection"
-                          variant="flat"
-                          disallowEmptySelection
-                          selectionMode="single"
-                          className="max-h-60 overflow-y-auto"
-                          selectedKeys={new Set([selectedLang])}
-                          onSelectionChange={(keys) => {
-                            const arr = Array.from(
-                              keys as unknown as Set<string>
-                            );
-                            const next = arr[0];
-                            if (typeof next === "string" && next.length > 0) {
-                              setSelectedLang(next);
-                              Promise.resolve(i18n.changeLanguage(next)).then(
-                                () => {
-                                  try {
-                                    localStorage.setItem("i18nextLng", next);
-                                  } catch {}
-                                  setLanguageChanged(true);
-                                }
-                              );
-                            }
-                          }}
-                        >
-                          {langNames.map((lang) => (
-                            <DropdownItem
-                              key={lang.code}
-                              textValue={lang.language}
-                            >
-                              {lang.language}
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                    <Divider className="bg-default-200/50" />
+                <Divider className="bg-default-200/50" />
 
-                    {/* Discord RPC */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col gap-1">
-                        <p className="font-medium">
-                          {t("settings.discord_rpc.title", {
-                            defaultValue: "Discord 游戏状态",
-                          })}
-                        </p>
-                        <p className="text-tiny text-default-500">
-                          {t("settings.discord_rpc.desc", {
-                            defaultValue: "在 Discord 上显示您的游戏状态",
-                          })}
-                        </p>
-                      </div>
-                      <Switch
-                        size="sm"
-                        isSelected={discordRpcEnabled}
-                        onValueChange={(isSelected) => {
-                          setDiscordRpcEnabled(isSelected);
-                          SetDisableDiscordRPC(!isSelected);
-                        }}
-                        classNames={{
-                          wrapper: "group-data-[selected=true]:bg-emerald-500",
-                        }}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-emerald-500/20 to-teal-500/20 p-2 border border-emerald-500/20 flex items-center justify-center">
+                      <img
+                        src={Logo}
+                        alt="Logo"
+                        className="w-full h-full object-contain"
                       />
                     </div>
-
-                    <Divider className="bg-default-200/50" />
-
-                    {/* GDK */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col gap-1">
-                        <p className="font-medium">
-                          {t("settings.gdk.title")}
-                        </p>
-                        <p className="text-tiny text-default-500">
-                           {t("settings.gdk.path_label", {
-                            path: "C:\\Program Files (x86)\\Microsoft GDK",
-                          })}
-                        </p>
-                      </div>
-                      {gdkInstalled ? (
-                        <Chip color="success" variant="flat" size="sm">
-                          {t("settings.gdk.installed")}
-                        </Chip>
-                      ) : (
-                        <Button
-                          radius="full"
-                          variant="bordered"
-                          size="sm"
-                          onPress={() => {
-                            setGdkLicenseAccepted(false);
-                            gdkLicenseDisclosure.onOpen();
-                          }}
-                        >
-                          {t("settings.gdk.install_button")}
-                        </Button>
-                      )}
+                    <div>
+                      <p className="font-medium text-large">
+                        {t("aboutcard.title")}
+                      </p>
+                      <p className="text-tiny text-default-500">
+                        {t("aboutcard.description", { name: "LeviMC" })} ·{" "}
+                        {t("aboutcard.font", { name: "MiSans" })}
+                      </p>
                     </div>
-                  </CardBody>
-                </Card>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, delay: 0.2 }}
-              >
-                <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
-                  <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <p className="font-medium text-large">
-                          {t("settingscard.body.version.name")}
-                        </p>
-                        <p className="text-small text-default-500">
-                          v{appVersion}
-                        </p>
-                      </div>
-                      {checkingUpdate ? (
-                        <Spinner size="sm" color="success" />
-                      ) : (
-                        <Button
-                          radius="full"
-                          variant="bordered"
-                          onPress={onCheckUpdate}
-                        >
-                          {t("settingscard.body.version.button")}
-                        </Button>
-                      )}
-                    </div>
-
-                    <AnimatePresence>
-                      {hasUpdate && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="rounded-xl bg-default-100/50 dark:bg-zinc-800/30 p-4 border border-default-200/50 dark:border-white/5">
-                             <div className="flex items-center justify-between mb-3">
-                                <p className="text-small font-bold text-emerald-600 dark:text-emerald-500">
-                                  {t("settingscard.body.version.hasnew")} {newVersion}
-                                </p>
-                                <Button
-                                  color="primary"
-                                  radius="full"
-                                  size="sm"
-                                  onPress={onUpdate}
-                                  isDisabled={updating}
-                                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
-                                  startContent={<RxUpdate />}
-                                >
-                                  {updating
-                                    ? t("common.updating", { defaultValue: "更新中" })
-                                    : t("settingscard.modal.2.footer.download_button")}
-                                </Button>
-                             </div>
-                             
-                             {changelog && (
-                                <div className="text-small wrap-break-word leading-6 max-h-[200px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-default-300">
-                                  <ReactMarkdown
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                      h1: ({ children }) => <h1 className="text-base font-bold my-1">{children}</h1>,
-                                      h2: ({ children }) => <h2 className="text-sm font-bold my-1">{children}</h2>,
-                                      p: ({ children }) => <p className="my-1 text-default-600">{children}</p>,
-                                      ul: ({ children }) => <ul className="list-disc pl-5 my-1 text-default-600">{children}</ul>,
-                                      li: ({ children }) => <li className="my-0.5">{children}</li>,
-                                      a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer" className="text-emerald-500 underline">{children}</a>,
-                                    }}
-                                  >
-                                    {changelog}
-                                  </ReactMarkdown>
-                                </div>
-                             )}
-                             
-                             {updating && (
-                                <div className="mt-3">
-                                   <Progress
-                                     size="sm"
-                                     radius="sm"
-                                     color="success"
-                                     isIndeterminate={true}
-                                     classNames={{
-                                         indicator: "bg-emerald-600 hover:bg-emerald-500",
-                                     }}
-                                   />
-                                </div>
-                             )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <Divider className="bg-default-200/50" />
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-emerald-500/20 to-teal-500/20 p-2 border border-emerald-500/20 flex items-center justify-center">
-                          <img
-                            src={Logo}
-                            alt="Logo"
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-medium text-large">
-                            {t("aboutcard.title")}
-                          </p>
-                          <p className="text-tiny text-default-500">
-                            {t("aboutcard.description", { name: "LeviMC" })}{" "}
-                            · {t("aboutcard.font", { name: "MiSans" })}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          isIconOnly
-                          variant="light"
-                          radius="full"
-                          onPress={() => Browser.OpenURL("https://github.com/liteldev")}
-                        >
-                          <FaGithub size={20} className="text-default-500" />
-                        </Button>
-                        <Button
-                          isIconOnly
-                          variant="light"
-                          radius="full"
-                          onPress={() => Browser.OpenURL("https://discord.gg/v5R5P4vRZk")}
-                        >
-                          <FaDiscord size={20} className="text-default-500" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </motion.div>
-            </div>
-          </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      radius="full"
+                      onPress={() =>
+                        Browser.OpenURL("https://github.com/liteldev")
+                      }
+                    >
+                      <FaGithub size={20} className="text-default-500" />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      radius="full"
+                      onPress={() =>
+                        Browser.OpenURL("https://discord.gg/v5R5P4vRZk")
+                      }
+                    >
+                      <FaDiscord size={20} className="text-default-500" />
+                    </Button>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
 
       {/* GDK License */}
       <BaseModal
@@ -776,7 +799,9 @@ export const SettingsPage: React.FC = () => {
         <ModalContent className="shadow-none">
           {(onClose) => (
             <>
-              <BaseModalHeader>{t("settings.gdk.license.title")}</BaseModalHeader>
+              <BaseModalHeader>
+                {t("settings.gdk.license.title")}
+              </BaseModalHeader>
               <BaseModalBody>
                 <div className="text-default-700 text-sm">
                   {t("settings.gdk.license.body")}{" "}
@@ -817,7 +842,7 @@ export const SettingsPage: React.FC = () => {
                       setGdkDlProgress(null);
                       gdkProgressDisclosure.onOpen();
                       StartGDKDownload(
-                        "https://github.bibk.top/microsoft/GDK/releases/download/October-2025-v2510.0.6194/GDK_2510.0.6194.zip"
+                        "https://github.bibk.top/microsoft/GDK/releases/download/October-2025-v2510.0.6194/GDK_2510.0.6194.zip",
                       );
                     } catch {}
                   }}
@@ -876,10 +901,10 @@ export const SettingsPage: React.FC = () => {
                         if (total > 0) {
                           const pct = Math.min(
                             100,
-                            Math.round((done / total) * 100)
+                            Math.round((done / total) * 100),
                           );
                           return `${fmt(done)} / ${fmt(
-                            total
+                            total,
                           )} (${pct}%) · ${fmtSpd(gdkDlSpeed || 0)}`;
                         }
                         return `${fmt(done)} · ${fmtSpd(gdkDlSpeed || 0)}`;
@@ -926,7 +951,9 @@ export const SettingsPage: React.FC = () => {
         <ModalContent className="shadow-none">
           {() => (
             <>
-              <BaseModalHeader>{t("settings.gdk.install.title")}</BaseModalHeader>
+              <BaseModalHeader>
+                {t("settings.gdk.install.title")}
+              </BaseModalHeader>
               <BaseModalBody>
                 <div className="text-small text-default-500">
                   {t("settings.gdk.install.body")}
@@ -936,7 +963,7 @@ export const SettingsPage: React.FC = () => {
           )}
         </ModalContent>
       </BaseModal>
-      
+
       <BaseModal
         size="md"
         isOpen={unsavedOpen}
@@ -1002,7 +1029,7 @@ export const SettingsPage: React.FC = () => {
           )}
         </ModalContent>
       </BaseModal>
-      
+
       <BaseModal
         size="sm"
         isOpen={resetOpen}

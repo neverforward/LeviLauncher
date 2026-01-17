@@ -14,7 +14,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "bindings/*": ["bindings/*"]
     }
   },
   "include": ["./src/**/*", "src", "bindings"],

@@ -1,9 +1,9 @@
- @import "tailwindcss";
- @plugin './hero.ts';
+@import "tailwindcss";
+@plugin './hero.ts';
 /* Note: You may need to change the path to fit your project structure */
- @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
- @custom-variant dark (&:is(.dark *));
- @config "../tailwind.config.js";
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+@config "../tailwind.config.js";
 
 body,
 html {
@@ -45,7 +45,7 @@ body::-webkit-scrollbar,
 
 @font-face {
   font-family: "MiSans";
-  src: local("MiSans"), url(./assets/fonts/MiSans-Medium.woff2);
+  src: local("MiSans"), url(@/assets/fonts/MiSans-Medium.woff2);
 }
 
 #wails-draggable {

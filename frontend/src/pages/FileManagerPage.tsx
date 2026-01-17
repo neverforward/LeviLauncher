@@ -11,10 +11,15 @@ import {
   SelectItem,
   ModalContent,
 } from "@heroui/react";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 
 export type FileManagerState = {
   allowedExt?: string[];
@@ -64,7 +69,7 @@ const FileManagerPage: React.FC = () => {
   const [sortKey, setSortKey] = useState<SortKey>(
     savedState.sortKey && ["name", "kind"].includes(savedState.sortKey)
       ? (savedState.sortKey as SortKey)
-      : "name"
+      : "name",
   );
   const [sortAsc, setSortAsc] = useState(savedState.sortAsc ?? true);
   const [view, setView] = useState<ViewMode>(savedState.view || "list");
@@ -283,7 +288,7 @@ const FileManagerPage: React.FC = () => {
                   free: Number(st.free || 0),
                 };
             } catch {}
-          })
+          }),
         );
         setDriveStats(stats);
         const start = fmState.initialPath || savedState.path || "";
@@ -305,7 +310,7 @@ const FileManagerPage: React.FC = () => {
           query,
           qaOpen,
           pinnedOpen,
-        })
+        }),
       );
     } catch {}
   }, [path, view, sortKey, sortAsc, query, qaOpen, pinnedOpen]);
@@ -320,8 +325,8 @@ const FileManagerPage: React.FC = () => {
           allowed.some((ext) =>
             String(e?.name || "")
               .toLowerCase()
-              .endsWith(ext)
-          )
+              .endsWith(ext),
+          ),
       );
       const prevDepth = (path || "")
         .replace(/\\+$/, "")
@@ -338,7 +343,7 @@ const FileManagerPage: React.FC = () => {
           path: e.path,
           isDir: !!e.isDir,
           size: Number(e.size || 0),
-        }))
+        })),
       );
       setPath(p);
       setSelected({});
@@ -365,7 +370,7 @@ const FileManagerPage: React.FC = () => {
                 free: Number(st.free || 0),
               };
           } catch {}
-        })
+        }),
       );
       setDriveStats(stats);
       if (path) await loadDir(path);
@@ -429,7 +434,7 @@ const FileManagerPage: React.FC = () => {
     const start = Math.max(0, Math.floor(scrollTop / rowHeight) - 8);
     const end = Math.min(
       count,
-      Math.ceil((scrollTop + viewport) / rowHeight) + 8
+      Math.ceil((scrollTop + viewport) / rowHeight) + 8,
     );
     const offsetY = start * rowHeight;
     return { start, end, offsetY, totalHeight: count * rowHeight };
@@ -796,7 +801,11 @@ const FileManagerPage: React.FC = () => {
                 {refreshing ? (
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1,
+                      ease: "linear",
+                    }}
                   >
                     ⟳
                   </motion.div>
@@ -810,42 +819,45 @@ const FileManagerPage: React.FC = () => {
             {/* Drives (Top) */}
             <div className="flex flex-col gap-1">
               {drives.map((d) => {
-                 const isActive = path.toLowerCase().startsWith(d.toLowerCase());
-                 return (
-                <Button
-                  key={d}
-                  size="sm"
-                  className={`w-full justify-between h-10 font-medium ${
-                    isActive 
-                    ? "bg-linear-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 dark:text-emerald-400" 
-                    : "text-default-600 hover:bg-default-100 dark:hover:bg-white/5"
-                  }`}
-                  variant="light"
-                  onPress={() => loadDir(d)}
-                  title={d}
-                >
-                  <div className="flex items-center gap-2">
-                     <span className="text-lg">💾</span>
-                     <span>{d}</span>
-                  </div>
-                  <span className={`text-tiny ${isActive ? "text-emerald-500/70" : "text-default-400"}`}>
-                    {(() => {
-                      const st = driveStats[d];
-                      if (!st || !st.total) return "";
-                      const used = st.total - st.free;
-                      const pct = Math.round((used / st.total) * 100);
-                      return `${pct}%`;
-                    })()}
-                  </span>
-                </Button>
-              )})}
+                const isActive = path.toLowerCase().startsWith(d.toLowerCase());
+                return (
+                  <Button
+                    key={d}
+                    size="sm"
+                    className={`w-full justify-between h-10 font-medium ${
+                      isActive
+                        ? "bg-linear-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 dark:text-emerald-400"
+                        : "text-default-600 hover:bg-default-100 dark:hover:bg-white/5"
+                    }`}
+                    variant="light"
+                    onPress={() => loadDir(d)}
+                    title={d}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">💾</span>
+                      <span>{d}</span>
+                    </div>
+                    <span
+                      className={`text-tiny ${isActive ? "text-emerald-500/70" : "text-default-400"}`}
+                    >
+                      {(() => {
+                        const st = driveStats[d];
+                        if (!st || !st.total) return "";
+                        const used = st.total - st.free;
+                        const pct = Math.round((used / st.total) * 100);
+                        return `${pct}%`;
+                      })()}
+                    </span>
+                  </Button>
+                );
+              })}
             </div>
             {/* Quick Access (Collapsible) */}
             {known.length > 0 && (
               <div>
-                <div 
-                    className="flex items-center justify-between text-xs font-bold text-default-400 uppercase tracking-wider mb-2 px-2 cursor-pointer hover:text-default-500 transition-colors"
-                    onClick={() => setQaOpen((v) => !v)}
+                <div
+                  className="flex items-center justify-between text-xs font-bold text-default-400 uppercase tracking-wider mb-2 px-2 cursor-pointer hover:text-default-500 transition-colors"
+                  onClick={() => setQaOpen((v) => !v)}
                 >
                   <div>{t("filemanager.quick_access")}</div>
                   <motion.div
@@ -882,12 +894,12 @@ const FileManagerPage: React.FC = () => {
             {/* Pinned (Collapsible) */}
             {pins.length > 0 && (
               <div>
-                <div 
-                    className="flex items-center justify-between text-xs font-bold text-default-400 uppercase tracking-wider mb-2 px-2 cursor-pointer hover:text-default-500 transition-colors"
-                    onClick={() => setPinnedOpen((v) => !v)}
+                <div
+                  className="flex items-center justify-between text-xs font-bold text-default-400 uppercase tracking-wider mb-2 px-2 cursor-pointer hover:text-default-500 transition-colors"
+                  onClick={() => setPinnedOpen((v) => !v)}
                 >
                   <div>{t("filemanager.pinned")}</div>
-                   <motion.div
+                  <motion.div
                     animate={{ rotate: pinnedOpen ? 0 : -90 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -943,8 +955,6 @@ const FileManagerPage: React.FC = () => {
     <div className="absolute inset-0 pt-20 pb-4 px-4 lg:px-8 flex flex-col gap-6">
       {/* Mobile Drawer */}
       {screenSize === "mobile" && <Drawer />}
-
-
 
       {/* Main Content Area */}
       <motion.div
@@ -1214,7 +1224,9 @@ const FileManagerPage: React.FC = () => {
                       {filtered.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-20 text-default-400">
                           <div className="text-4xl mb-2">📂</div>
-                          <div>{t("common.empty", { defaultValue: "Empty" })}</div>
+                          <div>
+                            {t("common.empty", { defaultValue: "Empty" })}
+                          </div>
                         </div>
                       )}
                     </div>

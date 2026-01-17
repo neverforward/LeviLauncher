@@ -34,7 +34,6 @@ export default function AboutPage() {
 
   return (
     <div className="relative w-full p-4 flex flex-col">
-
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,9 +63,11 @@ export default function AboutPage() {
               <SectionHeader
                 className="mb-4"
                 icon={<FaUsers size={20} />}
-                title={t("about.authors", { defaultValue: "Authors & Maintainers" })}
+                title={t("about.authors", {
+                  defaultValue: "Authors & Maintainers",
+                })}
               />
-              
+
               <div className="flex items-center justify-between gap-3 p-4 rounded-2xl bg-default-50/50 dark:bg-white/5 border border-default-100 dark:border-white/5">
                 <div className="flex items-center gap-3">
                   <img
@@ -79,12 +80,19 @@ export default function AboutPage() {
                       <span className="text-default-900 dark:text-zinc-100 font-bold text-lg">
                         DreamGuXiang
                       </span>
-                      <Chip size="sm" variant="flat" color="primary" classNames={{ base: "h-5" }}>
+                      <Chip
+                        size="sm"
+                        variant="flat"
+                        color="primary"
+                        classNames={{ base: "h-5" }}
+                      >
                         {t("about.author", { defaultValue: "Author" })}
                       </Chip>
                     </div>
                     <div className="text-small text-default-500">
-                      {t("about.ll_authors", { defaultValue: "LeviLauncher Author" })}
+                      {t("about.ll_authors", {
+                        defaultValue: "LeviLauncher Author",
+                      })}
                     </div>
                   </div>
                 </div>
@@ -147,7 +155,7 @@ export default function AboutPage() {
                     className="h-8 object-contain"
                   />
                   <span className="font-semibold text-default-800 dark:text-zinc-200">
-                     {t("about.rhymc_name", { defaultValue: "Rhymc" })}
+                    {t("about.rhymc_name", { defaultValue: "Rhymc" })}
                   </span>
                 </div>
                 <Button
@@ -176,11 +184,14 @@ export default function AboutPage() {
                 className="mb-4"
                 icon={<FaHeart size={20} />}
                 iconWrapperClassName="bg-danger-500/10 text-danger-600 dark:text-danger-400"
-                title={t("about.sponsors", { defaultValue: "Sponsors & Supporters" })}
+                title={t("about.sponsors", {
+                  defaultValue: "Sponsors & Supporters",
+                })}
               />
               <p className="text-default-600 dark:text-zinc-400 leading-relaxed">
                 {t("about.sponsors.desc", {
-                  defaultValue: "Thanks to all sponsors and supporters who helped the project develop!",
+                  defaultValue:
+                    "Thanks to all sponsors and supporters who helped the project develop!",
                 })}
               </p>
             </CardBody>
@@ -199,44 +210,53 @@ export default function AboutPage() {
             <CardBody className="p-6">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div className="flex-1">
-                   <SectionHeader
-                     className="mb-4"
-                     icon={<FaCode size={20} />}
-                     iconWrapperClassName="bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                     title={t("about.source", { defaultValue: "Source Code & Open Source" })}
-                   />
+                  <SectionHeader
+                    className="mb-4"
+                    icon={<FaCode size={20} />}
+                    iconWrapperClassName="bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                    title={t("about.source", {
+                      defaultValue: "Source Code & Open Source",
+                    })}
+                  />
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     <Button
-                        variant="flat"
-                        className="bg-default-100 dark:bg-white/10"
-                        startContent={<FaGithub className="text-lg" />}
-                        onPress={() => Browser.OpenURL(repoUrl)}
+                      variant="flat"
+                      className="bg-default-100 dark:bg-white/10"
+                      startContent={<FaGithub className="text-lg" />}
+                      onPress={() => Browser.OpenURL(repoUrl)}
                     >
-                      {t("about.github_repo", { defaultValue: "GitHub · LeviLauncher" })}
+                      {t("about.github_repo", {
+                        defaultValue: "GitHub · LeviLauncher",
+                      })}
                     </Button>
                     <Button
-                        variant="flat"
-                        className="bg-default-100 dark:bg-white/10"
-                        startContent={<FaGithub className="text-lg" />}
-                        onPress={() => Browser.OpenURL(orgUrl)}
+                      variant="flat"
+                      className="bg-default-100 dark:bg-white/10"
+                      startContent={<FaGithub className="text-lg" />}
+                      onPress={() => Browser.OpenURL(orgUrl)}
                     >
-                      {t("about.github_org", { defaultValue: "LiteLDev Organization" })}
+                      {t("about.github_org", {
+                        defaultValue: "LiteLDev Organization",
+                      })}
                     </Button>
                   </div>
-                   <p className="text-small text-default-500">
+                  <p className="text-small text-default-500">
                     {t("about.license.tip", {
-                      defaultValue: "For license and details, please refer to the LICENSE file in the repository.",
+                      defaultValue:
+                        "For license and details, please refer to the LICENSE file in the repository.",
                     })}
                   </p>
                 </div>
 
                 <div className="flex-1 border-t md:border-t-0 md:border-l border-default-100 dark:border-white/5 pt-6 md:pt-0 md:pl-6">
-                   <SectionHeader
-                     className="mb-4"
-                     icon={<FaGithub size={20} />}
-                     iconWrapperClassName="bg-default-500/10 text-default-600 dark:text-default-400"
-                     title={t("about.contribute", { defaultValue: "Contribute" })}
-                   />
+                  <SectionHeader
+                    className="mb-4"
+                    icon={<FaGithub size={20} />}
+                    iconWrapperClassName="bg-default-500/10 text-default-600 dark:text-default-400"
+                    title={t("about.contribute", {
+                      defaultValue: "Contribute",
+                    })}
+                  />
                   <p className="text-default-600 dark:text-zinc-400 leading-relaxed mb-4">
                     {t("about.contribute.desc", {
                       defaultValue:

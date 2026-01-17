@@ -13,8 +13,8 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { SearchLIPPackages } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as liptypes from "../../bindings/github.com/liteldev/LeviLauncher/internal/lip/client/types";
+import { SearchLIPPackages } from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as liptypes from "bindings/github.com/liteldev/LeviLauncher/internal/lip/client/types";
 import { LuSearch, LuDownload, LuClock, LuFlame } from "react-icons/lu";
 import { motion } from "framer-motion";
 
@@ -156,7 +156,9 @@ const LIPPage: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Input
-              placeholder={t("curseforge.search_placeholder", { defaultValue: "Search packages..." })}
+              placeholder={t("curseforge.search_placeholder", {
+                defaultValue: "Search packages...",
+              })}
               value={query}
               onValueChange={setQuery}
               onKeyDown={handleKeyDown}
@@ -164,7 +166,8 @@ const LIPPage: React.FC = () => {
               className="flex-1"
               size="sm"
               classNames={{
-                inputWrapper: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                inputWrapper:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             />
             <Button
@@ -181,7 +184,9 @@ const LIPPage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <Select
               label={t("curseforge.sort_by", { defaultValue: "Sort by" })}
-              placeholder={t("curseforge.select_sort", { defaultValue: "Select sort" })}
+              placeholder={t("curseforge.select_sort", {
+                defaultValue: "Select sort",
+              })}
               selectedKeys={[sort]}
               onChange={(e) => {
                 setSort(e.target.value);
@@ -189,11 +194,16 @@ const LIPPage: React.FC = () => {
               }}
               size="sm"
               classNames={{
-                trigger: "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
+                trigger:
+                  "bg-default-100/50 dark:bg-default-50/20 backdrop-blur-md",
               }}
             >
-              <SelectItem key="hotness" value="hotness">Hotness</SelectItem>
-              <SelectItem key="updated" value="updated">Updated</SelectItem>
+              <SelectItem key="hotness" value="hotness">
+                Hotness
+              </SelectItem>
+              <SelectItem key="updated" value="updated">
+                Updated
+              </SelectItem>
             </Select>
           </div>
         </CardBody>
@@ -206,12 +216,14 @@ const LIPPage: React.FC = () => {
             className="flex-1 overflow-y-auto p-4 relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {loading ? (
-              <div className="flex flex-col gap-3">
-                {renderSkeletons()}
-              </div>
+              <div className="flex flex-col gap-3">{renderSkeletons()}</div>
             ) : packages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-default-500">
-                <p>{t("curseforge.no_results", { defaultValue: "No results found" })}</p>
+                <p>
+                  {t("curseforge.no_results", {
+                    defaultValue: "No results found",
+                  })}
+                </p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
@@ -252,15 +264,24 @@ const LIPPage: React.FC = () => {
                         </div>
 
                         <p className="text-xs sm:text-sm text-default-500 line-clamp-2 w-full">
-                          {pkg.description || t("curseforge.no_description", { defaultValue: "No description available." })}
+                          {pkg.description ||
+                            t("curseforge.no_description", {
+                              defaultValue: "No description available.",
+                            })}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-default-400 mt-1">
-                          <div className="flex items-center gap-1" title="Hotness">
+                          <div
+                            className="flex items-center gap-1"
+                            title="Hotness"
+                          >
                             <LuFlame className="text-orange-500" />
                             <span>{pkg.hotness}</span>
                           </div>
-                          <div className="flex items-center gap-1" title="Updated">
+                          <div
+                            className="flex items-center gap-1"
+                            title="Updated"
+                          >
                             <LuClock />
                             <span>{formatDate(pkg.updated)}</span>
                           </div>
@@ -301,7 +322,8 @@ const LIPPage: React.FC = () => {
                 className="gap-2"
                 radius="full"
                 classNames={{
-                  cursor: "bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20 font-bold",
+                  cursor:
+                    "bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20 font-bold",
                 }}
               />
             </div>

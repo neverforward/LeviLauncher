@@ -14,11 +14,16 @@ import {
   Progress,
   useDisclosure,
 } from "@heroui/react";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
-import { GetContentRoots } from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
+import { GetContentRoots } from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as types from "bindings/github.com/liteldev/LeviLauncher/internal/types/models";
 import {
   FaArrowLeft,
   FaCogs,
@@ -31,7 +36,7 @@ import {
 import { readCurrentVersionName } from "@/utils/currentVersion";
 import { countDirectories } from "@/utils/fs";
 import { listPlayers } from "@/utils/content";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { FiUploadCloud, FiAlertTriangle } from "react-icons/fi";
 import { PageHeader } from "@/components/PageHeader";
 
@@ -70,7 +75,7 @@ export default function ContentPage() {
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const fmProcessedRef = React.useRef<string | null>(null);
   const dupResolveRef = React.useRef<((overwrite: boolean) => void) | null>(
-    null
+    null,
   );
   const dupNameRef = React.useRef<string>("");
   const {
@@ -88,9 +93,9 @@ export default function ContentPage() {
     onOpen: playerSelectOnOpen,
     onOpenChange: playerSelectOnOpenChange,
   } = useDisclosure();
-  const playerSelectResolveRef = React.useRef<((player: string) => void) | null>(
-    null
-  );
+  const playerSelectResolveRef = React.useRef<
+    ((player: string) => void) | null
+  >(null);
   const pendingImportFilesRef = React.useRef<File[]>([]);
   const pendingImportPathsRef = React.useRef<string[]>([]);
 
@@ -129,7 +134,8 @@ export default function ContentPage() {
           const names = await listPlayers(safe.usersRoot);
           setPlayers(names);
           const nextPlayer = names[0] || "";
-          const currentPlayer = playerToRefresh !== undefined ? playerToRefresh : selectedPlayer;
+          const currentPlayer =
+            playerToRefresh !== undefined ? playerToRefresh : selectedPlayer;
           if (playerToRefresh !== undefined) {
             setSelectedPlayer(playerToRefresh);
           }
@@ -168,7 +174,7 @@ export default function ContentPage() {
       setError(
         t("contentpage.error_resolve_paths", {
           defaultValue: "无法解析内容路径。",
-        }) as string
+        }) as string,
       );
     } finally {
       setLoading(false);
@@ -203,7 +209,7 @@ export default function ContentPage() {
   const postImportMcpack = async (
     name: string,
     file: File,
-    overwrite: boolean
+    overwrite: boolean,
   ): Promise<string> => {
     try {
       const buf = await file.arrayBuffer();
@@ -218,14 +224,10 @@ export default function ContentPage() {
           selectedPlayer,
           file.name,
           bytes,
-          overwrite
+          overwrite,
         );
       } else {
-        err = await (minecraft as any)?.ImportMcpack?.(
-          name,
-          bytes,
-          overwrite
-        );
+        err = await (minecraft as any)?.ImportMcpack?.(name, bytes, overwrite);
       }
       return String(err || "");
     } catch (e: any) {
@@ -235,7 +237,7 @@ export default function ContentPage() {
   const postImportMcaddon = async (
     name: string,
     file: File,
-    overwrite: boolean
+    overwrite: boolean,
   ): Promise<string> => {
     try {
       const buf = await file.arrayBuffer();
@@ -249,14 +251,10 @@ export default function ContentPage() {
           name,
           selectedPlayer,
           bytes,
-          overwrite
+          overwrite,
         );
       } else {
-        err = await (minecraft as any)?.ImportMcaddon?.(
-          name,
-          bytes,
-          overwrite
-        );
+        err = await (minecraft as any)?.ImportMcaddon?.(name, bytes, overwrite);
       }
       return String(err || "");
     } catch (e: any) {
@@ -336,13 +334,11 @@ export default function ContentPage() {
         setErrorMsg(
           t("launcherpage.currentVersion_none", {
             defaultValue: "未选择版本",
-          }) as string
+          }) as string,
         );
         return;
       }
-      const hasWorld = paths.some((p) =>
-        p?.toLowerCase().endsWith(".mcworld")
-      );
+      const hasWorld = paths.some((p) => p?.toLowerCase().endsWith(".mcworld"));
       let hasSkin = false;
       if (paths.length > 0) {
         setImporting(true);
@@ -376,7 +372,10 @@ export default function ContentPage() {
       let started = false;
       const succFiles: string[] = [];
       const errPairs: Array<{ name: string; err: string }> = [];
-      const pathsToImport = pendingImportPathsRef.current.length > 0 ? pendingImportPathsRef.current : paths;
+      const pathsToImport =
+        pendingImportPathsRef.current.length > 0
+          ? pendingImportPathsRef.current
+          : paths;
       pendingImportPathsRef.current = [];
       const playerToUse = chosenPlayer || selectedPlayer || "";
       for (const p of pathsToImport) {
@@ -397,7 +396,7 @@ export default function ContentPage() {
               name,
               playerToUse,
               p,
-              false
+              false,
             );
           } else {
             err = await (minecraft as any)?.ImportMcpackPath?.(name, p, false);
@@ -416,19 +415,20 @@ export default function ContentPage() {
               if (ok) {
                 if (
                   playerToUse &&
-                  typeof (minecraft as any)?.ImportMcpackPathWithPlayer === "function"
+                  typeof (minecraft as any)?.ImportMcpackPathWithPlayer ===
+                    "function"
                 ) {
                   err = await (minecraft as any)?.ImportMcpackPathWithPlayer?.(
                     name,
                     playerToUse,
                     p,
-                    true
+                    true,
                   );
                 } else {
                   err = await (minecraft as any)?.ImportMcpackPath?.(
                     name,
                     p,
-                    true
+                    true,
                   );
                 }
                 if (!err) {
@@ -460,7 +460,7 @@ export default function ContentPage() {
               name,
               playerToUse,
               p,
-              false
+              false,
             );
           } else {
             err = await (minecraft as any)?.ImportMcaddonPath?.(name, p, false);
@@ -486,13 +486,13 @@ export default function ContentPage() {
                     name,
                     playerToUse,
                     p,
-                    true
+                    true,
                   );
                 } else {
                   err = await (minecraft as any)?.ImportMcaddonPath?.(
                     name,
                     p,
-                    true
+                    true,
                   );
                 }
                 if (!err) {
@@ -522,7 +522,7 @@ export default function ContentPage() {
             name,
             playerToUse,
             p,
-            false
+            false,
           );
           if (err) {
             if (
@@ -540,7 +540,7 @@ export default function ContentPage() {
                   name,
                   playerToUse,
                   p,
-                  true
+                  true,
                 );
                 if (!err) {
                   succFiles.push(base);
@@ -576,7 +576,7 @@ export default function ContentPage() {
       setErrorMsg(
         t("launcherpage.currentVersion_none", {
           defaultValue: "未选择版本",
-        }) as string
+        }) as string,
       );
       return;
     }
@@ -595,7 +595,7 @@ export default function ContentPage() {
       await new Promise<void>((r) => setTimeout(r, 0));
 
       const hasWorld = files.some((f) =>
-        f?.name?.toLowerCase().endsWith(".mcworld")
+        f?.name?.toLowerCase().endsWith(".mcworld"),
       );
       let hasSkin = false;
       for (const f of files) {
@@ -658,31 +658,34 @@ export default function ContentPage() {
           if (!playerToUse) {
             err = "ERR_NO_PLAYER";
           } else {
-             // Use ImportMcworld if available, or fallback to temp file + ImportMcworldPath logic if needed.
-             // Since we don't have postImportMcworld, we implement inline.
-             // Assuming ImportMcworld exists and takes bytes like ImportMcpack
-             const buf = await f.arrayBuffer();
-             const bytes = Array.from(new Uint8Array(buf));
-             if (typeof (minecraft as any)?.ImportMcworld === 'function') {
-                 err = await (minecraft as any)?.ImportMcworld?.(
-                    currentVersionName,
-                    playerToUse,
-                    bytes,
-                    false
-                 );
-             } else {
-                 // Fallback: write temp file and use ImportMcworldPath
-                 // This requires exposing WriteTempFile which we don't know if we have.
-                 // But wait, the existing code for paths uses ImportMcworldPath.
-                 // If ImportMcworld is not available, we can't easily import from bytes without a helper.
-                 // We will assume ImportMcworld exists for now as it's consistent with ImportMcpack.
-                 err = "ERR_NOT_IMPLEMENTED"; // Placeholder if function missing
-             }
+            // Use ImportMcworld if available, or fallback to temp file + ImportMcworldPath logic if needed.
+            // Since we don't have postImportMcworld, we implement inline.
+            // Assuming ImportMcworld exists and takes bytes like ImportMcpack
+            const buf = await f.arrayBuffer();
+            const bytes = Array.from(new Uint8Array(buf));
+            if (typeof (minecraft as any)?.ImportMcworld === "function") {
+              err = await (minecraft as any)?.ImportMcworld?.(
+                currentVersionName,
+                playerToUse,
+                bytes,
+                false,
+              );
+            } else {
+              // Fallback: write temp file and use ImportMcworldPath
+              // This requires exposing WriteTempFile which we don't know if we have.
+              // But wait, the existing code for paths uses ImportMcworldPath.
+              // If ImportMcworld is not available, we can't easily import from bytes without a helper.
+              // We will assume ImportMcworld exists for now as it's consistent with ImportMcpack.
+              err = "ERR_NOT_IMPLEMENTED"; // Placeholder if function missing
+            }
           }
         }
 
         if (err) {
-          if (String(err) === "ERR_DUPLICATE_FOLDER" || String(err) === "ERR_DUPLICATE_UUID") {
+          if (
+            String(err) === "ERR_DUPLICATE_FOLDER" ||
+            String(err) === "ERR_DUPLICATE_UUID"
+          ) {
             dupNameRef.current = f.name;
             await new Promise<void>((r) => setTimeout(r, 0));
             dupOnOpen();
@@ -695,16 +698,16 @@ export default function ContentPage() {
               } else if (lower.endsWith(".mcaddon")) {
                 err = await postImportMcaddon(currentVersionName, f, true);
               } else if (lower.endsWith(".mcworld")) {
-                 const buf = await f.arrayBuffer();
-                 const bytes = Array.from(new Uint8Array(buf));
-                 if (typeof (minecraft as any)?.ImportMcworld === 'function') {
-                    err = await (minecraft as any)?.ImportMcworld?.(
-                        currentVersionName,
-                        playerToUse,
-                        bytes,
-                        true
-                    );
-                 }
+                const buf = await f.arrayBuffer();
+                const bytes = Array.from(new Uint8Array(buf));
+                if (typeof (minecraft as any)?.ImportMcworld === "function") {
+                  err = await (minecraft as any)?.ImportMcworld?.(
+                    currentVersionName,
+                    playerToUse,
+                    bytes,
+                    true,
+                  );
+                }
               }
               if (!err) {
                 succFiles.push(f.name);
@@ -741,17 +744,17 @@ export default function ContentPage() {
       setResultFailed([]);
       const list = e.target.files;
       if (!list || list.length === 0) return;
-      
+
       const files: File[] = Array.from(list).filter(
         (f) =>
           f &&
           (f.name.toLowerCase().endsWith(".mcworld") ||
             f.name.toLowerCase().endsWith(".mcpack") ||
-            f.name.toLowerCase().endsWith(".mcaddon"))
+            f.name.toLowerCase().endsWith(".mcaddon")),
       );
       await handleImportFiles(files);
     } catch (e: any) {
-        setErrorMsg(String(e?.message || e || "IMPORT_ERROR"));
+      setErrorMsg(String(e?.message || e || "IMPORT_ERROR"));
     }
   };
 
@@ -807,13 +810,13 @@ export default function ContentPage() {
       setErrorMsg("");
       setResultSuccess([]);
       setResultFailed([]);
-      
+
       const files: File[] = Array.from(e.dataTransfer?.files || []).filter(
         (f) =>
           f &&
           (f.name.toLowerCase().endsWith(".mcworld") ||
             f.name.toLowerCase().endsWith(".mcpack") ||
-            f.name.toLowerCase().endsWith(".mcaddon"))
+            f.name.toLowerCase().endsWith(".mcaddon")),
       );
       if (files.length > 0) {
         await handleImportFiles(files);
@@ -880,18 +883,31 @@ export default function ContentPage() {
                       >
                         <FaArrowLeft size={20} />
                       </Button>
-                      <PageHeader 
-                        title={t("launcherpage.content_manage", { defaultValue: "内容管理" })}
+                      <PageHeader
+                        title={t("launcherpage.content_manage", {
+                          defaultValue: "内容管理",
+                        })}
                         titleClassName="pb-1"
                       />
                     </div>
                     <div className="mt-2 text-default-500 text-sm flex flex-wrap items-center gap-2">
-                      <span>{t("contentpage.current_version", { defaultValue: "当前版本" })}:</span>
+                      <span>
+                        {t("contentpage.current_version", {
+                          defaultValue: "当前版本",
+                        })}
+                        :
+                      </span>
                       <span className="font-medium text-default-700 bg-default-100 px-2 py-0.5 rounded-md">
-                        {currentVersionName || t("contentpage.none", { defaultValue: "无" })}
+                        {currentVersionName ||
+                          t("contentpage.none", { defaultValue: "无" })}
                       </span>
                       <span className="text-default-300">|</span>
-                      <span>{t("contentpage.isolation", { defaultValue: "版本隔离" })}:</span>
+                      <span>
+                        {t("contentpage.isolation", {
+                          defaultValue: "版本隔离",
+                        })}
+                        :
+                      </span>
                       <span
                         className={`font-medium px-2 py-0.5 rounded-md ${
                           roots.isIsolation
@@ -904,11 +920,23 @@ export default function ContentPage() {
                           : t("common.no", { defaultValue: "否" })}
                       </span>
                       <span className="text-default-300">|</span>
-                      <span>{t("contentpage.select_player", { defaultValue: "玩家" })}:</span>
+                      <span>
+                        {t("contentpage.select_player", {
+                          defaultValue: "玩家",
+                        })}
+                        :
+                      </span>
                       <Dropdown>
                         <DropdownTrigger>
-                          <Button size="sm" variant="light" className="h-6 min-w-0 px-2 text-small font-medium text-default-700 bg-default-100 rounded-md">
-                            {selectedPlayer || t("contentpage.no_players", { defaultValue: "暂无" })}
+                          <Button
+                            size="sm"
+                            variant="light"
+                            className="h-6 min-w-0 px-2 text-small font-medium text-default-700 bg-default-100 rounded-md"
+                          >
+                            {selectedPlayer ||
+                              t("contentpage.no_players", {
+                                defaultValue: "暂无",
+                              })}
                           </Button>
                         </DropdownTrigger>
                         <DropdownMenu
@@ -916,7 +944,9 @@ export default function ContentPage() {
                           selectionMode="single"
                           selectedKeys={new Set([selectedPlayer])}
                           onSelectionChange={(keys) => {
-                            const arr = Array.from(keys as unknown as Set<string>);
+                            const arr = Array.from(
+                              keys as unknown as Set<string>,
+                            );
                             const next = arr[0] || "";
                             if (typeof next === "string") onChangePlayer(next);
                           }}
@@ -929,14 +959,20 @@ export default function ContentPage() {
                             ))
                           ) : (
                             <DropdownItem key="none" isDisabled>
-                              {t("contentpage.no_players", { defaultValue: "暂无玩家" })}
+                              {t("contentpage.no_players", {
+                                defaultValue: "暂无玩家",
+                              })}
                             </DropdownItem>
                           )}
                         </DropdownMenu>
                       </Dropdown>
                       {!selectedPlayer && (
                         <span className="text-danger-500 text-xs">
-                          ({t("contentpage.require_player_for_world_import", { defaultValue: "需选择玩家" })})
+                          (
+                          {t("contentpage.require_player_for_world_import", {
+                            defaultValue: "需选择玩家",
+                          })}
+                          )
                         </span>
                       )}
                     </div>
@@ -986,7 +1022,9 @@ export default function ContentPage() {
                     </Tooltip>
                   </div>
                 </div>
-                {!!error && <div className="text-danger-500 text-sm">{error}</div>}
+                {!!error && (
+                  <div className="text-danger-500 text-sm">{error}</div>
+                )}
               </div>
             </CardBody>
           </Card>
@@ -995,14 +1033,18 @@ export default function ContentPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card
               isPressable
-              onPress={() => navigate("/content/worlds", { state: { player: selectedPlayer } })}
+              onPress={() =>
+                navigate("/content/worlds", {
+                  state: { player: selectedPlayer },
+                })
+              }
               className="rounded-4xl shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md border-none h-full"
             >
               <CardBody className="p-6">
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500">
-                       <FaGlobe className="w-6 h-6" />
+                      <FaGlobe className="w-6 h-6" />
                     </div>
                     <span className="text-lg font-medium text-default-700">
                       {t("contentpage.worlds", { defaultValue: "世界" })}
@@ -1028,10 +1070,12 @@ export default function ContentPage() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500">
-                       <FaImage className="w-6 h-6" />
+                      <FaImage className="w-6 h-6" />
                     </div>
                     <span className="text-lg font-medium text-default-700">
-                      {t("contentpage.resource_packs", { defaultValue: "资源包" })}
+                      {t("contentpage.resource_packs", {
+                        defaultValue: "资源包",
+                      })}
                     </span>
                   </div>
                   {loading ? (
@@ -1054,10 +1098,12 @@ export default function ContentPage() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-500">
-                       <FaCogs className="w-6 h-6" />
+                      <FaCogs className="w-6 h-6" />
                     </div>
                     <span className="text-lg font-medium text-default-700">
-                      {t("contentpage.behavior_packs", { defaultValue: "行为包" })}
+                      {t("contentpage.behavior_packs", {
+                        defaultValue: "行为包",
+                      })}
                     </span>
                   </div>
                   {loading ? (
@@ -1073,14 +1119,18 @@ export default function ContentPage() {
 
             <Card
               isPressable
-              onPress={() => navigate("/content/skin-packs", { state: { player: selectedPlayer } })}
+              onPress={() =>
+                navigate("/content/skin-packs", {
+                  state: { player: selectedPlayer },
+                })
+              }
               className="rounded-4xl shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md border-none h-full"
             >
               <CardBody className="p-6">
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-pink-50 dark:bg-pink-900/20 text-pink-500">
-                       <FaUserTag className="w-6 h-6" />
+                      <FaUserTag className="w-6 h-6" />
                     </div>
                     <span className="text-lg font-medium text-default-700">
                       {t("contentpage.skin_packs", { defaultValue: "皮肤包" })}
@@ -1131,7 +1181,12 @@ export default function ContentPage() {
         </div>
       </div>
 
-      <BaseModal size="sm" isOpen={importing} hideCloseButton isDismissable={false}>
+      <BaseModal
+        size="sm"
+        isOpen={importing}
+        hideCloseButton
+        isDismissable={false}
+      >
         <ModalContent>
           {() => (
             <>
@@ -1214,7 +1269,7 @@ export default function ContentPage() {
                     <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultFailed
                         .map(
-                          (it) => `${it.name} - ${resolveImportError(it.err)}`
+                          (it) => `${it.name} - ${resolveImportError(it.err)}`,
                         )
                         .join("\n")}
                     </div>

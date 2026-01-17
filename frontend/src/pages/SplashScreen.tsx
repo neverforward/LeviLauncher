@@ -1,4 +1,4 @@
-import { LeviIcon } from "../icons/LeviIcon";
+import { LeviIcon } from "@/icons/LeviIcon";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 
@@ -60,11 +60,7 @@ export const SplashScreen = () => {
           >
             {/* Glassmorphism Card */}
             <div className="relative flex items-center justify-center p-8 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-2xl rounded-[2rem] border border-white/40 dark:border-zinc-700/50 shadow-2xl">
-              <LeviIcon
-                width={120}
-                height={120}
-                className="drop-shadow-xl"
-              />
+              <LeviIcon width={120} height={120} className="drop-shadow-xl" />
             </div>
           </motion.div>
         </div>
@@ -90,9 +86,9 @@ export const SplashScreen = () => {
             <motion.div
               className="absolute top-0 bottom-0 left-0 h-full bg-linear-to-r from-emerald-500 to-teal-500 rounded-full"
               initial={{ width: "0%", x: "-100%" }}
-              animate={{ 
+              animate={{
                 width: ["30%", "70%", "30%"],
-                x: ["-100%", "150%", "-100%"]
+                x: ["-100%", "150%", "-100%"],
               }}
               transition={{
                 duration: 2,
@@ -101,14 +97,14 @@ export const SplashScreen = () => {
               }}
             />
           </div>
-          
+
           <p className="text-center text-sm text-default-500 font-medium animate-pulse">
             {t("splash.preparing", { defaultValue: "正在准备启动..." })}
           </p>
         </motion.div>
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.5 }}

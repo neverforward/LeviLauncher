@@ -28,13 +28,13 @@ import {
   EnableMod,
   DisableMod,
   IsModEnabled,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as types from "bindings/github.com/liteldev/LeviLauncher/internal/types/models";
 import { FaPuzzlePiece } from "react-icons/fa6";
 import { FaSync, FaFilter, FaTimes } from "react-icons/fa";
 import { FiUploadCloud, FiAlertTriangle } from "react-icons/fi";
 import { AnimatePresence, motion } from "framer-motion";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { PageHeader } from "@/components/PageHeader";
 
 const readCurrentVersionName = (): string => {
@@ -103,7 +103,7 @@ export const ModsPage: React.FC = () => {
   const [activeMod, setActiveMod] = useState<types.ModInfo | null>(null);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [enabledByName, setEnabledByName] = useState<Map<string, boolean>>(
-    new Map()
+    new Map(),
   );
   const [onlyEnabled, setOnlyEnabled] = useState<boolean>(false);
   const [dllName, setDllName] = useState("");
@@ -128,7 +128,7 @@ export const ModsPage: React.FC = () => {
   const postImportModZip = async (
     name: string,
     file: File,
-    overwrite: boolean
+    overwrite: boolean,
   ): Promise<string> => {
     try {
       const buf = await file.arrayBuffer();
@@ -136,7 +136,7 @@ export const ModsPage: React.FC = () => {
       const err = await (minecraft as any)?.ImportModZip?.(
         name,
         bytes,
-        overwrite
+        overwrite,
       );
       return String(err || "");
     } catch (e: any) {
@@ -150,7 +150,7 @@ export const ModsPage: React.FC = () => {
     modName: string,
     modType: string,
     version: string,
-    overwrite: boolean
+    overwrite: boolean,
   ): Promise<string> => {
     try {
       const buf = await file.arrayBuffer();
@@ -162,7 +162,7 @@ export const ModsPage: React.FC = () => {
         modName,
         modType,
         version,
-        overwrite
+        overwrite,
       );
       return String(err || "");
     } catch (e: any) {
@@ -312,7 +312,7 @@ export const ModsPage: React.FC = () => {
         setErrorMsg(
           t("launcherpage.currentVersion_none", {
             defaultValue: "未选择版本",
-          }) as string
+          }) as string,
         );
         return;
       }
@@ -382,7 +382,7 @@ export const ModsPage: React.FC = () => {
             vals.name,
             vals.type || "preload-native",
             vals.version || "0.0.0",
-            false
+            false,
           );
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
@@ -399,7 +399,7 @@ export const ModsPage: React.FC = () => {
                   vals.name,
                   vals.type || "preload-native",
                   vals.version || "0.0.0",
-                  true
+                  true,
                 );
                 if (!err) {
                   succFiles.push(base || p);
@@ -444,7 +444,7 @@ export const ModsPage: React.FC = () => {
         setErrorMsg(
           t("launcherpage.currentVersion_none", {
             defaultValue: "未选择版本",
-          }) as string
+          }) as string,
         );
         return;
       }
@@ -455,7 +455,7 @@ export const ModsPage: React.FC = () => {
         (f) =>
           f &&
           (f.name.toLowerCase().endsWith(".zip") ||
-            f.name.toLowerCase().endsWith(".dll"))
+            f.name.toLowerCase().endsWith(".dll")),
       );
       for (const f of files) {
         const lower = f.name.toLowerCase();
@@ -522,7 +522,7 @@ export const ModsPage: React.FC = () => {
             vals.name,
             vals.type || "preload-native",
             vals.version || "0.0.0",
-            false
+            false,
           );
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
@@ -541,7 +541,7 @@ export const ModsPage: React.FC = () => {
                   vals.name,
                   vals.type || "preload-native",
                   vals.version || "0.0.0",
-                  true
+                  true,
                 );
                 if (!err) {
                   succFiles.push(f.name);
@@ -583,7 +583,7 @@ export const ModsPage: React.FC = () => {
     return list.filter(
       (m) =>
         `${m.name}`.toLowerCase().includes(q) ||
-        `${m.version}`.toLowerCase().includes(q)
+        `${m.version}`.toLowerCase().includes(q),
     );
   }, [modsInfo, query, onlyEnabled, enabledByName]);
 
@@ -599,7 +599,7 @@ export const ModsPage: React.FC = () => {
       setErrorMsg(
         t("launcherpage.currentVersion_none", {
           defaultValue: "未选择版本",
-        }) as string
+        }) as string,
       );
       errOnOpen();
       return;
@@ -665,7 +665,7 @@ export const ModsPage: React.FC = () => {
       (f) =>
         f &&
         (f.name.toLowerCase().endsWith(".zip") ||
-          f.name.toLowerCase().endsWith(".dll"))
+          f.name.toLowerCase().endsWith(".dll")),
     );
     if (!files.length) return;
     let started = false;
@@ -735,7 +735,7 @@ export const ModsPage: React.FC = () => {
             vals.name,
             vals.type || "preload-native",
             vals.version || "0.0.0",
-            false
+            false,
           );
           if (err) {
             if (String(err) === "ERR_DUPLICATE_FOLDER") {
@@ -754,7 +754,7 @@ export const ModsPage: React.FC = () => {
                   vals.name,
                   vals.type || "preload-native",
                   vals.version || "0.0.0",
-                  true
+                  true,
                 );
                 if (!err) {
                   succFiles.push(f.name);
@@ -941,7 +941,7 @@ export const ModsPage: React.FC = () => {
                     <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultFailed
                         .map(
-                          (it) => `${it.name} - ${resolveImportError(it.err)}`
+                          (it) => `${it.name} - ${resolveImportError(it.err)}`,
                         )
                         .join("\n")}
                     </div>
@@ -1017,7 +1017,7 @@ export const ModsPage: React.FC = () => {
                     <div className="mt-1 rounded-md bg-danger/5 border border-danger/30 px-3 py-2 text-danger-700 text-sm wrap-break-word whitespace-pre-wrap">
                       {resultFailed
                         .map(
-                          (it) => `${it.name} - ${resolveImportError(it.err)}`
+                          (it) => `${it.name} - ${resolveImportError(it.err)}`,
                         )
                         .join("\n")}
                     </div>
@@ -1206,66 +1206,68 @@ export const ModsPage: React.FC = () => {
         <PageHeader
           title={t("moddedcard.title", { defaultValue: "Mods" })}
           description={
-             <div className="flex items-center gap-2">
-                <span>{currentVersionName || "No Version Selected"}</span>
-                {modsInfo.length > 0 && (
-                  <Chip
-                    size="sm"
-                    variant="flat"
-                    className="h-5 text-xs bg-default-100 dark:bg-zinc-800"
-                  >
-                    {modsInfo.length}
-                  </Chip>
-                )}
-              </div>
+            <div className="flex items-center gap-2">
+              <span>{currentVersionName || "No Version Selected"}</span>
+              {modsInfo.length > 0 && (
+                <Chip
+                  size="sm"
+                  variant="flat"
+                  className="h-5 text-xs bg-default-100 dark:bg-zinc-800"
+                >
+                  {modsInfo.length}
+                </Chip>
+              )}
+            </div>
           }
           startContent={
-             <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl text-emerald-600 dark:text-emerald-400 shadow-sm">
+            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl text-emerald-600 dark:text-emerald-400 shadow-sm">
               <FaPuzzlePiece className="w-6 h-6" />
             </div>
           }
           endContent={
             <>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".zip,.dll"
-                  multiple
-                  className="hidden"
-                  onChange={handleFilePick}
-                />
-                <Button
-                  color="primary"
-                  variant="shadow"
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20"
-                  startContent={<FiUploadCloud />}
-                  onPress={() =>
-                    navigate("/filemanager", {
-                      state: {
-                        allowedExt: [".zip", ".dll"],
-                        multi: true,
-                        returnTo: "/mods",
-                      },
-                    })
-                  }
-                  isDisabled={importing}
-                >
-                  {t("mods.import_button", { defaultValue: "导入 .zip/.dll" })}
-                </Button>
-                <Button
-                  variant="flat"
-                  className="bg-default-100 dark:bg-zinc-800"
-                  onPress={openFolder}
-                >
-                  {t("downloadmodal.open_folder", { defaultValue: "打开目录" })}
-                </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".zip,.dll"
+                multiple
+                className="hidden"
+                onChange={handleFilePick}
+              />
+              <Button
+                color="primary"
+                variant="shadow"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20"
+                startContent={<FiUploadCloud />}
+                onPress={() =>
+                  navigate("/filemanager", {
+                    state: {
+                      allowedExt: [".zip", ".dll"],
+                      multi: true,
+                      returnTo: "/mods",
+                    },
+                  })
+                }
+                isDisabled={importing}
+              >
+                {t("mods.import_button", { defaultValue: "导入 .zip/.dll" })}
+              </Button>
+              <Button
+                variant="flat"
+                className="bg-default-100 dark:bg-zinc-800"
+                onPress={openFolder}
+              >
+                {t("downloadmodal.open_folder", { defaultValue: "打开目录" })}
+              </Button>
             </>
           }
         />
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <Input
-            placeholder={t("common.search_placeholder", { defaultValue: "搜索..." })}
+            placeholder={t("common.search_placeholder", {
+              defaultValue: "搜索...",
+            })}
             value={query}
             onValueChange={setQuery}
             startContent={<FaFilter className="text-default-400" />}
@@ -1280,7 +1282,8 @@ export const ModsPage: React.FC = () => {
             variant="flat"
             className="w-full sm:max-w-xs"
             classNames={{
-              inputWrapper: "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
+              inputWrapper:
+                "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
             }}
           />
           <div className="w-px h-6 bg-default-200 dark:bg-white/10 hidden sm:block" />
@@ -1293,9 +1296,11 @@ export const ModsPage: React.FC = () => {
               label: "text-default-500",
             }}
           >
-            {t("mods.only_enabled", {
-              defaultValue: "仅显示已启用的模组",
-            }) as string}
+            {
+              t("mods.only_enabled", {
+                defaultValue: "仅显示已启用的模组",
+              }) as string
+            }
           </Checkbox>
           <div className="flex-1" />
           <Tooltip
@@ -1314,10 +1319,7 @@ export const ModsPage: React.FC = () => {
               onPress={() => refreshAll()}
               isDisabled={loading}
             >
-              <FaSync
-                className={loading ? "animate-spin" : ""}
-                size={16}
-              />
+              <FaSync className={loading ? "animate-spin" : ""} size={16} />
             </Button>
           </Tooltip>
         </div>
@@ -1386,24 +1388,26 @@ export const ModsPage: React.FC = () => {
                             isSelected={!!enabledByName.get(m.name)}
                             onValueChange={async (val) => {
                               const name =
-                                currentVersionName ||
-                                readCurrentVersionName();
+                                currentVersionName || readCurrentVersionName();
                               if (!name) return;
                               try {
                                 if (val) {
-                                  const err = await (
-                                    EnableMod as any
-                                  )?.(name, m.name);
+                                  const err = await (EnableMod as any)?.(
+                                    name,
+                                    m.name,
+                                  );
                                   if (err) return;
                                 } else {
-                                  const err = await (
-                                    DisableMod as any
-                                  )?.(name, m.name);
+                                  const err = await (DisableMod as any)?.(
+                                    name,
+                                    m.name,
+                                  );
                                   if (err) return;
                                 }
-                                const ok = await (
-                                  IsModEnabled as any
-                                )?.(name, m.name);
+                                const ok = await (IsModEnabled as any)?.(
+                                  name,
+                                  m.name,
+                                );
                                 setEnabledByName((prev) => {
                                   const nm = new Map(prev);
                                   nm.set(m.name, !!ok);
@@ -1518,19 +1522,19 @@ export const ModsPage: React.FC = () => {
                               if (val) {
                                 const err = await (EnableMod as any)?.(
                                   name,
-                                  activeMod.name
+                                  activeMod.name,
                                 );
                                 if (err) return;
                               } else {
                                 const err = await (DisableMod as any)?.(
                                   name,
-                                  activeMod.name
+                                  activeMod.name,
                                 );
                                 if (err) return;
                               }
                               const ok = await (IsModEnabled as any)?.(
                                 name,
-                                activeMod.name
+                                activeMod.name,
                               );
                               setEnabledByName((prev) => {
                                 const nm = new Map(prev);

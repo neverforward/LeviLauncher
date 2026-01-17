@@ -1,7 +1,12 @@
 import "./polyfills/wails";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "./components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import {
   Button,
   Tooltip,
@@ -12,10 +17,10 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-import { ThemeSwitcher } from "./components/ThemeSwitcher";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { IoCloseOutline } from "react-icons/io5";
 import { FiMinimize2 } from "react-icons/fi";
-import { LeviIcon } from "./icons/LeviIcon";
+import { LeviIcon } from "@/icons/LeviIcon";
 import {
   FaDownload,
   FaRocket,
@@ -24,36 +29,36 @@ import {
   FaEllipsisH,
   FaInfoCircle,
 } from "react-icons/fa";
-import { LauncherPage } from "./pages/LauncherPage";
-import { DownloadPage } from "./pages/DownloadPage";
-import { SplashScreen } from "./pages/SplashScreen";
+import { LauncherPage } from "@/pages/LauncherPage";
+import { DownloadPage } from "@/pages/DownloadPage";
+import { SplashScreen } from "@/pages/SplashScreen";
 import { motion, AnimatePresence } from "framer-motion";
 import { Events, Window } from "@wailsio/runtime";
-import { SettingsPage } from "./pages/SettingsPage";
-import { VersionSelectPage } from "./pages/VersionSelectPage";
-import VersionSettingsPage from "./pages/VersionSettingsPage";
-import ModsPage from "./pages/ModsPage";
-import UpdatingPage from "./pages/UpdatingPage";
-import FileManagerPage from "./pages/FileManagerPage";
-import ContentPage from "./pages/ContentPage";
-import WorldsListPage from "./pages/WorldsListPage";
-import WorldLevelDatEditorPage from "./pages/WorldLevelDatEditorPage";
-import ResourcePacksPage from "./pages/ResourcePacksPage";
-import BehaviorPacksPage from "./pages/BehaviorPacksPage";
-import SkinPacksPage from "./pages/SkinPacksPage";
+import { SettingsPage } from "@/pages/SettingsPage";
+import { VersionSelectPage } from "@/pages/VersionSelectPage";
+import VersionSettingsPage from "@/pages/VersionSettingsPage";
+import ModsPage from "@/pages/ModsPage";
+import UpdatingPage from "@/pages/UpdatingPage";
+import FileManagerPage from "@/pages/FileManagerPage";
+import ContentPage from "@/pages/ContentPage";
+import WorldsListPage from "@/pages/WorldsListPage";
+import WorldLevelDatEditorPage from "@/pages/WorldLevelDatEditorPage";
+import ResourcePacksPage from "@/pages/ResourcePacksPage";
+import BehaviorPacksPage from "@/pages/BehaviorPacksPage";
+import SkinPacksPage from "@/pages/SkinPacksPage";
 import { useTranslation } from "react-i18next";
-import { VersionStatusProvider } from "./utils/VersionStatusContext";
-import { CurseForgeProvider } from "./utils/CurseForgeContext";
-import InstallPage from "./pages/InstallPage";
-import * as minecraft from "../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import { VersionStatusProvider } from "@/utils/VersionStatusContext";
+import { CurseForgeProvider } from "@/utils/CurseForgeContext";
+import InstallPage from "@/pages/InstallPage";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AboutPage from "./pages/AboutPage";
-import OnboardingPage from "./pages/OnboardingPage";
-import CurseForgePage from "./pages/CurseForgePage";
-import CurseForgeModPage from "./pages/CurseForgeModPage";
-import LIPPage from "./pages/LIPPage";
-import LIPPackagePage from "./pages/LIPPackagePage";
+import AboutPage from "@/pages/AboutPage";
+import OnboardingPage from "@/pages/OnboardingPage";
+import CurseForgePage from "@/pages/CurseForgePage";
+import CurseForgeModPage from "@/pages/CurseForgeModPage";
+import LIPPage from "@/pages/LIPPage";
+import LIPPackagePage from "@/pages/LIPPackagePage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -125,7 +130,7 @@ function App() {
     const tHide = setTimeout(() => setSplashVisible(false), splashDurationMs);
     const tHeader = setTimeout(
       () => setRevealStarted(true),
-      splashDurationMs - 200
+      splashDurationMs - 200,
     );
     return () => {
       clearTimeout(tHide);
@@ -254,7 +259,7 @@ function App() {
     ) {
       try {
         window.dispatchEvent(
-          new CustomEvent("ll-try-nav", { detail: { path } })
+          new CustomEvent("ll-try-nav", { detail: { path } }),
         );
         return;
       } catch {}
@@ -346,46 +351,43 @@ function App() {
   return (
     <VersionStatusProvider>
       <CurseForgeProvider>
-      <Toaster containerStyle={{ zIndex: 99999, top: 80 }} />
-      <AnimatePresence>
-        {splashVisible && (
-          <motion.div
-            key="splash-overlay"
-            className="fixed inset-0 z-9999"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <SplashScreen />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div
-        className={`w-full min-h-dvh flex flex-col overflow-x-hidden bg-background text-foreground ${
-          updateOpen ? "overflow-y-hidden" : ""
-        }`}
-      >
+        <Toaster containerStyle={{ zIndex: 99999, top: 80 }} />
         <AnimatePresence>
-          <motion.div
-            key="navbar"
-            id="wails-draggable"
-            className="fixed top-0 left-0 right-0 z-50 px-4 py-2"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{
-              opacity: revealStarted ? 1 : 0,
-              y: revealStarted ? 0 : -10,
-            }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
+          {splashVisible && (
+            <motion.div
+              key="splash-overlay"
+              className="fixed inset-0 z-9999"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <SplashScreen />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div
+          className={`w-full min-h-dvh flex flex-col overflow-x-hidden bg-background text-foreground ${
+            updateOpen ? "overflow-y-hidden" : ""
+          }`}
+        >
+          <AnimatePresence>
+            <motion.div
+              key="navbar"
+              id="wails-draggable"
+              className="fixed top-0 left-0 right-0 z-50 px-4 py-2"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{
+                opacity: revealStarted ? 1 : 0,
+                y: revealStarted ? 0 : -10,
+              }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
               <div className="flex items-center w-full rounded-2xl bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md shadow-sm px-2 py-1 sm:px-3 sm:py-2">
                 <div className="flex items-center gap-2 shrink-0">
-                  <LeviIcon
-                    width={24}
-                    height={24}
-                  />
+                  <LeviIcon width={24} height={24} />
                   <p className="font-bold text-[16px] sm:text-[18px] tracking-tight text-emerald-600 dark:text-emerald-500 animate-fadeInMove">
                     LeviLauncher
                   </p>
@@ -435,7 +437,9 @@ function App() {
                         tryNavigate("/download");
                       }}
                       className={`px-3 rounded-2xl ${
-                        location.pathname === "/download" ? "bg-default-200" : ""
+                        location.pathname === "/download"
+                          ? "bg-default-200"
+                          : ""
                       }`}
                       startContent={<FaDownload size={18} />}
                     >
@@ -451,7 +455,9 @@ function App() {
                         tryNavigate("/settings");
                       }}
                       className={`px-3 rounded-2xl ${
-                        location.pathname === "/settings" ? "bg-default-200" : ""
+                        location.pathname === "/settings"
+                          ? "bg-default-200"
+                          : ""
                       }`}
                       startContent={<FaCog size={18} />}
                     >
@@ -531,242 +537,248 @@ function App() {
                 </div>
               </div>
             </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
 
-        <div className="h-[68px]" />
+          <div className="h-[68px]" />
 
-        <motion.div
-          className="w-full flex-1 min-h-0 overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: revealStarted ? 1 : 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{ pointerEvents: revealStarted ? "auto" : "none" }}
-        >
-          {revealStarted &&
-            (isFirstLoad ? (
-              <></>
-            ) : (
-              <Routes>
-                <Route
-                  path="/"
-                  element={<LauncherPage refresh={refresh} count={count} />}
-                />
-                <Route path="/download" element={<DownloadPage />} />
-                <Route path="/install" element={<InstallPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route
-                  path="/versions"
-                  element={<VersionSelectPage refresh={refresh} />}
-                />
-                <Route
-                  path="/version-settings"
-                  element={<VersionSettingsPage />}
-                />
-                <Route path="/mods" element={<ModsPage />} />
-                <Route path="/curseforge" element={<CurseForgePage />} />
-                <Route path="/curseforge/mod/:id" element={<CurseForgeModPage />} />
-                <Route path="/lip" element={<LIPPage />} />
-                <Route path="/lip/package/:id" element={<LIPPackagePage />} />
-                <Route path="/updating" element={<UpdatingPage />} />
-                <Route path="/onboarding" element={<OnboardingPage />} />
-                <Route path="/filemanager" element={<FileManagerPage />} />
-                <Route path="/content" element={<ContentPage />} />
-                <Route path="/content/worlds" element={<WorldsListPage />} />
-                <Route
-                  path="/content/world-edit"
-                  element={<WorldLevelDatEditorPage />}
-                />
-                <Route
-                  path="/content/resource-packs"
-                  element={<ResourcePacksPage />}
-                />
-                <Route
-                  path="/content/behavior-packs"
-                  element={<BehaviorPacksPage />}
-                />
-                <Route path="/content/skin-packs" element={<SkinPacksPage />} />
-                <Route path="/about" element={<AboutPage />} />
-              </Routes>
-            ))}
-        </motion.div>
+          <motion.div
+            className="w-full flex-1 min-h-0 overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: revealStarted ? 1 : 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ pointerEvents: revealStarted ? "auto" : "none" }}
+          >
+            {revealStarted &&
+              (isFirstLoad ? (
+                <></>
+              ) : (
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<LauncherPage refresh={refresh} count={count} />}
+                  />
+                  <Route path="/download" element={<DownloadPage />} />
+                  <Route path="/install" element={<InstallPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route
+                    path="/versions"
+                    element={<VersionSelectPage refresh={refresh} />}
+                  />
+                  <Route
+                    path="/version-settings"
+                    element={<VersionSettingsPage />}
+                  />
+                  <Route path="/mods" element={<ModsPage />} />
+                  <Route path="/curseforge" element={<CurseForgePage />} />
+                  <Route
+                    path="/curseforge/mod/:id"
+                    element={<CurseForgeModPage />}
+                  />
+                  <Route path="/lip" element={<LIPPage />} />
+                  <Route path="/lip/package/:id" element={<LIPPackagePage />} />
+                  <Route path="/updating" element={<UpdatingPage />} />
+                  <Route path="/onboarding" element={<OnboardingPage />} />
+                  <Route path="/filemanager" element={<FileManagerPage />} />
+                  <Route path="/content" element={<ContentPage />} />
+                  <Route path="/content/worlds" element={<WorldsListPage />} />
+                  <Route
+                    path="/content/world-edit"
+                    element={<WorldLevelDatEditorPage />}
+                  />
+                  <Route
+                    path="/content/resource-packs"
+                    element={<ResourcePacksPage />}
+                  />
+                  <Route
+                    path="/content/behavior-packs"
+                    element={<BehaviorPacksPage />}
+                  />
+                  <Route
+                    path="/content/skin-packs"
+                    element={<SkinPacksPage />}
+                  />
+                  <Route path="/about" element={<AboutPage />} />
+                </Routes>
+              ))}
+          </motion.div>
 
-        <BaseModal
-          size="lg"
-          isOpen={termsOpen}
-          hideCloseButton
-          isDismissable={false}
-        >
-          <ModalContent>
-            {() => (
-              <>
-                <BaseModalHeader className="text-primary-700 text-[18px] sm:text-[20px] font-bold antialiased">
-                  {t("terms.title", { defaultValue: "用户协议" })}
-                </BaseModalHeader>
-                <BaseModalBody>
-                  <div className="text-[15px] sm:text-[16px] leading-7 text-default-900 font-medium antialiased whitespace-pre-wrap wrap-break-word max-h-[56vh] overflow-y-auto pr-1">
-                    {t("terms.body", {
-                      defaultValue:
-                        "在使用本启动器之前，请仔细阅读并同意《用户协议》和相关条款。继续使用即表示您已同意。",
-                    })}
-                  </div>
-                </BaseModalBody>
-                <BaseModalFooter>
-                  <Button
-                    variant="light"
-                    onPress={() => {
-                      Window.Close();
-                    }}
-                  >
-                    {t("terms.decline", { defaultValue: "不同意，退出" })}
-                  </Button>
-                  <Button
-                    color="primary"
-                    isDisabled={termsCountdown > 0}
-                    onPress={acceptTerms}
-                  >
-                    {termsCountdown > 0
-                      ? `${t("terms.agree", {
-                          defaultValue: "同意并继续",
-                        })} (${termsCountdown}s)`
-                      : t("terms.agree", { defaultValue: "同意并继续" })}
-                  </Button>
-                </BaseModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </BaseModal>
-
-        <BaseModal size="md" isOpen={updateOpen} hideCloseButton>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <BaseModalHeader className="flex-row items-center gap-2 text-primary-600 min-w-0">
-                  <FaRocket className="w-5 h-5" />
-                  <span className="truncate">
-                    {t("settingscard.body.version.hasnew", {
-                      defaultValue: "有新的版本更新！",
-                    })}
-                    {updateVersion}
-                  </span>
-                </BaseModalHeader>
-                <BaseModalBody>
-                  {updateBody ? (
-                    <div className="rounded-md bg-default-100/60 border border-default-200 px-3 py-2">
-                      <div className="text-small font-semibold mb-1">
-                        {t("downloadpage.changelog.title", {
-                          defaultValue: "最新更新日志",
-                        })}
-                      </div>
-                      <div className="text-small wrap-break-word leading-6 max-h-[32vh] sm:max-h-[40vh] lg:max-h-[44vh] overflow-y-auto pr-1">
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            h1: ({ children }) => (
-                              <h1 className="text-xl font-semibold mt-2 mb-2">
-                                {children}
-                              </h1>
-                            ),
-                            h2: ({ children }) => (
-                              <h2 className="text-lg font-semibold mt-2 mb-2">
-                                {children}
-                              </h2>
-                            ),
-                            h3: ({ children }) => (
-                              <h3 className="text-base font-semibold mt-2 mb-2">
-                                {children}
-                              </h3>
-                            ),
-                            p: ({ children }) => (
-                              <p className="my-1">{children}</p>
-                            ),
-                            ul: ({ children }) => (
-                              <ul className="list-disc pl-6 my-2">
-                                {children}
-                              </ul>
-                            ),
-                            ol: ({ children }) => (
-                              <ol className="list-decimal pl-6 my-2">
-                                {children}
-                              </ol>
-                            ),
-                            li: ({ children }) => (
-                              <li className="my-1">{children}</li>
-                            ),
-                            a: ({ href, children }) => (
-                              <a
-                                href={href}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-primary underline"
-                              >
-                                {children}
-                              </a>
-                            ),
-                            hr: () => (
-                              <hr className="my-3 border-default-200" />
-                            ),
-                          }}
-                        >
-                          {updateBody}
-                        </ReactMarkdown>
-                      </div>
+          <BaseModal
+            size="lg"
+            isOpen={termsOpen}
+            hideCloseButton
+            isDismissable={false}
+          >
+            <ModalContent>
+              {() => (
+                <>
+                  <BaseModalHeader className="text-primary-700 text-[18px] sm:text-[20px] font-bold antialiased">
+                    {t("terms.title", { defaultValue: "用户协议" })}
+                  </BaseModalHeader>
+                  <BaseModalBody>
+                    <div className="text-[15px] sm:text-[16px] leading-7 text-default-900 font-medium antialiased whitespace-pre-wrap wrap-break-word max-h-[56vh] overflow-y-auto pr-1">
+                      {t("terms.body", {
+                        defaultValue:
+                          "在使用本启动器之前，请仔细阅读并同意《用户协议》和相关条款。继续使用即表示您已同意。",
+                      })}
                     </div>
-                  ) : null}
-                </BaseModalBody>
-                <BaseModalFooter>
-                  <Button
-                    variant="light"
-                    onPress={() => {
-                      setUpdateOpen(false);
-                      setNavLocked(Boolean((window as any).llNavLock));
-                      onClose();
-                    }}
-                  >
-                    {t("common.cancel", { defaultValue: "取消" })}
-                  </Button>
-                  <Button
-                    variant="flat"
-                    onPress={() => {
-                      try {
-                        localStorage.setItem(
-                          "ll.ignoreVersion",
-                          updateVersion || ""
-                        );
-                      } catch {}
-                      setUpdateOpen(false);
-                      setNavLocked(Boolean((window as any).llNavLock));
-                      onClose();
-                    }}
-                  >
-                    {t("settingscard.body.version.ignore", {
-                      defaultValue: "屏蔽该版本",
-                    })}
-                  </Button>
-                  <Button
-                    color="primary"
-                    isLoading={updateLoading}
-                    onPress={async () => {
-                      setUpdateLoading(true);
-                      try {
+                  </BaseModalBody>
+                  <BaseModalFooter>
+                    <Button
+                      variant="light"
+                      onPress={() => {
+                        Window.Close();
+                      }}
+                    >
+                      {t("terms.decline", { defaultValue: "不同意，退出" })}
+                    </Button>
+                    <Button
+                      color="primary"
+                      isDisabled={termsCountdown > 0}
+                      onPress={acceptTerms}
+                    >
+                      {termsCountdown > 0
+                        ? `${t("terms.agree", {
+                            defaultValue: "同意并继续",
+                          })} (${termsCountdown}s)`
+                        : t("terms.agree", { defaultValue: "同意并继续" })}
+                    </Button>
+                  </BaseModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </BaseModal>
+
+          <BaseModal size="md" isOpen={updateOpen} hideCloseButton>
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <BaseModalHeader className="flex-row items-center gap-2 text-primary-600 min-w-0">
+                    <FaRocket className="w-5 h-5" />
+                    <span className="truncate">
+                      {t("settingscard.body.version.hasnew", {
+                        defaultValue: "有新的版本更新！",
+                      })}
+                      {updateVersion}
+                    </span>
+                  </BaseModalHeader>
+                  <BaseModalBody>
+                    {updateBody ? (
+                      <div className="rounded-md bg-default-100/60 border border-default-200 px-3 py-2">
+                        <div className="text-small font-semibold mb-1">
+                          {t("downloadpage.changelog.title", {
+                            defaultValue: "最新更新日志",
+                          })}
+                        </div>
+                        <div className="text-small wrap-break-word leading-6 max-h-[32vh] sm:max-h-[40vh] lg:max-h-[44vh] overflow-y-auto pr-1">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              h1: ({ children }) => (
+                                <h1 className="text-xl font-semibold mt-2 mb-2">
+                                  {children}
+                                </h1>
+                              ),
+                              h2: ({ children }) => (
+                                <h2 className="text-lg font-semibold mt-2 mb-2">
+                                  {children}
+                                </h2>
+                              ),
+                              h3: ({ children }) => (
+                                <h3 className="text-base font-semibold mt-2 mb-2">
+                                  {children}
+                                </h3>
+                              ),
+                              p: ({ children }) => (
+                                <p className="my-1">{children}</p>
+                              ),
+                              ul: ({ children }) => (
+                                <ul className="list-disc pl-6 my-2">
+                                  {children}
+                                </ul>
+                              ),
+                              ol: ({ children }) => (
+                                <ol className="list-decimal pl-6 my-2">
+                                  {children}
+                                </ol>
+                              ),
+                              li: ({ children }) => (
+                                <li className="my-1">{children}</li>
+                              ),
+                              a: ({ href, children }) => (
+                                <a
+                                  href={href}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-primary underline"
+                                >
+                                  {children}
+                                </a>
+                              ),
+                              hr: () => (
+                                <hr className="my-3 border-default-200" />
+                              ),
+                            }}
+                          >
+                            {updateBody}
+                          </ReactMarkdown>
+                        </div>
+                      </div>
+                    ) : null}
+                  </BaseModalBody>
+                  <BaseModalFooter>
+                    <Button
+                      variant="light"
+                      onPress={() => {
                         setUpdateOpen(false);
-                        setNavLocked(true);
+                        setNavLocked(Boolean((window as any).llNavLock));
                         onClose();
-                        navigate("/updating", { replace: true });
-                      } finally {
-                        setUpdateLoading(false);
-                      }
-                    }}
-                  >
-                    {t("settingscard.modal.2.footer.download_button", {
-                      defaultValue: "更新",
-                    })}
-                  </Button>
-                </BaseModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </BaseModal>
-      </div>
+                      }}
+                    >
+                      {t("common.cancel", { defaultValue: "取消" })}
+                    </Button>
+                    <Button
+                      variant="flat"
+                      onPress={() => {
+                        try {
+                          localStorage.setItem(
+                            "ll.ignoreVersion",
+                            updateVersion || "",
+                          );
+                        } catch {}
+                        setUpdateOpen(false);
+                        setNavLocked(Boolean((window as any).llNavLock));
+                        onClose();
+                      }}
+                    >
+                      {t("settingscard.body.version.ignore", {
+                        defaultValue: "屏蔽该版本",
+                      })}
+                    </Button>
+                    <Button
+                      color="primary"
+                      isLoading={updateLoading}
+                      onPress={async () => {
+                        setUpdateLoading(true);
+                        try {
+                          setUpdateOpen(false);
+                          setNavLocked(true);
+                          onClose();
+                          navigate("/updating", { replace: true });
+                        } finally {
+                          setUpdateLoading(false);
+                        }
+                      }}
+                    >
+                      {t("settingscard.modal.2.footer.download_button", {
+                        defaultValue: "更新",
+                      })}
+                    </Button>
+                  </BaseModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </BaseModal>
+        </div>
       </CurseForgeProvider>
     </VersionStatusProvider>
   );

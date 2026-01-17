@@ -36,7 +36,12 @@ import {
   FaHdd,
   FaTag,
 } from "react-icons/fa";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -44,11 +49,11 @@ import {
   ListPacksForVersion,
   OpenPathDir,
   DeletePack,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as types from "bindings/github.com/liteldev/LeviLauncher/internal/types/models";
 import { readCurrentVersionName } from "@/utils/currentVersion";
 import { listPlayers } from "@/utils/content";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { renderMcText } from "@/utils/mcformat";
 import { toast } from "react-hot-toast";
 
@@ -91,7 +96,7 @@ export default function SkinPacksPage() {
   const [sortKey, setSortKey] = React.useState<"name" | "time">(() => {
     try {
       const saved = JSON.parse(
-        localStorage.getItem("content.skin.sort") || "{}"
+        localStorage.getItem("content.skin.sort") || "{}",
       );
       const k = saved?.sortKey;
       if (k === "name" || k === "time") return k;
@@ -101,7 +106,7 @@ export default function SkinPacksPage() {
   const [sortAsc, setSortAsc] = React.useState<boolean>(() => {
     try {
       const saved = JSON.parse(
-        localStorage.getItem("content.skin.sort") || "{}"
+        localStorage.getItem("content.skin.sort") || "{}",
       );
       const a = saved?.sortAsc;
       if (typeof a === "boolean") return a;
@@ -156,17 +161,17 @@ export default function SkinPacksPage() {
     const q = query.trim().toLowerCase();
     const f = packs.filter((p) => {
       const nm = String(
-        p.name || p.path?.split("\\").pop() || ""
+        p.name || p.path?.split("\\").pop() || "",
       ).toLowerCase();
       return q ? nm.includes(q) : true;
     });
     return f.sort((a: any, b: any) => {
       if (sortKey === "name") {
         const an = String(
-          a.name || a.path?.split("\\").pop() || ""
+          a.name || a.path?.split("\\").pop() || "",
         ).toLowerCase();
         const bn = String(
-          b.name || b.path?.split("\\").pop() || ""
+          b.name || b.path?.split("\\").pop() || "",
         ).toLowerCase();
         const res = an.localeCompare(bn);
         return sortAsc ? res : -res;
@@ -246,19 +251,22 @@ export default function SkinPacksPage() {
           // Player handling
           let nextPlayer = forcePlayer;
           if (nextPlayer === undefined) {
-             const names = await listPlayers(safe.usersRoot);
-             setPlayers(names);
-             const passedPlayer = location?.state?.player || "";
-             nextPlayer = (selectedPlayer && names.includes(selectedPlayer))
+            const names = await listPlayers(safe.usersRoot);
+            setPlayers(names);
+            const passedPlayer = location?.state?.player || "";
+            nextPlayer =
+              selectedPlayer && names.includes(selectedPlayer)
                 ? selectedPlayer
-                : (names.includes(passedPlayer) ? passedPlayer : (names[0] || ""));
-             setSelectedPlayer(nextPlayer);
+                : names.includes(passedPlayer)
+                  ? passedPlayer
+                  : names[0] || "";
+            setSelectedPlayer(nextPlayer);
           }
 
           const allPacks = await ListPacksForVersion(name, nextPlayer || "");
-          
+
           const filtered = (allPacks || []).filter(
-            (p) => p.manifest.pack_type === 7
+            (p) => p.manifest.pack_type === 7,
           );
 
           const basic = await Promise.all(
@@ -278,7 +286,7 @@ export default function SkinPacksPage() {
                   path: p.path,
                 };
               }
-            })
+            }),
           );
           const withTime = await Promise.all(
             basic.map(async (p: any) => {
@@ -289,7 +297,7 @@ export default function SkinPacksPage() {
                 }
               } catch {}
               return { ...p, modTime };
-            })
+            }),
           );
           setPacks(withTime);
           Promise.resolve()
@@ -297,7 +305,7 @@ export default function SkinPacksPage() {
               const readCache = () => {
                 try {
                   return JSON.parse(
-                    localStorage.getItem("content.size.cache") || "{}"
+                    localStorage.getItem("content.size.cache") || "{}",
                   );
                 } catch {
                   return {};
@@ -324,24 +332,26 @@ export default function SkinPacksPage() {
                     ) {
                       setPacks((prev) =>
                         prev.map((it: any) =>
-                          it.path === key ? { ...it, size: c.size } : it
-                        )
+                          it.path === key ? { ...it, size: c.size } : it,
+                        ),
                       );
                     } else {
                       let size = 0;
                       try {
-                        if (typeof (minecraft as any).GetPathSize === "function") {
+                        if (
+                          typeof (minecraft as any).GetPathSize === "function"
+                        ) {
                           size = await (minecraft as any).GetPathSize(key);
                         }
                       } catch {}
                       cache[key] = { modTime: p.modTime || 0, size };
                       setPacks((prev) =>
                         prev.map((it: any) =>
-                          it.path === key ? { ...it, size } : it
-                        )
+                          it.path === key ? { ...it, size } : it,
+                        ),
                       );
                     }
-                  })
+                  }),
                 );
                 writeCache(cache);
               }
@@ -354,7 +364,7 @@ export default function SkinPacksPage() {
         if (!silent) setLoading(false);
       }
     },
-    [hasBackend, location?.state?.player, selectedPlayer]
+    [hasBackend, location?.state?.player, selectedPlayer],
   );
 
   React.useEffect(() => {
@@ -367,7 +377,7 @@ export default function SkinPacksPage() {
     try {
       localStorage.setItem(
         "content.skin.sort",
-        JSON.stringify({ sortKey, sortAsc })
+        JSON.stringify({ sortKey, sortAsc }),
       );
     } catch {}
   }, [sortKey, sortAsc]);
@@ -457,7 +467,9 @@ export default function SkinPacksPage() {
                   isIconOnly
                   radius="full"
                   variant="light"
-                  onPress={() => navigate("/content", { state: { player: selectedPlayer } })}
+                  onPress={() =>
+                    navigate("/content", { state: { player: selectedPlayer } })
+                  }
                 >
                   <FaArrowLeft size={20} />
                 </Button>
@@ -501,7 +513,9 @@ export default function SkinPacksPage() {
                         ))
                       ) : (
                         <DropdownItem key="none" isDisabled>
-                          {t("contentpage.no_players", { defaultValue: "暂无玩家" })}
+                          {t("contentpage.no_players", {
+                            defaultValue: "暂无玩家",
+                          })}
                         </DropdownItem>
                       )}
                     </DropdownMenu>
@@ -512,7 +526,10 @@ export default function SkinPacksPage() {
                     startContent={<FaFolderOpen />}
                     onPress={async () => {
                       if (!hasBackend || !roots.resourcePacks) return;
-                      let sp = roots.resourcePacks.replace(/resource_packs$/, "skin_packs");
+                      let sp = roots.resourcePacks.replace(
+                        /resource_packs$/,
+                        "skin_packs",
+                      );
                       if (selectedPlayer && roots.usersRoot) {
                         sp = `${roots.usersRoot}\\${selectedPlayer}\\games\\com.mojang\\skin_packs`;
                       }
@@ -549,7 +566,9 @@ export default function SkinPacksPage() {
 
             <div className="flex flex-col md:flex-row gap-4 items-end md:items-center justify-between">
               <Input
-                placeholder={t("common.search_placeholder", { defaultValue: "搜索..." })}
+                placeholder={t("common.search_placeholder", {
+                  defaultValue: "搜索...",
+                })}
                 value={query}
                 onValueChange={setQuery}
                 startContent={<FaFilter className="text-default-400" />}
@@ -564,12 +583,17 @@ export default function SkinPacksPage() {
                 variant="flat"
                 className="w-full md:max-w-xs"
                 classNames={{
-                  inputWrapper: "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
+                  inputWrapper:
+                    "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
                 }}
               />
-              
+
               <div className="flex items-center gap-3">
-                <Tooltip content={t("common.select_mode", { defaultValue: "选择模式" })}>
+                <Tooltip
+                  content={t("common.select_mode", {
+                    defaultValue: "选择模式",
+                  })}
+                >
                   <Button
                     isIconOnly
                     radius="full"
@@ -586,13 +610,17 @@ export default function SkinPacksPage() {
 
                 {isSelectMode && (
                   <Checkbox
-                    isSelected={filtered.length > 0 && selectedCount === filtered.length}
+                    isSelected={
+                      filtered.length > 0 && selectedCount === filtered.length
+                    }
                     onValueChange={selectAll}
                     radius="full"
                     size="lg"
                     classNames={{ wrapper: "after:bg-primary" }}
                   >
-                    <span className="text-sm text-default-600">{t("common.select_all", { defaultValue: "全选" })}</span>
+                    <span className="text-sm text-default-600">
+                      {t("common.select_all", { defaultValue: "全选" })}
+                    </span>
                   </Checkbox>
                 )}
 
@@ -615,24 +643,54 @@ export default function SkinPacksPage() {
                           }) as string)}
                       {" / "}
                       {sortAsc
-                        ? t("contentpage.sort_asc", { defaultValue: "从上到下" })
-                        : t("contentpage.sort_desc", { defaultValue: "从下到上" })}
+                        ? t("contentpage.sort_asc", {
+                            defaultValue: "从上到下",
+                          })
+                        : t("contentpage.sort_desc", {
+                            defaultValue: "从下到上",
+                          })}
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
                     selectionMode="single"
-                    selectedKeys={new Set([`${sortKey}-${sortAsc ? "asc" : "desc"}`])}
+                    selectedKeys={
+                      new Set([`${sortKey}-${sortAsc ? "asc" : "desc"}`])
+                    }
                     onSelectionChange={(keys) => {
-                        const val = Array.from(keys)[0] as string;
-                        const [k, order] = val.split("-");
-                        setSortKey(k as "name" | "time");
-                        setSortAsc(order === "asc");
+                      const val = Array.from(keys)[0] as string;
+                      const [k, order] = val.split("-");
+                      setSortKey(k as "name" | "time");
+                      setSortAsc(order === "asc");
                     }}
                   >
-                    <DropdownItem key="name-asc" startContent={<FaSortAmountDown />}>{t("filemanager.sort.name", { defaultValue: "名称" })} (A-Z)</DropdownItem>
-                    <DropdownItem key="name-desc" startContent={<FaSortAmountUp />}>{t("filemanager.sort.name", { defaultValue: "名称" })} (Z-A)</DropdownItem>
-                    <DropdownItem key="time-asc" startContent={<FaSortAmountDown />}>{t("contentpage.sort_time", { defaultValue: "时间" })} (Old-New)</DropdownItem>
-                    <DropdownItem key="time-desc" startContent={<FaSortAmountUp />}>{t("contentpage.sort_time", { defaultValue: "时间" })} (New-Old)</DropdownItem>
+                    <DropdownItem
+                      key="name-asc"
+                      startContent={<FaSortAmountDown />}
+                    >
+                      {t("filemanager.sort.name", { defaultValue: "名称" })}{" "}
+                      (A-Z)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="name-desc"
+                      startContent={<FaSortAmountUp />}
+                    >
+                      {t("filemanager.sort.name", { defaultValue: "名称" })}{" "}
+                      (Z-A)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="time-asc"
+                      startContent={<FaSortAmountDown />}
+                    >
+                      {t("contentpage.sort_time", { defaultValue: "时间" })}{" "}
+                      (Old-New)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="time-desc"
+                      startContent={<FaSortAmountUp />}
+                    >
+                      {t("contentpage.sort_time", { defaultValue: "时间" })}{" "}
+                      (New-Old)
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
 
@@ -650,7 +708,10 @@ export default function SkinPacksPage() {
                         startContent={<FaTrash />}
                         onPress={delManyCfmOnOpen}
                       >
-                        {t("common.delete_selected", { count: selectedCount, defaultValue: "删除选中" })}
+                        {t("common.delete_selected", {
+                          count: selectedCount,
+                          defaultValue: "删除选中",
+                        })}
                       </Button>
                     </motion.div>
                   )}
@@ -658,12 +719,18 @@ export default function SkinPacksPage() {
               </div>
             </div>
             <div className="mt-2 text-default-500 text-sm flex flex-wrap items-center gap-2">
-              <span>{t("contentpage.current_version", { defaultValue: "当前版本" })}:</span>
+              <span>
+                {t("contentpage.current_version", { defaultValue: "当前版本" })}
+                :
+              </span>
               <span className="font-medium text-default-700 bg-default-100 px-2 py-0.5 rounded-md">
-                {currentVersionName || t("contentpage.none", { defaultValue: "无" })}
+                {currentVersionName ||
+                  t("contentpage.none", { defaultValue: "无" })}
               </span>
               <span className="text-default-300">|</span>
-              <span>{t("contentpage.isolation", { defaultValue: "版本隔离" })}:</span>
+              <span>
+                {t("contentpage.isolation", { defaultValue: "版本隔离" })}:
+              </span>
               <span
                 className={`font-medium px-2 py-0.5 rounded-md ${
                   roots.isIsolation
@@ -678,10 +745,7 @@ export default function SkinPacksPage() {
             </div>
           </div>
 
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 sm:p-6"
-          >
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <Spinner size="lg" />
@@ -707,7 +771,7 @@ export default function SkinPacksPage() {
                               : "border-default-200 dark:border-zinc-700/50 hover:border-default-400 dark:hover:border-zinc-600"
                           }`}
                           onClick={() => {
-                             if (isSelectMode) toggleSelect(p.path);
+                            if (isSelectMode) toggleSelect(p.path);
                           }}
                         >
                           <div className="relative shrink-0">
@@ -728,7 +792,10 @@ export default function SkinPacksPage() {
                                 isSelected={!!selected[p.path]}
                                 onValueChange={() => toggleSelect(p.path)}
                                 className="absolute -top-2 -left-2 z-20"
-                                classNames={{ wrapper: "bg-white dark:bg-zinc-900 shadow-md" }}
+                                classNames={{
+                                  wrapper:
+                                    "bg-white dark:bg-zinc-900 shadow-md",
+                                }}
                               />
                             )}
                           </div>
@@ -739,7 +806,9 @@ export default function SkinPacksPage() {
                                 className="text-base sm:text-lg font-bold text-default-900 dark:text-white truncate"
                                 title={p.name}
                               >
-                                {renderMcText(p.name || p.path.split("\\").pop())}
+                                {renderMcText(
+                                  p.name || p.path.split("\\").pop(),
+                                )}
                               </h3>
                             </div>
 
@@ -751,27 +820,42 @@ export default function SkinPacksPage() {
                             </p>
 
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                               <div className="flex items-center gap-1" title={t("common.size", { defaultValue: "大小" })}>
-                                  <FaHdd />
-                                  <span>{formatBytes(p.size)}</span>
-                               </div>
-                               <div className="flex items-center gap-1" title={t("common.date", { defaultValue: "日期" })}>
-                                  <FaClock />
-                                  <span>{formatDate(p.modTime)}</span>
-                               </div>
-                               {p.version && (
-                                 <div className="flex items-center gap-1" title={t("common.version", { defaultValue: "版本" })}>
-                                    <FaTag />
-                                    <span>v{p.version}</span>
-                                 </div>
-                               )}
+                              <div
+                                className="flex items-center gap-1"
+                                title={t("common.size", {
+                                  defaultValue: "大小",
+                                })}
+                              >
+                                <FaHdd />
+                                <span>{formatBytes(p.size)}</span>
+                              </div>
+                              <div
+                                className="flex items-center gap-1"
+                                title={t("common.date", {
+                                  defaultValue: "日期",
+                                })}
+                              >
+                                <FaClock />
+                                <span>{formatDate(p.modTime)}</span>
+                              </div>
+                              {p.version && (
+                                <div
+                                  className="flex items-center gap-1"
+                                  title={t("common.version", {
+                                    defaultValue: "版本",
+                                  })}
+                                >
+                                  <FaTag />
+                                  <span>v{p.version}</span>
+                                </div>
+                              )}
                             </div>
 
                             <div className="flex flex-1 items-end justify-between mt-2">
-                               <div className="flex gap-1">
-                                  {/* Placeholder for future tags */}
-                               </div>
-                               <Button
+                              <div className="flex gap-1">
+                                {/* Placeholder for future tags */}
+                              </div>
+                              <Button
                                 size="sm"
                                 color="danger"
                                 variant="flat"
@@ -885,13 +969,16 @@ export default function SkinPacksPage() {
                         t("contentpage.deleted_name", {
                           name: activePack.name,
                           defaultValue: `已删除 ${activePack.name}`,
-                        })
+                        }),
                       );
                       onClose();
                     } catch (err) {
                       setResultSuccess([]);
                       setResultFailed([
-                        { name: activePack.name || activePack.path, err: String(err) },
+                        {
+                          name: activePack.name || activePack.path,
+                          err: String(err),
+                        },
                       ]);
                       toast.error(String(err));
                     } finally {
@@ -954,7 +1041,7 @@ export default function SkinPacksPage() {
                   isDisabled={deletingMany}
                   onPress={async () => {
                     const targets = Object.keys(selected).filter(
-                      (k) => selected[k]
+                      (k) => selected[k],
                     );
                     if (targets.length === 0) {
                       onClose();
@@ -984,7 +1071,7 @@ export default function SkinPacksPage() {
                         t("contentpage.deleted_count", {
                           count: success,
                           defaultValue: `已删除 ${success} 个项目`,
-                        })
+                        }),
                       );
                       setSelected({});
                       refreshAll();

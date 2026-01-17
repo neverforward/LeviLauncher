@@ -9,13 +9,13 @@ interface PageHeaderProps {
   endContent?: React.ReactNode;
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({ 
-  title, 
-  description, 
+export const PageHeader: React.FC<PageHeaderProps> = ({
+  title,
+  description,
   className = "",
   titleClassName = "",
   startContent,
-  endContent
+  endContent,
 }) => {
   return (
     <div className={className}>
@@ -23,7 +23,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         <div className="flex items-center gap-4">
           {startContent}
           <div>
-            <h1 className={`text-left text-3xl font-black tracking-tight text-emerald-600 dark:text-emerald-500 pb-1 ${titleClassName}`}>
+            <h1
+              className={`text-left text-3xl font-black tracking-tight text-emerald-600 dark:text-emerald-500 pb-1 ${titleClassName}`}
+            >
               {title}
             </h1>
             {description && (
@@ -34,9 +36,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           </div>
         </div>
         {endContent && (
-          <div className="flex items-center gap-2">
-            {endContent}
-          </div>
+          <div className="flex items-center gap-2">{endContent}</div>
         )}
       </div>
     </div>
@@ -52,13 +52,13 @@ interface SectionHeaderProps {
   iconWrapperClassName?: string;
 }
 
-export const SectionHeader: React.FC<SectionHeaderProps> = ({ 
-  title, 
+export const SectionHeader: React.FC<SectionHeaderProps> = ({
+  title,
   description,
-  icon, 
-  action, 
+  icon,
+  action,
   className = "",
-  iconWrapperClassName = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-500"
+  iconWrapperClassName = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-500",
 }) => {
   return (
     <div className={`flex flex-col gap-1 ${className}`}>

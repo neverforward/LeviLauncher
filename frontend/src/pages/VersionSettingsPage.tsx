@@ -1,6 +1,11 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import {
   Button,
   Card,
@@ -16,7 +21,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FaWindows } from "react-icons/fa";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { PageHeader } from "@/components/PageHeader";
 
 export default function VersionSettingsPage() {
@@ -54,10 +59,13 @@ export default function VersionSettingsPage() {
   const [deleting, setDeleting] = React.useState<boolean>(false);
   const [deleteSuccessMsg, setDeleteSuccessMsg] = React.useState<string>("");
 
-  const [originalIsolation, setOriginalIsolation] = React.useState<boolean>(false);
+  const [originalIsolation, setOriginalIsolation] =
+    React.useState<boolean>(false);
   const [originalConsole, setOriginalConsole] = React.useState<boolean>(false);
-  const [originalEditorMode, setOriginalEditorMode] = React.useState<boolean>(false);
-  const [originalRenderDragon, setOriginalRenderDragon] = React.useState<boolean>(false);
+  const [originalEditorMode, setOriginalEditorMode] =
+    React.useState<boolean>(false);
+  const [originalRenderDragon, setOriginalRenderDragon] =
+    React.useState<boolean>(false);
   const {
     isOpen: unsavedOpen,
     onOpen: unsavedOnOpen,
@@ -178,7 +186,7 @@ export default function VersionSettingsPage() {
             }
             if (typeof getter === "function") {
               getter(targetName).then((u: string) =>
-                setLogoDataUrl(String(u || ""))
+                setLogoDataUrl(String(u || "")),
               );
             }
           });
@@ -193,83 +201,86 @@ export default function VersionSettingsPage() {
     location?.pathname,
   ]);
 
-  const onSave = React.useCallback(async (destPath?: string) => {
-    if (!hasBackend || !targetName) {
-      navigate(-1);
-      return false;
-    }
-    const validate = minecraft?.ValidateVersionFolderName;
-    const rename = minecraft?.RenameVersionFolder;
-    const save = minecraft?.SaveVersionMeta;
-    const saver = minecraft?.SaveVersionLogoDataUrl;
-
-    const nn = (newName || "").trim();
-    if (!nn) {
-      setError("ERR_INVALID_NAME");
-      return false;
-    }
-    const type = versionType || (isPreview ? "preview" : "release");
-
-    if (nn !== targetName) {
-      if (typeof validate === "function") {
-        const msg: string = await validate(nn);
-        if (msg) {
-          setError(msg);
-          return false;
-        }
-      }
-      if (typeof rename === "function") {
-        const err: string = await rename(targetName, nn);
-        if (err) {
-          setError(err);
-          return false;
-        }
-      }
-      setTargetName(nn);
-    }
-
-    if (typeof save === "function") {
-      const err2: string = await save(
-        nn,
-        gameVersion,
-        type,
-        !!enableIsolation,
-        !!enableConsole,
-        !!enableEditorMode,
-        !!enableRenderDragon
-      );
-      if (err2) {
-        setError(err2);
+  const onSave = React.useCallback(
+    async (destPath?: string) => {
+      if (!hasBackend || !targetName) {
+        navigate(-1);
         return false;
       }
-    }
-    try {
-      if (typeof saver === "function" && logoDataUrl) {
-        const e = await saver(nn, logoDataUrl);
-        if (e) {
-          setError(e);
+      const validate = minecraft?.ValidateVersionFolderName;
+      const rename = minecraft?.RenameVersionFolder;
+      const save = minecraft?.SaveVersionMeta;
+      const saver = minecraft?.SaveVersionLogoDataUrl;
+
+      const nn = (newName || "").trim();
+      if (!nn) {
+        setError("ERR_INVALID_NAME");
+        return false;
+      }
+      const type = versionType || (isPreview ? "preview" : "release");
+
+      if (nn !== targetName) {
+        if (typeof validate === "function") {
+          const msg: string = await validate(nn);
+          if (msg) {
+            setError(msg);
+            return false;
+          }
+        }
+        if (typeof rename === "function") {
+          const err: string = await rename(targetName, nn);
+          if (err) {
+            setError(err);
+            return false;
+          }
+        }
+        setTargetName(nn);
+      }
+
+      if (typeof save === "function") {
+        const err2: string = await save(
+          nn,
+          gameVersion,
+          type,
+          !!enableIsolation,
+          !!enableConsole,
+          !!enableEditorMode,
+          !!enableRenderDragon,
+        );
+        if (err2) {
+          setError(err2);
           return false;
         }
       }
-    } catch {}
+      try {
+        if (typeof saver === "function" && logoDataUrl) {
+          const e = await saver(nn, logoDataUrl);
+          if (e) {
+            setError(e);
+            return false;
+          }
+        }
+      } catch {}
 
-    navigate(typeof destPath === "string" ? destPath : returnToPath);
-    return true;
-  }, [
-    hasBackend,
-    targetName,
-    newName,
-    gameVersion,
-    isPreview,
-    enableIsolation,
-    enableConsole,
-    enableEditorMode,
-    enableRenderDragon,
-    logoDataUrl,
-    returnToPath,
-    navigate,
-    versionType,
-  ]);
+      navigate(typeof destPath === "string" ? destPath : returnToPath);
+      return true;
+    },
+    [
+      hasBackend,
+      targetName,
+      newName,
+      gameVersion,
+      isPreview,
+      enableIsolation,
+      enableConsole,
+      enableEditorMode,
+      enableRenderDragon,
+      logoDataUrl,
+      returnToPath,
+      navigate,
+      versionType,
+    ],
+  );
 
   const onDeleteConfirm = React.useCallback(async () => {
     if (!hasBackend || !targetName) {
@@ -306,26 +317,27 @@ export default function VersionSettingsPage() {
   return (
     <div className="w-full h-full flex flex-col overflow-hidden relative">
       <div className="z-20 px-3 sm:px-5 lg:px-8 pt-3 sm:pt-4 lg:pt-6 shrink-0">
-          <motion.div
-            initial={{ y: -8, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.18, ease: [0.16, 0.84, 0.44, 1] }}
-          >
-            <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl mb-6">
-              <CardBody className="px-6 sm:px-8 py-5 w-full">
-                <PageHeader 
-                  title={t("versions.edit.title")}
-                  titleClassName="text-left pb-1"
-                  description={
-                    <div className="mt-1 text-sm text-default-500 truncate text-left text-left!">
-                    {t("versions.info.version")}
-                    :{" "}
+        <motion.div
+          initial={{ y: -8, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.18, ease: [0.16, 0.84, 0.44, 1] }}
+        >
+          <Card className="border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl mb-6">
+            <CardBody className="px-6 sm:px-8 py-5 w-full">
+              <PageHeader
+                title={t("versions.edit.title")}
+                titleClassName="text-left pb-1"
+                description={
+                  <div className="mt-1 text-sm text-default-500 truncate text-left text-left!">
+                    {t("versions.info.version")}:{" "}
                     <span className="text-default-700 font-medium">
                       {loading ? (
                         <span className="inline-block h-4 w-24 rounded bg-default-200 animate-pulse" />
                       ) : (
                         gameVersion ||
-                        (t("launcherpage.version_select.unknown") as unknown as string)
+                        (t(
+                          "launcherpage.version_select.unknown",
+                        ) as unknown as string)
                       )}
                     </span>
                     <span className="mx-2 text-default-400">·</span>
@@ -348,316 +360,319 @@ export default function VersionSettingsPage() {
                       </Chip>
                     )}
                   </div>
-                  }
-                  endContent={
-                    <div className="hidden sm:flex items-center gap-3">
-                      <Button
-                        variant="light"
-                        radius="full"
-                        onPress={() => navigate(returnToPath)}
-                        className="font-medium text-default-600"
-                      >
-                        {t("common.cancel")}
-                      </Button>
-                      <Button 
-                        color="primary" 
-                        radius="full"
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
-                        onPress={onSave}
-                      >
-                        {t("common.ok")}
-                      </Button>
-                    </div>
-                  }
-                />
-              </CardBody>
-            </Card>
-          </motion.div>
+                }
+                endContent={
+                  <div className="hidden sm:flex items-center gap-3">
+                    <Button
+                      variant="light"
+                      radius="full"
+                      onPress={() => navigate(returnToPath)}
+                      className="font-medium text-default-600"
+                    >
+                      {t("common.cancel")}
+                    </Button>
+                    <Button
+                      color="primary"
+                      radius="full"
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
+                      onPress={onSave}
+                    >
+                      {t("common.ok")}
+                    </Button>
+                  </div>
+                }
+              />
+            </CardBody>
+          </Card>
+        </motion.div>
       </div>
       <div className="flex-1 overflow-auto">
         <div className="px-3 sm:px-5 lg:px-8 pb-3 sm:pb-4 lg:pb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: 0.1 }}
-          >
-            <Card className="h-full min-h-[160px] border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
-              <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
-                <div>
-                  <label className="text-small font-medium text-default-700 dark:text-default-200 mb-2 block">
-                    {t("versions.edit.new_name")}
-                  </label>
-                  <Input
-                    value={newName}
-                    onValueChange={(v) => {
-                      setNewName(v);
-                      if (error) setError("");
-                    }}
-                    size="md"
-                    variant="bordered"
-                    radius="lg"
-                    classNames={{
-                        inputWrapper: "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:border-emerald-500!",
-                    }}
-                    isDisabled={isRegistered || loading}
-                    placeholder={
-                      t("versions.edit.placeholder") as unknown as string
-                    }
-                  />
-                  <p className="text-tiny text-default-400 mt-2">
-                    {t("versions.edit.hint")}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-3">
-                  <div className="text-small font-medium text-default-700 dark:text-default-200">
-                    {t("versions.logo.title")}
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="relative h-24 w-24 rounded-2xl overflow-hidden bg-default-100 flex items-center justify-center border border-default-200 cursor-pointer group transition-all hover:scale-105 hover:shadow-lg"
-                      onClick={() => {
-                        navigate("/filemanager", {
-                          state: {
-                            allowedExt: [
-                              ".png",
-                              ".jpg",
-                              ".jpeg",
-                              ".gif",
-                              ".webp",
-                            ],
-                            multi: false,
-                            returnTo: "/version-settings",
-                            title: t("versions.logo.title"),
-                            returnState: {
-                              name: targetName,
-                              returnTo: returnToPath,
-                            },
-                          },
-                        });
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: 0.1 }}
+            >
+              <Card className="h-full min-h-[160px] border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
+                <CardBody className="p-6 sm:p-8 flex flex-col gap-6">
+                  <div>
+                    <label className="text-small font-medium text-default-700 dark:text-default-200 mb-2 block">
+                      {t("versions.edit.new_name")}
+                    </label>
+                    <Input
+                      value={newName}
+                      onValueChange={(v) => {
+                        setNewName(v);
+                        if (error) setError("");
                       }}
-                      title={
-                        t("versions.logo.change") as string
+                      size="md"
+                      variant="bordered"
+                      radius="lg"
+                      classNames={{
+                        inputWrapper:
+                          "bg-default-100/50 dark:bg-default-100/20 border-default-200 dark:border-default-700 hover:border-emerald-500 focus-within:border-emerald-500!",
+                      }}
+                      isDisabled={isRegistered || loading}
+                      placeholder={
+                        t("versions.edit.placeholder") as unknown as string
                       }
-                    >
-                      {logoDataUrl ? (
-                        <img
-                          src={logoDataUrl}
-                          alt="logo"
-                          className="h-full w-full object-cover"
-                        />
-                      ) : null}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-tiny font-medium backdrop-blur-[2px]">
-                        {t("versions.logo.change")}
+                    />
+                    <p className="text-tiny text-default-400 mt-2">
+                      {t("versions.edit.hint")}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div className="text-small font-medium text-default-700 dark:text-default-200">
+                      {t("versions.logo.title")}
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="relative h-24 w-24 rounded-2xl overflow-hidden bg-default-100 flex items-center justify-center border border-default-200 cursor-pointer group transition-all hover:scale-105 hover:shadow-lg"
+                        onClick={() => {
+                          navigate("/filemanager", {
+                            state: {
+                              allowedExt: [
+                                ".png",
+                                ".jpg",
+                                ".jpeg",
+                                ".gif",
+                                ".webp",
+                              ],
+                              multi: false,
+                              returnTo: "/version-settings",
+                              title: t("versions.logo.title"),
+                              returnState: {
+                                name: targetName,
+                                returnTo: returnToPath,
+                              },
+                            },
+                          });
+                        }}
+                        title={t("versions.logo.change") as string}
+                      >
+                        {logoDataUrl ? (
+                          <img
+                            src={logoDataUrl}
+                            alt="logo"
+                            className="h-full w-full object-cover"
+                          />
+                        ) : null}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-tiny font-medium backdrop-blur-[2px]">
+                          {t("versions.logo.change")}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <Button
-                        size="sm"
-                        variant="flat"
-                        color="danger"
-                        radius="full"
-                        className="justify-start px-4 font-medium"
-                        onPress={async () => {
-                            try {
-                            const rm = minecraft?.RemoveVersionLogo;
-                            if (typeof rm === "function") {
-                                await rm(targetName);
-                            }
-                            } catch {}
-                            setLogoDataUrl("");
-                        }}
-                        >
-                        {t("versions.logo.clear")}
-                        </Button>
-                        <Button
-                        size="sm"
-                        variant="flat"
-                        color="primary"
-                        radius="full"
-                        className="justify-start px-4 font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        onPress={async () => {
-                            try {
-                            const err: string =
-                                await minecraft?.CreateDesktopShortcut(targetName);
-                            if (err) {
-                                setError(String(err));
-                            } else {
-                                setShortcutSuccessOpen(true);
-                            }
-                            } catch {
-                            setError("ERR_SHORTCUT_CREATE_FAILED");
-                            }
-                        }}
-                        startContent={<FaWindows />}
-                        >
-                        {
-                            t("launcherpage.shortcut.create_button") as unknown as string
-                        }
-                        </Button>
-                    </div>
-                  </div>
-                  <p className="text-tiny text-default-400">
-                    {t("versions.logo.hint")}
-                  </p>
-                </div>
-              </CardBody>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: 0.15 }}
-          >
-            <Card className="h-full min-h-[160px] border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
-              <CardBody className="p-6 sm:p-8 flex flex-col gap-5">
-                <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
-                  <div className="text-medium font-medium">
-                    {t("versions.edit.enable_isolation")}
-                  </div>
-                  <Switch
-                    size="md"
-                    color="success"
-                    isSelected={enableIsolation}
-                    onValueChange={setEnableIsolation}
-                    classNames={{
-                        wrapper: "group-data-[selected=true]:bg-emerald-500",
-                    }}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
-                  <div className="text-medium font-medium">
-                    {t("versions.edit.enable_console")}
-                  </div>
-                  <Switch
-                    size="md"
-                    color="success"
-                    isSelected={enableConsole}
-                    onValueChange={setEnableConsole}
-                    classNames={{
-                        wrapper: "group-data-[selected=true]:bg-emerald-500",
-                    }}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
-                  <div className="text-medium font-medium">
-                    {t("versions.edit.enable_render_dragon")}
-                  </div>
-                  <Switch
-                    size="md"
-                    color="success"
-                    isSelected={enableRenderDragon}
-                    onValueChange={setEnableRenderDragon}
-                    classNames={{
-                        wrapper: "group-data-[selected=true]:bg-emerald-500",
-                    }}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
-                  <div className="text-medium font-medium">
-                    {t("versions.edit.enable_editor_mode")}
-                  </div>
-                  <Switch
-                    size="md"
-                    color="success"
-                    isSelected={enableEditorMode}
-                    onValueChange={setEnableEditorMode}
-                    classNames={{
-                        wrapper: "group-data-[selected=true]:bg-emerald-500",
-                    }}
-                  />
-                </div>
-                <div className="mt-4 pt-4 border-t border-default-200/50">
-                  <div className="text-xs font-bold text-danger-500 mb-2 uppercase tracking-wider">
-                    {t("versions.edit.danger_zone_title")}
-                  </div>
-                  <div className="flex items-center justify-between bg-danger-50 dark:bg-danger-500/10 p-4 rounded-2xl border border-danger-100 dark:border-danger-500/20">
-                    <div className="text-tiny text-default-500 max-w-[60%]">
-                      {isRegistered
-                        ? t("versions.edit.unregister_hint")
-                        : t("versions.edit.delete_hint")}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {isRegistered ? (
+                      <div className="flex flex-col gap-2">
                         <Button
                           size="sm"
                           variant="flat"
-                          color="warning"
+                          color="danger"
                           radius="full"
-                          isDisabled={loading}
-                          className="font-medium"
+                          className="justify-start px-4 font-medium"
                           onPress={async () => {
                             try {
-                              const has = await (
-                                minecraft as any
-                              )?.IsGDKInstalled?.();
-                              if (!has) {
-                                setUnregisterOpen(false);
-                                setGdkMissingOpen(true);
-                                return;
+                              const rm = minecraft?.RemoveVersionLogo;
+                              if (typeof rm === "function") {
+                                await rm(targetName);
                               }
-                              const fn = (minecraft as any)
-                                ?.UnregisterVersionByName;
-                              if (typeof fn === "function") {
-                                setUnregisterOpen(true);
-                                const err: string = await fn(targetName);
-                                setUnregisterOpen(false);
-                                if (err) {
-                                  setError(String(err));
-                                } else {
-                                  setIsRegistered(false);
-                                  setUnregisterSuccessOpen(true);
-                                }
-                              }
-                            } catch {
-                              setUnregisterOpen(false);
-                              setError("ERR_UNREGISTER_FAILED");
-                            }
+                            } catch {}
+                            setLogoDataUrl("");
                           }}
                         >
-                          {t("versions.edit.unregister_button")}
+                          {t("versions.logo.clear")}
                         </Button>
-                      ) : (
                         <Button
                           size="sm"
-                          color="danger"
                           variant="flat"
+                          color="primary"
                           radius="full"
-                          className="font-medium bg-white/80 dark:bg-zinc-800/80 shadow-sm"
-                          onPress={() => setDeleteOpen(true)}
+                          className="justify-start px-4 font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          onPress={async () => {
+                            try {
+                              const err: string =
+                                await minecraft?.CreateDesktopShortcut(
+                                  targetName,
+                                );
+                              if (err) {
+                                setError(String(err));
+                              } else {
+                                setShortcutSuccessOpen(true);
+                              }
+                            } catch {
+                              setError("ERR_SHORTCUT_CREATE_FAILED");
+                            }
+                          }}
+                          startContent={<FaWindows />}
                         >
-                          {t("common.delete")}
+                          {
+                            t(
+                              "launcherpage.shortcut.create_button",
+                            ) as unknown as string
+                          }
                         </Button>
-                      )}
+                      </div>
+                    </div>
+                    <p className="text-tiny text-default-400">
+                      {t("versions.logo.hint")}
+                    </p>
+                  </div>
+                </CardBody>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: 0.15 }}
+            >
+              <Card className="h-full min-h-[160px] border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
+                <CardBody className="p-6 sm:p-8 flex flex-col gap-5">
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
+                    <div className="text-medium font-medium">
+                      {t("versions.edit.enable_isolation")}
+                    </div>
+                    <Switch
+                      size="md"
+                      color="success"
+                      isSelected={enableIsolation}
+                      onValueChange={setEnableIsolation}
+                      classNames={{
+                        wrapper: "group-data-[selected=true]:bg-emerald-500",
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
+                    <div className="text-medium font-medium">
+                      {t("versions.edit.enable_console")}
+                    </div>
+                    <Switch
+                      size="md"
+                      color="success"
+                      isSelected={enableConsole}
+                      onValueChange={setEnableConsole}
+                      classNames={{
+                        wrapper: "group-data-[selected=true]:bg-emerald-500",
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
+                    <div className="text-medium font-medium">
+                      {t("versions.edit.enable_render_dragon")}
+                    </div>
+                    <Switch
+                      size="md"
+                      color="success"
+                      isSelected={enableRenderDragon}
+                      onValueChange={setEnableRenderDragon}
+                      classNames={{
+                        wrapper: "group-data-[selected=true]:bg-emerald-500",
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-default-100/50 transition-colors">
+                    <div className="text-medium font-medium">
+                      {t("versions.edit.enable_editor_mode")}
+                    </div>
+                    <Switch
+                      size="md"
+                      color="success"
+                      isSelected={enableEditorMode}
+                      onValueChange={setEnableEditorMode}
+                      classNames={{
+                        wrapper: "group-data-[selected=true]:bg-emerald-500",
+                      }}
+                    />
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-default-200/50">
+                    <div className="text-xs font-bold text-danger-500 mb-2 uppercase tracking-wider">
+                      {t("versions.edit.danger_zone_title")}
+                    </div>
+                    <div className="flex items-center justify-between bg-danger-50 dark:bg-danger-500/10 p-4 rounded-2xl border border-danger-100 dark:border-danger-500/20">
+                      <div className="text-tiny text-default-500 max-w-[60%]">
+                        {isRegistered
+                          ? t("versions.edit.unregister_hint")
+                          : t("versions.edit.delete_hint")}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isRegistered ? (
+                          <Button
+                            size="sm"
+                            variant="flat"
+                            color="warning"
+                            radius="full"
+                            isDisabled={loading}
+                            className="font-medium"
+                            onPress={async () => {
+                              try {
+                                const has = await (
+                                  minecraft as any
+                                )?.IsGDKInstalled?.();
+                                if (!has) {
+                                  setUnregisterOpen(false);
+                                  setGdkMissingOpen(true);
+                                  return;
+                                }
+                                const fn = (minecraft as any)
+                                  ?.UnregisterVersionByName;
+                                if (typeof fn === "function") {
+                                  setUnregisterOpen(true);
+                                  const err: string = await fn(targetName);
+                                  setUnregisterOpen(false);
+                                  if (err) {
+                                    setError(String(err));
+                                  } else {
+                                    setIsRegistered(false);
+                                    setUnregisterSuccessOpen(true);
+                                  }
+                                }
+                              } catch {
+                                setUnregisterOpen(false);
+                                setError("ERR_UNREGISTER_FAILED");
+                              }
+                            }}
+                          >
+                            {t("versions.edit.unregister_button")}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            color="danger"
+                            variant="flat"
+                            radius="full"
+                            className="font-medium bg-white/80 dark:bg-zinc-800/80 shadow-sm"
+                            onPress={() => setDeleteOpen(true)}
+                          >
+                            {t("common.delete")}
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardBody>
-            </Card>
-          </motion.div>
+                </CardBody>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="sm:hidden sticky bottom-0 inset-x-0 z-40 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-xl border-t border-default-200/50 px-4 py-3 flex items-center justify-end gap-3">
+          <Button
+            variant="light"
+            radius="full"
+            onPress={() => navigate(returnToPath)}
+            className="min-w-0 font-medium text-default-600"
+          >
+            {t("common.cancel")}
+          </Button>
+          <Button
+            color="primary"
+            radius="full"
+            className="min-w-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
+            onPress={onSave}
+          >
+            {t("common.ok")}
+          </Button>
         </div>
       </div>
-
-      <div className="sm:hidden sticky bottom-0 inset-x-0 z-40 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-xl border-t border-default-200/50 px-4 py-3 flex items-center justify-end gap-3">
-        <Button
-          variant="light"
-          radius="full"
-          onPress={() => navigate(returnToPath)}
-          className="min-w-0 font-medium text-default-600"
-        >
-          {t("common.cancel")}
-        </Button>
-        <Button 
-          color="primary" 
-          radius="full"
-          className="min-w-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-900/20"
-          onPress={onSave}
-        >
-          {t("common.ok")}
-        </Button>
-      </div>
-    </div>
 
       <BaseModal
         isOpen={unregisterOpen}
@@ -672,14 +687,16 @@ export default function VersionSettingsPage() {
             (/* onClose */) => (
               <>
                 <BaseModalHeader>
-                  <motion.h2 
+                  <motion.h2
                     className="text-2xl font-black tracking-tight text-warning-500"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25 }}
                   >
                     {
-                      t("versions.edit.unregister_progress.title") as unknown as string
+                      t(
+                        "versions.edit.unregister_progress.title",
+                      ) as unknown as string
                     }
                   </motion.h2>
                 </BaseModalHeader>
@@ -690,15 +707,17 @@ export default function VersionSettingsPage() {
                     transition={{ duration: 0.25, delay: 0.1 }}
                   >
                     <div className="text-medium font-medium text-default-600 mb-4">
-                        {
-                        t("versions.edit.unregister_progress.body") as unknown as string
-                        }
+                      {
+                        t(
+                          "versions.edit.unregister_progress.body",
+                        ) as unknown as string
+                      }
                     </div>
-                    <Progress 
-                        size="sm" 
-                        isIndeterminate 
-                        aria-label="Unregistering" 
-                        classNames={{ indicator: "bg-warning-500" }} 
+                    <Progress
+                      size="sm"
+                      isIndeterminate
+                      aria-label="Unregistering"
+                      classNames={{ indicator: "bg-warning-500" }}
                     />
                   </motion.div>
                 </BaseModalBody>
@@ -719,26 +738,30 @@ export default function VersionSettingsPage() {
           {(onClose) => (
             <>
               <BaseModalHeader>
-                <motion.h2 
-                    className="text-2xl font-black tracking-tight text-success-500"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                <motion.h2
+                  className="text-2xl font-black tracking-tight text-success-500"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {
-                    t("versions.edit.unregister_success.title") as unknown as string
+                    t(
+                      "versions.edit.unregister_success.title",
+                    ) as unknown as string
                   }
                 </motion.h2>
               </BaseModalHeader>
               <BaseModalBody>
-                <motion.div 
-                    className="text-medium font-medium text-default-600"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: 0.1 }}
+                <motion.div
+                  className="text-medium font-medium text-default-600"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, delay: 0.1 }}
                 >
                   {
-                    t("versions.edit.unregister_success.body") as unknown as string
+                    t(
+                      "versions.edit.unregister_success.body",
+                    ) as unknown as string
                   }
                 </motion.div>
               </BaseModalBody>
@@ -753,7 +776,9 @@ export default function VersionSettingsPage() {
                   }}
                 >
                   {
-                    t("launcherpage.delete.complete.close_button") as unknown as string
+                    t(
+                      "launcherpage.delete.complete.close_button",
+                    ) as unknown as string
                   }
                 </Button>
               </BaseModalFooter>
@@ -772,27 +797,23 @@ export default function VersionSettingsPage() {
           {(onClose) => (
             <>
               <BaseModalHeader>
-                <motion.h2 
-                    className="text-2xl font-black tracking-tight text-warning-500"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                <motion.h2
+                  className="text-2xl font-black tracking-tight text-warning-500"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  {
-                    t("launcherpage.gdk_missing.title") as unknown as string
-                  }
+                  {t("launcherpage.gdk_missing.title") as unknown as string}
                 </motion.h2>
               </BaseModalHeader>
               <BaseModalBody>
-                <motion.div 
-                    className="text-medium font-medium text-default-600"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: 0.1 }}
+                <motion.div
+                  className="text-medium font-medium text-default-600"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, delay: 0.1 }}
                 >
-                  {
-                    t("launcherpage.gdk_missing.body") as unknown as string
-                  }
+                  {t("launcherpage.gdk_missing.body") as unknown as string}
                 </motion.div>
               </BaseModalBody>
               <BaseModalFooter>
@@ -804,9 +825,7 @@ export default function VersionSettingsPage() {
                     setGdkMissingOpen(false);
                   }}
                 >
-                  {
-                    t("common.cancel") as unknown as string
-                  }
+                  {t("common.cancel") as unknown as string}
                 </Button>
                 <Button
                   color="primary"
@@ -819,7 +838,9 @@ export default function VersionSettingsPage() {
                   }}
                 >
                   {
-                    t("launcherpage.gdk_missing.go_settings") as unknown as string
+                    t(
+                      "launcherpage.gdk_missing.go_settings",
+                    ) as unknown as string
                   }
                 </Button>
               </BaseModalFooter>
@@ -836,30 +857,33 @@ export default function VersionSettingsPage() {
         closeButton
         aria-label="error-modal"
         classNames={{
-          closeButton: "absolute right-5 top-5 z-50 hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 dark:active:bg-white/10 text-default-500",
+          closeButton:
+            "absolute right-5 top-5 z-50 hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 dark:active:bg-white/10 text-default-500",
         }}
       >
         <ModalContent className="shadow-none">
           {(onClose) => (
             <>
               <BaseModalHeader>
-                <motion.h2 
-                    className="text-2xl font-black tracking-tight text-danger-500"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                <motion.h2
+                  className="text-2xl font-black tracking-tight text-danger-500"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
-                    {t("common.error")}
+                  {t("common.error")}
                 </motion.h2>
               </BaseModalHeader>
               <BaseModalBody>
-                <motion.div 
-                    className="p-4 rounded-2xl bg-danger-50 dark:bg-danger-500/10 border border-danger-100 dark:border-danger-500/20 text-danger-600 dark:text-danger-400 font-medium"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: 0.1 }}
+                <motion.div
+                  className="p-4 rounded-2xl bg-danger-50 dark:bg-danger-500/10 border border-danger-100 dark:border-danger-500/20 text-danger-600 dark:text-danger-400 font-medium"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, delay: 0.1 }}
                 >
-                    <div className="text-medium wrap-break-word">{getErrorText(error)}</div>
+                  <div className="text-medium wrap-break-word">
+                    {getErrorText(error)}
+                  </div>
                 </motion.div>
               </BaseModalBody>
               <BaseModalFooter>
@@ -886,34 +910,35 @@ export default function VersionSettingsPage() {
         }}
         size="md"
         classNames={{
-          closeButton: "absolute right-5 top-5 z-50 hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 dark:active:bg-white/10 text-default-500",
+          closeButton:
+            "absolute right-5 top-5 z-50 hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 dark:active:bg-white/10 text-default-500",
         }}
       >
         <ModalContent className="shadow-none">
           {(onClose) => (
             <>
               <BaseModalHeader>
-                <motion.h2 
-                    className="text-2xl font-black tracking-tight text-success-500"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                <motion.h2
+                  className="text-2xl font-black tracking-tight text-success-500"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {
-                    t("launcherpage.shortcut.success.title") as unknown as string
+                    t(
+                      "launcherpage.shortcut.success.title",
+                    ) as unknown as string
                   }
                 </motion.h2>
               </BaseModalHeader>
               <BaseModalBody>
-                <motion.div 
-                    className="text-medium font-medium text-default-600"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: 0.1 }}
+                <motion.div
+                  className="text-medium font-medium text-default-600"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, delay: 0.1 }}
                 >
-                  {
-                    t("launcherpage.shortcut.success.body") as unknown as string
-                  }
+                  {t("launcherpage.shortcut.success.body") as unknown as string}
                 </motion.div>
               </BaseModalBody>
               <BaseModalFooter>
@@ -926,9 +951,7 @@ export default function VersionSettingsPage() {
                     setShortcutSuccessOpen(false);
                   }}
                 >
-                  {
-                    t("common.close") as unknown as string
-                  }
+                  {t("common.close") as unknown as string}
                 </Button>
               </BaseModalFooter>
             </>
@@ -943,29 +966,27 @@ export default function VersionSettingsPage() {
         }}
         hideCloseButton
         isDismissable={!deleting}
-        classNames={{
-
-        }}
+        classNames={{}}
       >
         <ModalContent className="shadow-none">
           {(onClose) => (
             <>
               <BaseModalHeader>
-                <motion.h2 
-                    className="text-2xl font-black tracking-tight text-danger-500"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                <motion.h2
+                  className="text-2xl font-black tracking-tight text-danger-500"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {t("launcherpage.delete.confirm.title")}
                 </motion.h2>
               </BaseModalHeader>
               <BaseModalBody>
-                <motion.div 
-                    className="flex flex-col gap-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: 0.1 }}
+                <motion.div
+                  className="flex flex-col gap-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, delay: 0.1 }}
                 >
                   <div className="text-medium font-medium text-default-600 wrap-break-word whitespace-pre-wrap">
                     {t("launcherpage.delete.confirm.content")}
@@ -1016,38 +1037,38 @@ export default function VersionSettingsPage() {
           {(onClose) => (
             <>
               <BaseModalHeader>
-                <motion.div 
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                <motion.div
+                  className="flex items-center gap-3"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
-                    <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-900/20">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-900/20">
                     <svg
-                        viewBox="0 0 24 24"
-                        width="16"
-                        height="16"
-                        className="text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                      viewBox="0 0 24 24"
+                      width="16"
+                      height="16"
+                      className="text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                        <path d="M20 6L9 17l-5-5" />
+                      <path d="M20 6L9 17l-5-5" />
                     </svg>
-                    </div>
-                    <h2 className="text-2xl font-black tracking-tight text-emerald-500">
+                  </div>
+                  <h2 className="text-2xl font-black tracking-tight text-emerald-500">
                     {t("launcherpage.delete.complete.title")}
-                    </h2>
+                  </h2>
                 </motion.div>
               </BaseModalHeader>
               <BaseModalBody>
-                <motion.div 
-                    className="text-medium font-medium text-default-600"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: 0.1 }}
+                <motion.div
+                  className="text-medium font-medium text-default-600"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, delay: 0.1 }}
                 >
                   {t("launcherpage.delete.complete.content")}
                   {deleteSuccessMsg ? (

@@ -18,7 +18,12 @@ import {
   Card,
   CardBody,
 } from "@heroui/react";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -41,11 +46,11 @@ import {
   OpenPathDir,
   ListPacksForVersion,
   DeletePack,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
-import * as types from "../../bindings/github.com/liteldev/LeviLauncher/internal/types/models";
-import * as packages from "../../bindings/github.com/liteldev/LeviLauncher/internal/packages/models";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as types from "bindings/github.com/liteldev/LeviLauncher/internal/types/models";
+import * as packages from "bindings/github.com/liteldev/LeviLauncher/internal/packages/models";
 import { readCurrentVersionName } from "@/utils/currentVersion";
-import * as minecraft from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { renderMcText } from "@/utils/mcformat";
 import { toast } from "react-hot-toast";
 import { PageHeader } from "@/components/PageHeader";
@@ -89,7 +94,7 @@ export default function ResourcePacksPage() {
   const [sortKey, setSortKey] = React.useState<"name" | "time">(() => {
     try {
       const saved = JSON.parse(
-        localStorage.getItem("content.resource.sort") || "{}"
+        localStorage.getItem("content.resource.sort") || "{}",
       );
       const k = saved?.sortKey;
       if (k === "name" || k === "time") return k;
@@ -99,7 +104,7 @@ export default function ResourcePacksPage() {
   const [sortAsc, setSortAsc] = React.useState<boolean>(() => {
     try {
       const saved = JSON.parse(
-        localStorage.getItem("content.resource.sort") || "{}"
+        localStorage.getItem("content.resource.sort") || "{}",
       );
       const a = saved?.sortAsc;
       if (typeof a === "boolean") return a;
@@ -155,17 +160,17 @@ export default function ResourcePacksPage() {
     const q = query.trim().toLowerCase();
     const f = packs.filter((p) => {
       const nm = String(
-        p.name || p.path?.split("\\").pop() || ""
+        p.name || p.path?.split("\\").pop() || "",
       ).toLowerCase();
       return q ? nm.includes(q) : true;
     });
     return f.sort((a: any, b: any) => {
       if (sortKey === "name") {
         const an = String(
-          a.name || a.path?.split("\\").pop() || ""
+          a.name || a.path?.split("\\").pop() || "",
         ).toLowerCase();
         const bn = String(
-          b.name || b.path?.split("\\").pop() || ""
+          b.name || b.path?.split("\\").pop() || "",
         ).toLowerCase();
         const res = an.localeCompare(bn);
         return sortAsc ? res : -res;
@@ -211,7 +216,6 @@ export default function ResourcePacksPage() {
     }
   };
 
-
   const refreshAll = React.useCallback(
     async (silent?: boolean) => {
       if (!silent) setLoading(true);
@@ -245,9 +249,9 @@ export default function ResourcePacksPage() {
           };
           setRoots(safe);
           setEntries([]);
-          
+
           const filtered = (allPacks || []).filter(
-            (p) => p.manifest.pack_type === 6
+            (p) => p.manifest.pack_type === 6,
           );
 
           const basic = await Promise.all(
@@ -267,7 +271,7 @@ export default function ResourcePacksPage() {
                   path: p.path,
                 };
               }
-            })
+            }),
           );
 
           const withTime = await Promise.all(
@@ -279,7 +283,7 @@ export default function ResourcePacksPage() {
                 }
               } catch {}
               return { ...p, modTime };
-            })
+            }),
           );
           setPacks(withTime);
           Promise.resolve()
@@ -287,7 +291,7 @@ export default function ResourcePacksPage() {
               const readCache = () => {
                 try {
                   return JSON.parse(
-                    localStorage.getItem("content.size.cache") || "{}"
+                    localStorage.getItem("content.size.cache") || "{}",
                   );
                 } catch {
                   return {};
@@ -314,8 +318,8 @@ export default function ResourcePacksPage() {
                     ) {
                       setPacks((prev) =>
                         prev.map((it: any) =>
-                          it.path === key ? { ...it, size: c.size } : it
-                        )
+                          it.path === key ? { ...it, size: c.size } : it,
+                        ),
                       );
                     } else {
                       let size = 0;
@@ -329,11 +333,11 @@ export default function ResourcePacksPage() {
                       cache[key] = { modTime: p.modTime || 0, size };
                       setPacks((prev) =>
                         prev.map((it: any) =>
-                          it.path === key ? { ...it, size } : it
-                        )
+                          it.path === key ? { ...it, size } : it,
+                        ),
                       );
                     }
-                  })
+                  }),
                 );
                 writeCache(cache);
               }
@@ -344,13 +348,13 @@ export default function ResourcePacksPage() {
         setError(
           t("contentpage.error_resolve_paths", {
             defaultValue: "无法解析内容路径。",
-          }) as string
+          }) as string,
         );
       } finally {
         if (!silent) setLoading(false);
       }
     },
-    [hasBackend, t]
+    [hasBackend, t],
   );
 
   React.useEffect(() => {
@@ -360,7 +364,7 @@ export default function ResourcePacksPage() {
     try {
       localStorage.setItem(
         "content.resource.sort",
-        JSON.stringify({ sortKey, sortAsc })
+        JSON.stringify({ sortKey, sortAsc }),
       );
     } catch {}
   }, [sortKey, sortAsc]);
@@ -437,8 +441,10 @@ export default function ResourcePacksPage() {
       <Card className="flex-1 min-h-0 border-none shadow-md bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md rounded-4xl">
         <CardBody className="p-0 flex flex-col h-full overflow-hidden">
           <div className="shrink-0 p-4 sm:p-6 pb-2 flex flex-col gap-4 border-b border-default-200 dark:border-white/10">
-            <PageHeader 
-              title={t("contentpage.resource_packs", { defaultValue: "资源包" })}
+            <PageHeader
+              title={t("contentpage.resource_packs", {
+                defaultValue: "资源包",
+              })}
               startContent={
                 <Button
                   isIconOnly
@@ -487,7 +493,9 @@ export default function ResourcePacksPage() {
             {/* Toolbar */}
             <div className="flex flex-col md:flex-row gap-4 items-end md:items-center justify-between">
               <Input
-                placeholder={t("common.search_placeholder", { defaultValue: "搜索..." })}
+                placeholder={t("common.search_placeholder", {
+                  defaultValue: "搜索...",
+                })}
                 value={query}
                 onValueChange={setQuery}
                 startContent={<FaFilter className="text-default-400" />}
@@ -502,12 +510,17 @@ export default function ResourcePacksPage() {
                 variant="flat"
                 className="w-full md:max-w-xs"
                 classNames={{
-                  inputWrapper: "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
+                  inputWrapper:
+                    "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
                 }}
               />
 
               <div className="flex items-center gap-3">
-                <Tooltip content={t("common.select_mode", { defaultValue: "选择模式" })}>
+                <Tooltip
+                  content={t("common.select_mode", {
+                    defaultValue: "选择模式",
+                  })}
+                >
                   <Button
                     isIconOnly
                     radius="full"
@@ -524,13 +537,17 @@ export default function ResourcePacksPage() {
 
                 {isSelectMode && (
                   <Checkbox
-                    isSelected={filtered.length > 0 && selectedCount === filtered.length}
+                    isSelected={
+                      filtered.length > 0 && selectedCount === filtered.length
+                    }
                     onValueChange={selectAll}
                     radius="full"
                     size="lg"
                     classNames={{ wrapper: "after:bg-primary" }}
                   >
-                    <span className="text-sm text-default-600">{t("common.select_all", { defaultValue: "全选" })}</span>
+                    <span className="text-sm text-default-600">
+                      {t("common.select_all", { defaultValue: "全选" })}
+                    </span>
                   </Checkbox>
                 )}
 
@@ -553,24 +570,54 @@ export default function ResourcePacksPage() {
                           }) as string)}
                       {" / "}
                       {sortAsc
-                        ? t("contentpage.sort_asc", { defaultValue: "从上到下" })
-                        : t("contentpage.sort_desc", { defaultValue: "从下到上" })}
+                        ? t("contentpage.sort_asc", {
+                            defaultValue: "从上到下",
+                          })
+                        : t("contentpage.sort_desc", {
+                            defaultValue: "从下到上",
+                          })}
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
                     selectionMode="single"
-                    selectedKeys={new Set([`${sortKey}-${sortAsc ? "asc" : "desc"}`])}
+                    selectedKeys={
+                      new Set([`${sortKey}-${sortAsc ? "asc" : "desc"}`])
+                    }
                     onSelectionChange={(keys) => {
-                        const val = Array.from(keys)[0] as string;
-                        const [k, order] = val.split("-");
-                        setSortKey(k as "name" | "time");
-                        setSortAsc(order === "asc");
+                      const val = Array.from(keys)[0] as string;
+                      const [k, order] = val.split("-");
+                      setSortKey(k as "name" | "time");
+                      setSortAsc(order === "asc");
                     }}
                   >
-                    <DropdownItem key="name-asc" startContent={<FaSortAmountDown />}>{t("filemanager.sort.name", { defaultValue: "名称" })} (A-Z)</DropdownItem>
-                    <DropdownItem key="name-desc" startContent={<FaSortAmountUp />}>{t("filemanager.sort.name", { defaultValue: "名称" })} (Z-A)</DropdownItem>
-                    <DropdownItem key="time-asc" startContent={<FaSortAmountDown />}>{t("contentpage.sort_time", { defaultValue: "时间" })} (Old-New)</DropdownItem>
-                    <DropdownItem key="time-desc" startContent={<FaSortAmountUp />}>{t("contentpage.sort_time", { defaultValue: "时间" })} (New-Old)</DropdownItem>
+                    <DropdownItem
+                      key="name-asc"
+                      startContent={<FaSortAmountDown />}
+                    >
+                      {t("filemanager.sort.name", { defaultValue: "名称" })}{" "}
+                      (A-Z)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="name-desc"
+                      startContent={<FaSortAmountUp />}
+                    >
+                      {t("filemanager.sort.name", { defaultValue: "名称" })}{" "}
+                      (Z-A)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="time-asc"
+                      startContent={<FaSortAmountDown />}
+                    >
+                      {t("contentpage.sort_time", { defaultValue: "时间" })}{" "}
+                      (Old-New)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="time-desc"
+                      startContent={<FaSortAmountUp />}
+                    >
+                      {t("contentpage.sort_time", { defaultValue: "时间" })}{" "}
+                      (New-Old)
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
 
@@ -588,7 +635,10 @@ export default function ResourcePacksPage() {
                         startContent={<FaTrash />}
                         onPress={delManyCfmOnOpen}
                       >
-                        {t("common.delete_selected", { count: selectedCount, defaultValue: "删除选中" })}
+                        {t("common.delete_selected", {
+                          count: selectedCount,
+                          defaultValue: "删除选中",
+                        })}
                       </Button>
                     </motion.div>
                   )}
@@ -596,12 +646,18 @@ export default function ResourcePacksPage() {
               </div>
             </div>
             <div className="mt-2 text-default-500 text-sm flex flex-wrap items-center gap-2">
-              <span>{t("contentpage.current_version", { defaultValue: "当前版本" })}:</span>
+              <span>
+                {t("contentpage.current_version", { defaultValue: "当前版本" })}
+                :
+              </span>
               <span className="font-medium text-default-700 bg-default-100 px-2 py-0.5 rounded-md">
-                {currentVersionName || t("contentpage.none", { defaultValue: "无" })}
+                {currentVersionName ||
+                  t("contentpage.none", { defaultValue: "无" })}
               </span>
               <span className="text-default-300">|</span>
-              <span>{t("contentpage.isolation", { defaultValue: "版本隔离" })}:</span>
+              <span>
+                {t("contentpage.isolation", { defaultValue: "版本隔离" })}:
+              </span>
               <span
                 className={`font-medium px-2 py-0.5 rounded-md ${
                   roots.isIsolation
@@ -616,10 +672,7 @@ export default function ResourcePacksPage() {
             </div>
           </div>
 
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 sm:p-6"
-          >
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <Spinner size="lg" />
@@ -645,7 +698,7 @@ export default function ResourcePacksPage() {
                               : "border-default-200 dark:border-zinc-700/50 hover:border-default-400 dark:hover:border-zinc-600"
                           }`}
                           onClick={() => {
-                             if (isSelectMode) toggleSelect(p.path);
+                            if (isSelectMode) toggleSelect(p.path);
                           }}
                         >
                           <div className="relative shrink-0">
@@ -666,7 +719,10 @@ export default function ResourcePacksPage() {
                                 isSelected={!!selected[p.path]}
                                 onValueChange={() => toggleSelect(p.path)}
                                 className="absolute -top-2 -left-2 z-20"
-                                classNames={{ wrapper: "bg-white dark:bg-zinc-900 shadow-md" }}
+                                classNames={{
+                                  wrapper:
+                                    "bg-white dark:bg-zinc-900 shadow-md",
+                                }}
                               />
                             )}
                           </div>
@@ -677,7 +733,9 @@ export default function ResourcePacksPage() {
                                 className="text-base sm:text-lg font-bold text-default-900 dark:text-white truncate"
                                 title={p.name}
                               >
-                                {renderMcText(p.name || p.path.split("\\").pop())}
+                                {renderMcText(
+                                  p.name || p.path.split("\\").pop(),
+                                )}
                               </h3>
                             </div>
 
@@ -689,27 +747,42 @@ export default function ResourcePacksPage() {
                             </p>
 
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                               <div className="flex items-center gap-1" title={t("common.size", { defaultValue: "大小" })}>
-                                  <FaHdd />
-                                  <span>{formatBytes(p.size)}</span>
-                               </div>
-                               <div className="flex items-center gap-1" title={t("common.date", { defaultValue: "日期" })}>
-                                  <FaClock />
-                                  <span>{formatDate(p.modTime)}</span>
-                               </div>
-                               {p.version && (
-                                 <div className="flex items-center gap-1" title={t("common.version", { defaultValue: "版本" })}>
-                                    <FaTag />
-                                    <span>v{p.version}</span>
-                                 </div>
-                               )}
+                              <div
+                                className="flex items-center gap-1"
+                                title={t("common.size", {
+                                  defaultValue: "大小",
+                                })}
+                              >
+                                <FaHdd />
+                                <span>{formatBytes(p.size)}</span>
+                              </div>
+                              <div
+                                className="flex items-center gap-1"
+                                title={t("common.date", {
+                                  defaultValue: "日期",
+                                })}
+                              >
+                                <FaClock />
+                                <span>{formatDate(p.modTime)}</span>
+                              </div>
+                              {p.version && (
+                                <div
+                                  className="flex items-center gap-1"
+                                  title={t("common.version", {
+                                    defaultValue: "版本",
+                                  })}
+                                >
+                                  <FaTag />
+                                  <span>v{p.version}</span>
+                                </div>
+                              )}
                             </div>
 
                             <div className="flex flex-1 items-end justify-between mt-2">
-                               <div className="flex gap-1">
-                                  {/* Placeholder for future tags */}
-                               </div>
-                               <Button
+                              <div className="flex gap-1">
+                                {/* Placeholder for future tags */}
+                              </div>
+                              <Button
                                 size="sm"
                                 color="danger"
                                 variant="flat"
@@ -799,7 +872,11 @@ export default function ResourcePacksPage() {
                 )}
               </BaseModalBody>
               <BaseModalFooter>
-                <Button variant="flat" onPress={onClose} isDisabled={deletingOne}>
+                <Button
+                  variant="flat"
+                  onPress={onClose}
+                  isDisabled={deletingOne}
+                >
                   {t("common.cancel", { defaultValue: "取消" })}
                 </Button>
                 <Button
@@ -814,13 +891,13 @@ export default function ResourcePacksPage() {
                           t("contentpage.deleted_name", {
                             name: activePack.name,
                             defaultValue: `已删除 ${activePack.name}`,
-                          })
+                          }),
                         );
                         setActivePack(null);
                         refreshAll();
                         delCfmOnOpenChange();
                       } finally {
-                         setDeletingOne(false);
+                        setDeletingOne(false);
                       }
                     }
                   }}
@@ -874,7 +951,11 @@ export default function ResourcePacksPage() {
                 )}
               </BaseModalBody>
               <BaseModalFooter>
-                <Button variant="flat" onPress={onClose} isDisabled={deletingMany}>
+                <Button
+                  variant="flat"
+                  onPress={onClose}
+                  isDisabled={deletingMany}
+                >
                   {t("common.cancel", { defaultValue: "取消" })}
                 </Button>
                 <Button
@@ -882,10 +963,10 @@ export default function ResourcePacksPage() {
                   isDisabled={deletingMany}
                   onPress={async () => {
                     const targets = Object.keys(selected).filter(
-                      (k) => selected[k]
+                      (k) => selected[k],
                     );
                     if (targets.length === 0) return;
-                    
+
                     setDeletingMany(true);
                     let success = 0;
                     for (const p of targets) {
@@ -900,7 +981,7 @@ export default function ResourcePacksPage() {
                       t("contentpage.deleted_count", {
                         count: success,
                         defaultValue: `已删除 ${success} 个项目`,
-                      })
+                      }),
                     );
                     setSelected({});
                     // setSelectMode(false);

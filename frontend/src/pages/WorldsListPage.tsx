@@ -49,13 +49,18 @@ import {
   BackupWorld,
   BackupWorldWithVersion,
   OpenPathDir,
-} from "../../bindings/github.com/liteldev/LeviLauncher/minecraft";
+} from "bindings/github.com/liteldev/LeviLauncher/minecraft";
 import { readCurrentVersionName } from "@/utils/currentVersion";
-import { BaseModal, BaseModalHeader, BaseModalBody, BaseModalFooter } from "@/components/BaseModal";
+import {
+  BaseModal,
+  BaseModalHeader,
+  BaseModalBody,
+  BaseModalFooter,
+} from "@/components/BaseModal";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import DefaultWorldPreview from "../assets/images/world-preview-default.jpg";
+import DefaultWorldPreview from "@/assets/images/world-preview-default.jpg";
 
 interface WorldInfo {
   Path: string;
@@ -73,7 +78,7 @@ export default function WorldsListPage() {
     location.state?.versionName || readCurrentVersionName();
 
   const [selectedPlayer, setSelectedPlayer] = useState<string>(
-    location.state?.player || ""
+    location.state?.player || "",
   );
   const [players, setPlayers] = useState<string[]>([]);
   const [worlds, setWorlds] = useState<WorldInfo[]>([]);
@@ -83,7 +88,7 @@ export default function WorldsListPage() {
   const [sortKey, setSortKey] = useState<"name" | "time">(() => {
     try {
       const saved = JSON.parse(
-        localStorage.getItem("content.worlds.sort") || "{}"
+        localStorage.getItem("content.worlds.sort") || "{}",
       );
       const k = saved?.sortKey;
       if (k === "name" || k === "time") return k;
@@ -93,7 +98,7 @@ export default function WorldsListPage() {
   const [sortAsc, setSortAsc] = useState<boolean>(() => {
     try {
       const saved = JSON.parse(
-        localStorage.getItem("content.worlds.sort") || "{}"
+        localStorage.getItem("content.worlds.sort") || "{}",
       );
       const a = saved?.sortAsc;
       if (typeof a === "boolean") return a;
@@ -128,7 +133,7 @@ export default function WorldsListPage() {
 
   // Computed path state
   const [currentWorldsPath, setCurrentWorldsPath] = useState("");
-  
+
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const lastScrollTopRef = React.useRef<number>(0);
   const restorePendingRef = React.useRef<boolean>(false);
@@ -162,22 +167,22 @@ export default function WorldsListPage() {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-        try {
-            const r = await GetContentRoots(currentVersionName || "");
-            setRoots(r);
-            if (r.usersRoot) {
-                const entries = await ListDir(r.usersRoot);
-                if (entries) {
-                    const pList = entries.filter(e => e.isDir).map(e => e.name);
-                    setPlayers(pList);
-                    if (!selectedPlayer && pList.length > 0) {
-                        setSelectedPlayer(pList[0]);
-                    }
-                }
+      try {
+        const r = await GetContentRoots(currentVersionName || "");
+        setRoots(r);
+        if (r.usersRoot) {
+          const entries = await ListDir(r.usersRoot);
+          if (entries) {
+            const pList = entries.filter((e) => e.isDir).map((e) => e.name);
+            setPlayers(pList);
+            if (!selectedPlayer && pList.length > 0) {
+              setSelectedPlayer(pList[0]);
             }
-        } catch (e) {
-            console.error("Failed to list players", e);
+          }
         }
+      } catch (e) {
+        console.error("Failed to list players", e);
+      }
     };
     fetchPlayers();
   }, [currentVersionName]);
@@ -197,40 +202,42 @@ export default function WorldsListPage() {
         if (r.usersRoot && selectedPlayer) {
           worldsPath = `${r.usersRoot}\\${selectedPlayer}\\games\\com.mojang\\minecraftWorlds`;
         } else {
-           if (!selectedPlayer) {
-             setWorlds([]);
-             return;
-           }
+          if (!selectedPlayer) {
+            setWorlds([]);
+            return;
+          }
         }
-        
+
         setCurrentWorldsPath(worldsPath);
 
         const entries = await ListDir(worldsPath);
         if (!entries) {
-            setWorlds([]);
-            return;
+          setWorlds([]);
+          return;
         }
 
         const list: WorldInfo[] = [];
-        await Promise.all(entries.map(async (e) => {
+        await Promise.all(
+          entries.map(async (e) => {
             if (!e.isDir) return;
             try {
-                const name = await GetWorldLevelName(e.path);
-                const icon = await GetWorldIconDataUrl(e.path);
-                const size = await GetPathSize(e.path);
-                const time = await GetPathModTime(e.path);
-                
-                list.push({
-                    Path: e.path,
-                    FolderName: name || e.name,
-                    IconBase64: icon,
-                    Size: size,
-                    LastModified: time,
-                });
+              const name = await GetWorldLevelName(e.path);
+              const icon = await GetWorldIconDataUrl(e.path);
+              const size = await GetPathSize(e.path);
+              const time = await GetPathModTime(e.path);
+
+              list.push({
+                Path: e.path,
+                FolderName: name || e.name,
+                IconBase64: icon,
+                Size: size,
+                LastModified: time,
+              });
             } catch (err) {
-                console.error("Error reading world info", e.path, err);
+              console.error("Error reading world info", e.path, err);
             }
-        }));
+          }),
+        );
 
         setWorlds(list);
       } catch (err: any) {
@@ -246,7 +253,7 @@ export default function WorldsListPage() {
   const persistSort = useCallback((key: "name" | "time", asc: boolean) => {
     localStorage.setItem(
       "content.worlds.sort",
-      JSON.stringify({ sortKey: key, sortAsc: asc })
+      JSON.stringify({ sortKey: key, sortAsc: asc }),
     );
   }, []);
 
@@ -336,7 +343,7 @@ export default function WorldsListPage() {
         t("contentpage.deleted_count", {
           count: successCount,
           defaultValue: `已删除 ${successCount} 个存档`,
-        })
+        }),
       );
       setSelected({});
       refreshAll();
@@ -351,21 +358,26 @@ export default function WorldsListPage() {
     try {
       let dest = "";
       try {
-          dest = await BackupWorldWithVersion(
-            w.Path,
-            currentVersionName || ""
-          );
+        dest = await BackupWorldWithVersion(w.Path, currentVersionName || "");
       } catch {
-           dest = await BackupWorld(w.Path);
+        dest = await BackupWorld(w.Path);
       }
 
       if (dest) {
-        toast.success(t("contentpage.backup_success", { defaultValue: "备份成功" }));
+        toast.success(
+          t("contentpage.backup_success", { defaultValue: "备份成功" }),
+        );
       } else {
-        toast.error(t("contentpage.backup_failed", { defaultValue: "备份失败" }));
+        toast.error(
+          t("contentpage.backup_failed", { defaultValue: "备份失败" }),
+        );
       }
     } catch (e) {
-      toast.error(t("contentpage.backup_failed", { defaultValue: "备份失败" }) + ": " + String(e));
+      toast.error(
+        t("contentpage.backup_failed", { defaultValue: "备份失败" }) +
+          ": " +
+          String(e),
+      );
     } finally {
       setBackingUp("");
     }
@@ -448,8 +460,16 @@ export default function WorldsListPage() {
                 <>
                   {players.length > 0 && (
                     <Select
-                      aria-label={t("contentpage.players_aria", { defaultValue: "玩家列表" }) as string}
-                      placeholder={t("contentpage.select_player", { defaultValue: "选择玩家" }) as string}
+                      aria-label={
+                        t("contentpage.players_aria", {
+                          defaultValue: "玩家列表",
+                        }) as string
+                      }
+                      placeholder={
+                        t("contentpage.select_player", {
+                          defaultValue: "选择玩家",
+                        }) as string
+                      }
                       selectedKeys={selectedPlayer ? [selectedPlayer] : []}
                       onSelectionChange={(keys) => {
                         const val = Array.from(keys)[0] as string;
@@ -510,7 +530,11 @@ export default function WorldsListPage() {
             {/* Toolbar */}
             <div className="flex flex-col md:flex-row gap-4 items-end md:items-center justify-between">
               <Input
-                placeholder={t("common.search_placeholder", { defaultValue: "搜索..." }) as string}
+                placeholder={
+                  t("common.search_placeholder", {
+                    defaultValue: "搜索...",
+                  }) as string
+                }
                 value={search}
                 onValueChange={setSearch}
                 startContent={<FaFilter className="text-default-400" />}
@@ -525,12 +549,17 @@ export default function WorldsListPage() {
                 variant="flat"
                 className="w-full md:max-w-xs"
                 classNames={{
-                  inputWrapper: "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
+                  inputWrapper:
+                    "bg-default-100 dark:bg-default-50/50 hover:bg-default-200/70 transition-colors group-data-[focus=true]:bg-white dark:group-data-[focus=true]:bg-zinc-900 shadow-sm",
                 }}
               />
 
               <div className="flex items-center gap-3">
-                <Tooltip content={t("common.select_mode", { defaultValue: "选择模式" })}>
+                <Tooltip
+                  content={t("common.select_mode", {
+                    defaultValue: "选择模式",
+                  })}
+                >
                   <Button
                     isIconOnly
                     radius="full"
@@ -547,13 +576,17 @@ export default function WorldsListPage() {
 
                 {isSelectMode && (
                   <Checkbox
-                    isSelected={filtered.length > 0 && selectedCount === filtered.length}
+                    isSelected={
+                      filtered.length > 0 && selectedCount === filtered.length
+                    }
                     onValueChange={selectAll}
                     radius="full"
                     size="lg"
                     classNames={{ wrapper: "after:bg-primary" }}
                   >
-                    <span className="text-sm text-default-600">{t("common.select_all", { defaultValue: "全选" })}</span>
+                    <span className="text-sm text-default-600">
+                      {t("common.select_all", { defaultValue: "全选" })}
+                    </span>
                   </Checkbox>
                 )}
 
@@ -568,31 +601,65 @@ export default function WorldsListPage() {
                       className="min-w-[120px]"
                     >
                       {sortKey === "name"
-                        ? (t("filemanager.sort.name", { defaultValue: "名称" }) as string)
-                        : (t("contentpage.sort_time", { defaultValue: "时间" }) as string)}
+                        ? (t("filemanager.sort.name", {
+                            defaultValue: "名称",
+                          }) as string)
+                        : (t("contentpage.sort_time", {
+                            defaultValue: "时间",
+                          }) as string)}
                       {" / "}
                       {sortAsc
-                        ? t("contentpage.sort_asc", { defaultValue: "从上到下" })
-                        : t("contentpage.sort_desc", { defaultValue: "从下到上" })}
+                        ? t("contentpage.sort_asc", {
+                            defaultValue: "从上到下",
+                          })
+                        : t("contentpage.sort_desc", {
+                            defaultValue: "从下到上",
+                          })}
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
                     selectionMode="single"
-                    selectedKeys={new Set([`${sortKey}-${sortAsc ? "asc" : "desc"}`])}
+                    selectedKeys={
+                      new Set([`${sortKey}-${sortAsc ? "asc" : "desc"}`])
+                    }
                     onSelectionChange={(keys) => {
-                        const val = Array.from(keys)[0] as string;
-                        const [k, order] = val.split("-");
-                        const nextKey = (k as "name" | "time") || "name";
-                        const nextAsc = order === "asc";
-                        setSortKey(nextKey);
-                        setSortAsc(nextAsc);
-                        persistSort(nextKey, nextAsc);
+                      const val = Array.from(keys)[0] as string;
+                      const [k, order] = val.split("-");
+                      const nextKey = (k as "name" | "time") || "name";
+                      const nextAsc = order === "asc";
+                      setSortKey(nextKey);
+                      setSortAsc(nextAsc);
+                      persistSort(nextKey, nextAsc);
                     }}
                   >
-                    <DropdownItem key="name-asc" startContent={<FaSortAmountDown />}>{t("filemanager.sort.name", { defaultValue: "名称" })} (A-Z)</DropdownItem>
-                    <DropdownItem key="name-desc" startContent={<FaSortAmountUp />}>{t("filemanager.sort.name", { defaultValue: "名称" })} (Z-A)</DropdownItem>
-                    <DropdownItem key="time-asc" startContent={<FaSortAmountDown />}>{t("contentpage.sort_time", { defaultValue: "时间" })} (Old-New)</DropdownItem>
-                    <DropdownItem key="time-desc" startContent={<FaSortAmountUp />}>{t("contentpage.sort_time", { defaultValue: "时间" })} (New-Old)</DropdownItem>
+                    <DropdownItem
+                      key="name-asc"
+                      startContent={<FaSortAmountDown />}
+                    >
+                      {t("filemanager.sort.name", { defaultValue: "名称" })}{" "}
+                      (A-Z)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="name-desc"
+                      startContent={<FaSortAmountUp />}
+                    >
+                      {t("filemanager.sort.name", { defaultValue: "名称" })}{" "}
+                      (Z-A)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="time-asc"
+                      startContent={<FaSortAmountDown />}
+                    >
+                      {t("contentpage.sort_time", { defaultValue: "时间" })}{" "}
+                      (Old-New)
+                    </DropdownItem>
+                    <DropdownItem
+                      key="time-desc"
+                      startContent={<FaSortAmountUp />}
+                    >
+                      {t("contentpage.sort_time", { defaultValue: "时间" })}{" "}
+                      (New-Old)
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
 
@@ -610,21 +677,30 @@ export default function WorldsListPage() {
                         startContent={<FaTrash />}
                         onPress={delManyCfmOnOpen}
                       >
-                        {t("common.delete_selected", { count: selectedCount, defaultValue: "删除选中" })}
+                        {t("common.delete_selected", {
+                          count: selectedCount,
+                          defaultValue: "删除选中",
+                        })}
                       </Button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             </div>
-            
+
             <div className="mt-2 text-default-500 text-sm flex flex-wrap items-center gap-2">
-              <span>{t("contentpage.current_version", { defaultValue: "当前版本" })}:</span>
+              <span>
+                {t("contentpage.current_version", { defaultValue: "当前版本" })}
+                :
+              </span>
               <span className="font-medium text-default-700 bg-default-100 px-2 py-0.5 rounded-md">
-                {currentVersionName || t("contentpage.none", { defaultValue: "无" })}
+                {currentVersionName ||
+                  t("contentpage.none", { defaultValue: "无" })}
               </span>
               <span className="text-default-300">|</span>
-              <span>{t("contentpage.isolation", { defaultValue: "版本隔离" })}:</span>
+              <span>
+                {t("contentpage.isolation", { defaultValue: "版本隔离" })}:
+              </span>
               <span
                 className={`font-medium px-2 py-0.5 rounded-md ${
                   roots.isIsolation
@@ -639,10 +715,7 @@ export default function WorldsListPage() {
             </div>
           </div>
 
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 sm:p-6"
-          >
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6">
             {loading && worlds.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <Spinner size="lg" />
@@ -654,9 +727,11 @@ export default function WorldsListPage() {
               <div className="flex flex-col items-center justify-center py-20 text-default-400">
                 <FaBox className="text-6xl mb-4 opacity-20" />
                 <p>
-                  {search 
-                    ? t("common.no_results", { defaultValue: "无搜索结果" }) 
-                    : t("contentpage.no_items", { defaultValue: "没有找到项目" })}
+                  {search
+                    ? t("common.no_results", { defaultValue: "无搜索结果" })
+                    : t("contentpage.no_items", {
+                        defaultValue: "没有找到项目",
+                      })}
                 </p>
               </div>
             ) : (
@@ -686,7 +761,7 @@ export default function WorldsListPage() {
                               alt={w.FolderName}
                               classNames={{
                                 wrapper: "w-full h-full",
-                                img: "w-full h-full object-cover object-center"
+                                img: "w-full h-full object-cover object-center",
                               }}
                               radius="none"
                               fallbackSrc={DefaultWorldPreview}
@@ -715,70 +790,86 @@ export default function WorldsListPage() {
                           </div>
 
                           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2 w-full">
-                             {/* Description placeholder if needed */}
+                            {/* Description placeholder if needed */}
                           </p>
 
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                             <div className="flex items-center gap-1" title={t("common.size", { defaultValue: "大小" })}>
-                                <FaHdd />
-                                <span>{formatBytes(w.Size)}</span>
-                             </div>
-                             <div className="flex items-center gap-1" title={t("common.date", { defaultValue: "日期" })}>
-                                <FaClock />
-                                <span>{new Date(w.LastModified * 1000).toLocaleString()}</span>
-                             </div>
+                            <div
+                              className="flex items-center gap-1"
+                              title={t("common.size", { defaultValue: "大小" })}
+                            >
+                              <FaHdd />
+                              <span>{formatBytes(w.Size)}</span>
+                            </div>
+                            <div
+                              className="flex items-center gap-1"
+                              title={t("common.date", { defaultValue: "日期" })}
+                            >
+                              <FaClock />
+                              <span>
+                                {new Date(
+                                  w.LastModified * 1000,
+                                ).toLocaleString()}
+                              </span>
+                            </div>
                           </div>
 
                           <div className="flex flex-1 items-end justify-between mt-2">
-                             <div className="flex gap-1">
-                                {/* Placeholder for future tags */}
-                             </div>
-                             <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="flat"
-                                  radius="full"
-                                  isIconOnly
-                                  onPress={() => handleBackup(w)}
-                                  isLoading={backingUp === w.Path}
-                                  className="h-8 w-8 min-w-0"
-                                  title={t("common.backup", { defaultValue: "备份" })}
-                                >
-                                  <FaArchive className="text-xs" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="flat"
-                                  radius="full"
-                                  isIconOnly
-                                  onPress={() =>
-                                    navigate(
-                                      `/content/world-edit?path=${encodeURIComponent(
-                                        w.Path
-                                      )}`
-                                    )
-                                  }
-                                  className="h-8 w-8 min-w-0"
-                                  title={t("common.edit", { defaultValue: "编辑" })}
-                                >
-                                  <FaEdit className="text-xs" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  color="danger"
-                                  variant="flat"
-                                  radius="full"
-                                  isIconOnly
-                                  onPress={() => {
-                                    setActiveWorld(w);
-                                    delOnOpen();
-                                  }}
-                                  className="h-8 w-8 min-w-0"
-                                  title={t("common.delete", { defaultValue: "删除" })}
-                                >
-                                  <FaTrash className="text-xs" />
-                                </Button>
-                             </div>
+                            <div className="flex gap-1">
+                              {/* Placeholder for future tags */}
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="flat"
+                                radius="full"
+                                isIconOnly
+                                onPress={() => handleBackup(w)}
+                                isLoading={backingUp === w.Path}
+                                className="h-8 w-8 min-w-0"
+                                title={t("common.backup", {
+                                  defaultValue: "备份",
+                                })}
+                              >
+                                <FaArchive className="text-xs" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="flat"
+                                radius="full"
+                                isIconOnly
+                                onPress={() =>
+                                  navigate(
+                                    `/content/world-edit?path=${encodeURIComponent(
+                                      w.Path,
+                                    )}`,
+                                  )
+                                }
+                                className="h-8 w-8 min-w-0"
+                                title={t("common.edit", {
+                                  defaultValue: "编辑",
+                                })}
+                              >
+                                <FaEdit className="text-xs" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                color="danger"
+                                variant="flat"
+                                radius="full"
+                                isIconOnly
+                                onPress={() => {
+                                  setActiveWorld(w);
+                                  delOnOpen();
+                                }}
+                                className="h-8 w-8 min-w-0"
+                                title={t("common.delete", {
+                                  defaultValue: "删除",
+                                })}
+                              >
+                                <FaTrash className="text-xs" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -814,7 +905,9 @@ export default function WorldsListPage() {
         <ModalContent>
           {(onClose) => (
             <>
-              <BaseModalHeader className="text-danger">{t("common.confirm_delete", { defaultValue: "确认删除" })}</BaseModalHeader>
+              <BaseModalHeader className="text-danger">
+                {t("common.confirm_delete", { defaultValue: "确认删除" })}
+              </BaseModalHeader>
               <BaseModalBody>
                 {deletingOne ? (
                   <div className="flex flex-col items-center justify-center py-6 gap-3">
@@ -833,10 +926,18 @@ export default function WorldsListPage() {
                 )}
               </BaseModalBody>
               <BaseModalFooter>
-                <Button variant="flat" onPress={onClose} isDisabled={deletingOne}>
+                <Button
+                  variant="flat"
+                  onPress={onClose}
+                  isDisabled={deletingOne}
+                >
                   {t("common.cancel", { defaultValue: "取消" })}
                 </Button>
-                <Button color="danger" onPress={handleDelete} isDisabled={deletingOne}>
+                <Button
+                  color="danger"
+                  onPress={handleDelete}
+                  isDisabled={deletingOne}
+                >
                   {t("common.confirm", { defaultValue: "确认" })}
                 </Button>
               </BaseModalFooter>
@@ -853,10 +954,12 @@ export default function WorldsListPage() {
         hideCloseButton={deletingMany}
         title={t("common.confirm_delete", { defaultValue: "确认删除" })}
       >
-         <ModalContent>
+        <ModalContent>
           {(onClose) => (
             <>
-              <BaseModalHeader className="text-danger">{t("common.confirm_delete", { defaultValue: "确认删除" })}</BaseModalHeader>
+              <BaseModalHeader className="text-danger">
+                {t("common.confirm_delete", { defaultValue: "确认删除" })}
+              </BaseModalHeader>
               <BaseModalBody>
                 {deletingMany ? (
                   <div className="flex flex-col items-center justify-center py-6 gap-3">
@@ -875,10 +978,18 @@ export default function WorldsListPage() {
                 )}
               </BaseModalBody>
               <BaseModalFooter>
-                <Button variant="flat" onPress={onClose} isDisabled={deletingMany}>
+                <Button
+                  variant="flat"
+                  onPress={onClose}
+                  isDisabled={deletingMany}
+                >
                   {t("common.cancel", { defaultValue: "取消" })}
                 </Button>
-                <Button color="danger" onPress={handleBatchDelete} isDisabled={deletingMany}>
+                <Button
+                  color="danger"
+                  onPress={handleBatchDelete}
+                  isDisabled={deletingMany}
+                >
                   {t("common.confirm", { defaultValue: "确认" })}
                 </Button>
               </BaseModalFooter>
