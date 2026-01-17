@@ -337,6 +337,7 @@
     "font": "本软件使用 {{name}} 字体"
   },
   "about": {
+    "description": "LeviLauncher - 一个现代化的 Minecraft 基岩版启动器",
     "authors": "作者与维护者",
     "author": "作者",
     "ll_authors": "LeviLauncher作者",

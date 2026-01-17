@@ -337,6 +337,7 @@
     "font": "This software uses the {{name}} font"
   },
   "about": {
+    "description": "LeviLauncher - A Modern Minecraft Bedrock Launcher",
     "authors": "Authors & Maintainers",
     "author": "Author",
     "ll_authors": "LeviLauncher Authors",

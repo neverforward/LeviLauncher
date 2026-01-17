@@ -337,6 +337,7 @@
     "font": "В этом приложении используется шрифт {{name}}"
   },
   "about": {
+    "description": "LeviLauncher - Современный лаунчер для Minecraft Bedrock",
     "authors": "Авторы и сопровождающие",
     "author": "Автор",
     "ll_authors": "Авторы LeviLauncher",

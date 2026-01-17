@@ -1219,11 +1219,6 @@ export const ModsPage: React.FC = () => {
               )}
             </div>
           }
-          startContent={
-            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl text-emerald-600 dark:text-emerald-400 shadow-sm">
-              <FaPuzzlePiece className="w-6 h-6" />
-            </div>
-          }
           endContent={
             <>
               <input

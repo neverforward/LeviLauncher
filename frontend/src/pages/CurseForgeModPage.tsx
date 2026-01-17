@@ -227,13 +227,13 @@ const CurseForgeModPage: React.FC = () => {
       const dest = await StartFileDownload(file.downloadUrl, file.fileName);
 
       const cleanup = () => {
-        Events.Off("file_download_progress");
-        Events.Off("file_download_done");
-        Events.Off("file_download_error");
+        Events.Off("file.download.progress");
+        Events.Off("file.download.done");
+        Events.Off("file.download.error");
       };
       cleanupRef.current = cleanup;
 
-      Events.On("file_download_progress", (event: any) => {
+      Events.On("file.download.progress", (event: any) => {
         const data = event.data || {};
         setDownloadProgress({
           downloaded: Number(data.Downloaded || 0),
@@ -241,7 +241,7 @@ const CurseForgeModPage: React.FC = () => {
         });
       });
 
-      Events.On("file_download_done", async () => {
+      Events.On("file.download.done", async () => {
         cleanup();
         try {
           let type = "unknown";
@@ -295,7 +295,7 @@ const CurseForgeModPage: React.FC = () => {
         }
       });
 
-      Events.On("file_download_error", (event: any) => {
+      Events.On("file.download.error", (event: any) => {
         cleanup();
         if (isCancelling.current) return;
         const err = event.data;

@@ -49,10 +49,10 @@ const (
 	EventGameInputDownloadDone     = "gameinput.download.done"
 	EventGameInputDownloadError    = "gameinput.download.error"
 
-	EventFileDownloadStatus   = "file_download_status"
-	EventFileDownloadProgress = "file_download_progress"
-	EventFileDownloadDone     = "file_download_done"
-	EventFileDownloadError    = "file_download_error"
+	EventFileDownloadStatus   = "file.download.status"
+	EventFileDownloadProgress = "file.download.progress"
+	EventFileDownloadDone     = "file.download.done"
+	EventFileDownloadError    = "file.download.error"
 )
 
 var isPreloader = false
