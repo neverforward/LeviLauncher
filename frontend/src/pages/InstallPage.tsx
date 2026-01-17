@@ -20,6 +20,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { useVersionStatus } from "@/utils/VersionStatusContext";
 import { motion } from "framer-motion";
 import * as minecraft from "bindings/github.com/liteldev/LeviLauncher/minecraft";
+import { PageHeader } from "@/components/PageHeader";
 
 type ItemType = "Preview" | "Release";
 

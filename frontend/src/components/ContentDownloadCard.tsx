@@ -47,7 +47,7 @@ export const ContentDownloadCard = () => {
           <div className="flex items-center gap-3">
             <FaCube className="text-emerald-500 text-xl" />
             <span className="font-medium text-default-700 dark:text-zinc-200">
-              LIP
+              lip
             </span>
           </div>
         </div>

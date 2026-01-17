@@ -60,8 +60,10 @@ import CurseForgeModPage from "@/pages/CurseForgeModPage";
 import LIPPage from "@/pages/LIPPage";
 import LIPPackagePage from "@/pages/LIPPackagePage";
 import { Toaster } from "react-hot-toast";
+import { useTheme } from "next-themes";
 
 function App() {
+  const { theme, resolvedTheme } = useTheme();
   const [splashVisible, setSplashVisible] = useState(true);
   const [revealStarted, setRevealStarted] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(false);
@@ -351,7 +353,19 @@ function App() {
   return (
     <VersionStatusProvider>
       <CurseForgeProvider>
-        <Toaster containerStyle={{ zIndex: 99999, top: 80 }} />
+        <Toaster
+          containerStyle={{ zIndex: 99999, top: 80 }}
+          toastOptions={{
+            style: {
+              background: resolvedTheme === "dark" ? "#18181b" : "#fff",
+              color: resolvedTheme === "dark" ? "#fff" : "#333",
+              border:
+                resolvedTheme === "dark"
+                  ? "1px solid #27272a"
+                  : "1px solid #e4e4e7",
+            },
+          }}
+        />
         <AnimatePresence>
           {splashVisible && (
             <motion.div
